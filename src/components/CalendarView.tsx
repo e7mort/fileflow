@@ -43,6 +43,7 @@ export function CalendarView() {
         </div>
         <h2>{monthTitle(year, monthIndex)}</h2>
       </div>
+      <div className="calendar-scroll">
       <div className="calendar-grid" data-testid="calendar-grid">
         {WEEKDAYS.map((day) => (
           <div className="calendar-dow" key={day}>
@@ -69,6 +70,7 @@ export function CalendarView() {
               : null}
           </div>
         ))}
+      </div>
       </div>
       <section className="panel" style={{ marginTop: "1rem" }}>
         <h2>Upcoming</h2>

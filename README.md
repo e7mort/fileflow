@@ -6,6 +6,8 @@ A shop runs one shared pipeline. Every file has exactly one current next action:
 
 Fileflow is meant to replace a generic kanban, a generic task list, and a spreadsheet that pretends to be a mortgage OS.
 
+The demo skin is a dark ink wash with frosted glass cards. Next action stays the loudest thing on a file.
+
 ## What you should see
 
 - A persistent banner on every screen: this is a demo, not a live lender system, not advice.

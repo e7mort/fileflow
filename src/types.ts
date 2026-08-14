@@ -36,6 +36,8 @@ export type DealId = string;
 export type TaskId = string;
 export type MentionId = string;
 export type TemplateId = string;
+export type PartyId = string;
+export type ConditionId = string;
 
 export type Person = {
   id: PersonId;
@@ -76,10 +78,22 @@ export type Mention = {
   createdAt: string;
 };
 
-export type Borrower = {
+export const PARTY_ROLES = ["borrower", "realtor", "lawyer"] as const;
+export type PartyRole = (typeof PARTY_ROLES)[number];
+
+export type FileParty = {
+  id: PartyId;
   name: string;
   email: string;
   phone: string;
+  role: PartyRole;
+};
+
+export type Condition = {
+  id: ConditionId;
+  title: string;
+  completed: boolean;
+  completedAt: string | null;
 };
 
 export type Property = {
@@ -89,13 +103,14 @@ export type Property = {
 type DealBase = {
   id: DealId;
   stage: Stage;
-  borrower: Borrower;
+  parties: FileParty[];
   property: Property;
   lender: string;
   product: string;
   amount: number;
   closeDate: string | null;
-  conditions: string[];
+  maturityDate: string | null;
+  conditions: Condition[];
   nextAction: NextAction;
   tasks: Task[];
   mentions: Mention[];
@@ -119,7 +134,6 @@ export type PrivateDeal = DealBase & {
   termMonths: number;
   exitStrategy: string;
   brokerFee: number | null;
-  lawyer: string | null;
   position: ChargePosition;
 };
 

@@ -5,7 +5,18 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Deal, DealId, Handoff, Person, PersonId, Stage, TaskId } from "../types";
+import type {
+  ConditionId,
+  Deal,
+  DealId,
+  Handoff,
+  PartyRole,
+  Person,
+  PersonId,
+  Stage,
+  TaskId,
+} from "../types";
+import { addCondition, completeCondition } from "../domain/conditions";
 import {
   addMention,
   clearHandoff,
@@ -13,6 +24,7 @@ import {
   moveStage,
   setHandoff,
 } from "../domain/engine";
+import { addParty, type AddPartyResult } from "../domain/parties";
 import { TEAM, canMutateFiles, personById } from "../domain/team";
 import { defaultState, loadState, saveState } from "../lib/storage";
 
@@ -26,6 +38,12 @@ type Store = {
   handoff: (dealId: DealId, waitingOn: Handoff) => void;
   finishHandoff: (dealId: DealId) => void;
   mention: (dealId: DealId, body: string) => void;
+  addDealCondition: (dealId: DealId, title: string) => void;
+  completeDealCondition: (dealId: DealId, conditionId: ConditionId) => void;
+  addDealParty: (
+    dealId: DealId,
+    input: { name: string; email: string; phone: string; role: PartyRole },
+  ) => AddPartyResult | { ok: false; error: "not-found" };
   resetDemo: () => void;
 };
 
@@ -102,6 +120,46 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             }),
           ),
         });
+      },
+      addDealCondition: (dealId, title) => {
+        if (!canWrite) {
+          return;
+        }
+        persist({
+          ...state,
+          deals: updateDeal(state.deals, dealId, (deal) => {
+            const result = addCondition(deal, title);
+            return result.ok ? result.deal : deal;
+          }),
+        });
+      },
+      completeDealCondition: (dealId, conditionId) => {
+        if (!canWrite) {
+          return;
+        }
+        persist({
+          ...state,
+          deals: updateDeal(state.deals, dealId, (deal) =>
+            completeCondition(deal, conditionId),
+          ),
+        });
+      },
+      addDealParty: (dealId, input) => {
+        const current = state.deals.find((deal) => deal.id === dealId);
+        if (!current) {
+          return { ok: false, error: "not-found" };
+        }
+        if (!canWrite) {
+          return addParty(current, input);
+        }
+        const result = addParty(current, input);
+        if (result.ok) {
+          persist({
+            ...state,
+            deals: updateDeal(state.deals, dealId, () => result.deal),
+          });
+        }
+        return result;
       },
       resetDemo: () => persist(defaultState()),
     };

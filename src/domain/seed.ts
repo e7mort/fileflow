@@ -1,5 +1,18 @@
-import type { Deal, Handoff, PersonId, Stage } from "../types";
+import type { Deal, FileParty, Handoff, PersonId, Stage } from "../types";
+import { openConditions } from "./conditions";
 import { addMention, assignNextAction, instantiateTasks, setHandoff } from "./engine";
+
+function people(
+  id: string,
+  primary: { name: string; email: string; phone: string },
+  extra: FileParty[] = [],
+): FileParty[] {
+  return [{ id: `${id}-b1`, role: "borrower", ...primary }, ...extra];
+}
+
+function withDue(deal: Deal, due: string): Deal {
+  return { ...deal, nextAction: { ...deal.nextAction, due } };
+}
 
 function markDone(deal: Deal, templateIds: string[]): Deal {
   return {
@@ -37,17 +50,21 @@ export function seedDeals(): Deal[] {
           id: "d-alex",
           book: "residential",
           stage: "application",
-          borrower: {
+          parties: people("d-alex", {
             name: "Alex Example",
             email: "alex.example@example.test",
             phone: "416-555-0101",
-          },
+          }),
           property: { address: "14 Example Lane, Demo City ON M5V 0A1" },
           lender: "Northpine Bank",
           product: "5-year fixed",
           amount: 612000,
           closeDate: "2026-10-15",
-          conditions: ["Proof of down payment", "Employment letter"],
+          maturityDate: "2031-10-15",
+          conditions: openConditions("d-alex", [
+            "Proof of down payment",
+            "Employment letter",
+          ]),
           purpose: "purchase",
           insurance: "uninsured",
           stressTest: { kind: "status", status: "pending" },
@@ -78,17 +95,21 @@ export function seedDeals(): Deal[] {
             id: "d-jordan",
             book: "residential",
             stage: "submitted",
-            borrower: {
+            parties: people("d-jordan", {
               name: "Jordan Demo",
               email: "jordan.demo@example.test",
               phone: "604-555-0144",
-            },
+            }),
             property: { address: "88 Placeholder Ave, Sampleville BC V6B 1A1" },
             lender: "Harbour Credit Union",
             product: "5-year variable",
             amount: 440000,
             closeDate: "2026-09-28",
-            conditions: ["Updated mortgage statement", "Property insurance binder"],
+            maturityDate: null,
+            conditions: openConditions("d-jordan", [
+              "Updated mortgage statement",
+              "Property insurance binder",
+            ]),
             purpose: "refinance",
             insurance: "insured",
             stressTest: { kind: "value", qualifyingRate: 5.25 },
@@ -126,17 +147,47 @@ export function seedDeals(): Deal[] {
           id: "d-sam",
           book: "residential",
           stage: "conditional",
-          borrower: {
-            name: "Sidney Sample",
-            email: "sidney.sample@example.test",
-            phone: "905-555-0188",
-          },
+          parties: people(
+            "d-sam",
+            {
+              name: "Sidney Sample",
+              email: "sidney.sample@example.test",
+              phone: "905-555-0188",
+            },
+            [
+              {
+                id: "d-sam-b2",
+                role: "borrower",
+                name: "Blair Sampleton",
+                email: "blair.sampleton@example.test",
+                phone: "905-555-0189",
+              },
+              {
+                id: "d-sam-realtor",
+                role: "realtor",
+                name: "Marlowe Homes",
+                email: "marlowe.homes@example.test",
+                phone: "905-555-0200",
+              },
+              {
+                id: "d-sam-lawyer",
+                role: "lawyer",
+                name: "Ned Notary",
+                email: "ned.notary@example.test",
+                phone: "905-555-0211",
+              },
+            ],
+          ),
           property: { address: "3 Fiction Court, Mocktown ON L6A 0A1" },
           lender: "Cedar Trust",
           product: "3-year fixed",
           amount: 385000,
           closeDate: "2026-09-10",
-          conditions: ["Remaining income docs", "Solicitor contact"],
+          maturityDate: "2026-12-10",
+          conditions: openConditions("d-sam", [
+            "Remaining income docs",
+            "Solicitor contact",
+          ]),
           purpose: "renewal",
           insurance: "uninsured",
           stressTest: { kind: "status", status: "passed" },
@@ -171,17 +222,18 @@ export function seedDeals(): Deal[] {
             id: "d-quinn",
             book: "residential",
             stage: "clear-to-close",
-            borrower: {
+            parties: people("d-quinn", {
               name: "Parker Placeholder",
               email: "parker.placeholder@example.test",
               phone: "613-555-0162",
-            },
+            }),
             property: { address: "50 Demo Sideroad, Faketown ON K1A 0A1" },
             lender: "Northpine Bank",
             product: "5-year fixed",
             amount: 528000,
             closeDate: "2026-08-27",
-            conditions: ["Insurance binder to lawyer"],
+            maturityDate: null,
+            conditions: openConditions("d-quinn", ["Insurance binder to lawyer"]),
             purpose: "switch",
             insurance: "uninsured",
             stressTest: { kind: "value", qualifyingRate: 5.25 },
@@ -221,16 +273,17 @@ export function seedDeals(): Deal[] {
       id: "d-robin",
       book: "residential",
       stage: "lead",
-      borrower: {
+      parties: people("d-robin", {
         name: "Robin Fiction",
         email: "robin.fiction@example.test",
         phone: "519-555-0117",
-      },
+      }),
       property: { address: "9 Sample Crescent, Example Mills ON N2L 0A1" },
       lender: "Not assigned",
       product: "Not selected",
       amount: 475000,
       closeDate: null,
+      maturityDate: null,
       conditions: [],
       purpose: "purchase",
       insurance: "insured",
@@ -254,16 +307,17 @@ export function seedDeals(): Deal[] {
         id: "d-skyler",
         book: "residential",
         stage: "funded",
-        borrower: {
+        parties: people("d-skyler", {
           name: "Skyler Placeholder",
           email: "skyler.placeholder@example.test",
           phone: "705-555-0190",
-        },
+        }),
         property: { address: "21 Mockingbird Way, Testham ON P3A 0A1" },
         lender: "Harbour Credit Union",
         product: "5-year fixed",
         amount: 390000,
         closeDate: "2026-07-30",
+        maturityDate: "2031-07-30",
         conditions: [],
         purpose: "purchase",
         insurance: "insured",
@@ -300,17 +354,18 @@ export function seedDeals(): Deal[] {
         id: "d-avery",
         book: "commercial",
         stage: "application",
-        borrower: {
+        parties: people("d-avery", {
           name: "Avery Showcase",
           email: "avery.showcase@example.test",
           phone: "416-555-0173",
-        },
+        }),
         property: { address: "200 Fiction Plaza, Test Harbour ON M5J 0A1" },
         lender: "Summit Commercial",
         product: "5-year commercial term",
         amount: 1850000,
         closeDate: "2026-11-12",
-        conditions: ["Current rent roll", "Corporate search"],
+        maturityDate: null,
+        conditions: openConditions("d-avery", ["Current rent roll", "Corporate search"]),
         dscr: 1.28,
         noi: 186000,
         nextAction: {
@@ -335,17 +390,21 @@ export function seedDeals(): Deal[] {
             id: "d-cameron",
             book: "commercial",
             stage: "conditional",
-            borrower: {
+            parties: people("d-cameron", {
               name: "Cameron Testfile",
               email: "cameron.testfile@example.test",
               phone: "403-555-0135",
-            },
+            }),
             property: { address: "77 Ledger Street, Fakebridge AB T2P 0A1" },
             lender: "Prairie Ledger Bank",
             product: "3-year commercial term",
             amount: 2400000,
             closeDate: "2026-10-02",
-            conditions: ["Updated rent roll", "Environmental questionnaire"],
+            maturityDate: null,
+            conditions: openConditions("d-cameron", [
+              "Updated rent roll",
+              "Environmental questionnaire",
+            ]),
             dscr: 1.41,
             noi: 312000,
             nextAction: {
@@ -376,16 +435,17 @@ export function seedDeals(): Deal[] {
         id: "d-drew",
         book: "commercial",
         stage: "funded",
-        borrower: {
+        parties: people("d-drew", {
           name: "Drew Mockwell",
           email: "drew.mockwell@example.test",
           phone: "514-555-0128",
-        },
+        }),
         property: { address: "12 Showcase Blvd, Examplaire QC H3B 0A1" },
         lender: "Summit Commercial",
         product: "5-year commercial term",
         amount: 1600000,
         closeDate: "2026-06-18",
+        maturityDate: null,
         conditions: [],
         dscr: 1.35,
         noi: 204000,
@@ -420,21 +480,32 @@ export function seedDeals(): Deal[] {
           id: "d-harper",
           book: "private",
           stage: "application",
-          borrower: {
+          parties: people("d-harper", {
             name: "Harper Fictional",
             email: "harper.fictional@example.test",
             phone: "647-555-0155",
-          },
+          }, [
+            {
+              id: "d-harper-lawyer",
+              role: "lawyer",
+              name: "Pat Solicitor",
+              email: "pat.solicitor@example.test",
+              phone: "647-555-0160",
+            },
+          ]),
           property: { address: "4 Second Position Rd, Demo Heights ON L4B 0A1" },
           lender: "Oakbridge Private",
           product: "12-month private",
           amount: 220000,
           closeDate: "2026-09-04",
-          conditions: ["Signed broker fee agreement", "Exit letter"],
+          maturityDate: null,
+          conditions: openConditions("d-harper", [
+            "Signed broker fee agreement",
+            "Exit letter",
+          ]),
           termMonths: 12,
           exitStrategy: "Refinance to an A lender after 10 months",
           brokerFee: 4800,
-          lawyer: "Pat Solicitor (fictional)",
           position: "second",
           nextAction: {
             taskId: null,
@@ -463,21 +534,31 @@ export function seedDeals(): Deal[] {
           id: "d-reese",
           book: "private",
           stage: "submitted",
-          borrower: {
+          parties: people("d-reese", {
             name: "Reese Demoaddr",
             email: "reese.demoaddr@example.test",
             phone: "780-555-0199",
-          },
+          }, [
+            {
+              id: "d-reese-lawyer",
+              role: "lawyer",
+              name: "Kim Notary",
+              email: "kim.notary@example.test",
+              phone: "780-555-0201",
+            },
+          ]),
           property: { address: "16 Placeholder Trail, Sample Ridge AB T5J 0A1" },
           lender: "Oakbridge Private",
           product: "6-month private",
           amount: 175000,
           closeDate: "2026-08-31",
-          conditions: ["Lawyer confirmation of first-position postponement"],
+          maturityDate: null,
+          conditions: openConditions("d-reese", [
+            "Lawyer confirmation of first-position postponement",
+          ]),
           termMonths: 6,
           exitStrategy: "Sale of the property at the end of term",
           brokerFee: 3500,
-          lawyer: "Kim Notary (fictional)",
           position: "first",
           nextAction: {
             taskId: null,
@@ -501,21 +582,21 @@ export function seedDeals(): Deal[] {
       id: "d-blake",
       book: "private",
       stage: "fallen-through",
-      borrower: {
+      parties: people("d-blake", {
         name: "Blake Exampleton",
         email: "blake.exampleton@example.test",
         phone: "902-555-0140",
-      },
+      }),
       property: { address: "1 Fallen Lane, Dummy Port NS B3H 0A1" },
       lender: "Oakbridge Private",
       product: "12-month private",
       amount: 150000,
       closeDate: null,
-      conditions: ["Borrower withdrew after the term sheet"],
+      maturityDate: null,
+      conditions: openConditions("d-blake", ["Borrower withdrew after the term sheet"]),
       termMonths: 12,
       exitStrategy: "Was a refinance; file stopped",
       brokerFee: 3000,
-      lawyer: null,
       position: "second",
       nextAction: {
         taskId: null,
@@ -554,9 +635,9 @@ export function seedDeals(): Deal[] {
   ];
 
   return [
-    withNotes[0] ?? alex,
+    withDue(withNotes[0] ?? alex, "2026-08-20"),
     withNotes[1] ?? jordan,
-    sidney,
+    withDue(sidney, "2026-08-25"),
     parker,
     robin,
     skyler,

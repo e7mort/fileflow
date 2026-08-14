@@ -1,4 +1,5 @@
 import { workForPerson } from "../domain/engine";
+import { primaryBorrower } from "../domain/parties";
 import { firstName } from "../domain/team";
 import { formatCad } from "../lib/format";
 import { hrefFor } from "../lib/route";
@@ -31,7 +32,7 @@ export function MyWork() {
                   href={hrefFor({ name: "file", dealId: deal.id })}
                 >
                   <BookBadge book={deal.book} />
-                  <p className="borrower">{deal.borrower.name}</p>
+                  <p className="borrower">{primaryBorrower(deal).name}</p>
                   <p className="subtle">{deal.nextAction.title}</p>
                   <p className="amount">{formatCad(deal.amount)}</p>
                 </a>
@@ -53,7 +54,7 @@ export function MyWork() {
                   data-testid={`work-waiting-${deal.id}`}
                 >
                   <BookBadge book={deal.book} />
-                  <p className="borrower">{deal.borrower.name}</p>
+                  <p className="borrower">{primaryBorrower(deal).name}</p>
                   <p className="subtle">{deal.nextAction.waitingOn?.reason}</p>
                 </a>
               ))
@@ -73,7 +74,7 @@ export function MyWork() {
                   href={hrefFor({ name: "file", dealId: deal.id })}
                 >
                   <BookBadge book={deal.book} />
-                  <p className="borrower">{deal.borrower.name}</p>
+                  <p className="borrower">{primaryBorrower(deal).name}</p>
                   <p className="subtle">{task.title}</p>
                 </a>
               ))

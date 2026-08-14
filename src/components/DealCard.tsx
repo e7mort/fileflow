@@ -1,16 +1,20 @@
+import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
+import { primaryBorrower } from "../domain/parties";
 import { firstName, personById } from "../domain/team";
-import { formatCad } from "../lib/format";
+import { formatCad, formatDate } from "../lib/format";
 import { hrefFor } from "../lib/route";
 import type { Deal } from "../types";
 import { BookBadge } from "./BookBadge";
 
 export function DealCard({ deal }: { deal: Deal }) {
+  const borrower = primaryBorrower(deal);
   const owner = deal.nextAction.ownerId
     ? personById(deal.nextAction.ownerId)
     : undefined;
   const waiting = deal.nextAction.waitingOn
     ? personById(deal.nextAction.waitingOn.personId)
     : undefined;
+  const maturitySoon = isMaturityReminderDue(deal.maturityDate, DEMO_TODAY);
 
   return (
     <a
@@ -26,8 +30,13 @@ export function DealCard({ deal }: { deal: Deal }) {
       <div className="card-meta">
         <BookBadge book={deal.book} />
       </div>
-      <p className="borrower">{deal.borrower.name}</p>
+      <p className="borrower">{borrower.name}</p>
       <p className="amount">{formatCad(deal.amount)}</p>
+      {maturitySoon && deal.maturityDate ? (
+        <div className="maturity-chip" data-testid={`maturity-${deal.id}`}>
+          Renewal {formatDate(deal.maturityDate)}
+        </div>
+      ) : null}
       <div className="next-strip">
         <strong>Next.</strong> {deal.nextAction.title}
         {owner ? <div className="subtle">Owner {firstName(owner.name)}</div> : (

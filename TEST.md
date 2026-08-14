@@ -68,3 +68,51 @@ Click Pipeline, My Work, and any file.
 **Expected:** The same demo banner is on every screen. Taylor Marketing (viewer) can read files and leave a note, but cannot complete tasks, set a handoff, or move a stage.
 
 If anything above fails, reset the demo from the header and run the script again from step 2.
+
+## 8. Maturity / renewal reminder (about 4 months out)
+
+On **Pipeline**, find **Sidney Sample** (Conditional, residential renewal). The card should show a green **Renewal** chip with 10 Dec 2026.
+
+Open Sidney Sample. A maturity / renewal reminder banner should sit under the title. The file field **Maturity / renewal** is 10 Dec 2026.
+
+Open **Alex Example**. That file has a maturity of 15 Oct 2031. There is no renewal chip on the card and no reminder banner on the file.
+
+**Expected:** Sidney is inside the 4-month window. Alex is not. This is a reminder only. No email or SMS.
+
+## 9. Multi-party on one file
+
+Stay on **Sidney Sample**. In **People on this file** you should see:
+
+- Sidney Sample (borrower)
+- Blair Sampleton (borrower)
+- Marlowe Homes (realtor)
+- Ned Notary (lawyer / notary)
+
+**Expected:** One file, two borrowers, a named realtor, and a named lawyer. All names are fictional.
+
+## 10. Add and clear a condition (no document vault)
+
+On **Alex Example**, find **Conditions**. Seeded items include **Proof of down payment** and **Employment letter**, each with **Mark done**.
+
+Click **Mark done** on Proof of down payment. Type `Appraisal invoice` in **Add a condition** and click **Add condition**.
+
+**Expected:** Proof of down payment is struck through and says Cleared. Appraisal invoice appears as an open condition. Nothing uploads. There is no document vault.
+
+## 11. Calendar of next actions and maturities
+
+Click **Calendar** in the header. August 2026 is the starting month.
+
+**Expected:** Alex Example appears on 20 Aug 2026 as a next-action item. The **Upcoming** list also shows it. Click the Alex item. The Alex Example file opens.
+
+Use **Next** until **December 2026**. Sidney Sample appears on 10 Dec 2026 as a renewal. Click it. The Sidney Sample file opens.
+
+## 12. Duplicate-person guard
+
+On **Sidney Sample**, under **People on this file**, try to add Marlowe Homes again:
+
+- Name: `Marlowe Homes`
+- Role: Realtor (or Borrower)
+- Click **Add person**
+
+**Expected:** The person is not added twice. A message says Marlowe Homes is already assigned on this file as realtor. Try the same with `Ned Notary` or `Sidney Sample`. Same block. No silent duplicate.
+

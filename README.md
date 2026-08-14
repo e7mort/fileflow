@@ -21,7 +21,10 @@ Fileflow is meant to replace a generic kanban, a generic task list, and a spread
   - Residential: purchase / refinance / renewal / switch, insured or uninsured, stress test as a field (rate or status).
   - Commercial: DSCR and NOI, rent roll / leases, a different condition set.
   - Private: term, exit, broker fee, lawyer / notary, first or second position, a shorter checklist.
-- File view: borrower, property, lender, product, amount, close date, conditions, the loud next action, the book-specific checklist, in-app @mentions, and a first-class handoff (person + reason + due).
+- File view: borrowers (more than one is allowed), realtor, lawyer / notary, property, lender, product, amount, close date, maturity date, an editable conditions list (no document vault), the loud next action, the book-specific checklist, in-app @mentions, and a first-class handoff (person + reason + due).
+- A 4-month maturity / renewal reminder on the card and the file when the date is in that window. Sidney Sample is inside the window. Alex Example is not.
+- A **Calendar** of next-action dues and maturity dates. Click an item to open the file.
+- Adding a person who is already on the file is blocked. The UI says they are already assigned.
 
 Owner is never invented. If nobody owns the next action, it stays unassigned. Robin Fiction is seeded that way on purpose.
 

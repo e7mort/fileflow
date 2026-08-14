@@ -296,6 +296,27 @@ a {
   font-size: 0.86rem;
 }
 
+.maturity-chip,
+.maturity-banner {
+  background: #e8f0e9;
+  color: var(--funded);
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8rem;
+  margin: 0.4rem 0 0.55rem;
+}
+
+.maturity-banner {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+}
+
+.badge.maturity {
+  color: var(--funded);
+  border-color: #b7cbb8;
+  background: #e8f0e9;
+}
+
 .waiting-chip {
   margin-top: 0.4rem;
   background: var(--wait-bg);
@@ -448,6 +469,68 @@ a {
   gap: 0.45rem;
   flex-wrap: wrap;
   margin-top: 0.75rem;
+}
+
+.row-actions input,
+.handoff-form input {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  color: var(--ink);
+  min-width: 180px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(110px, 1fr));
+  gap: 0.4rem;
+}
+
+.calendar-dow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 0.2rem 0.3rem;
+}
+
+.calendar-cell {
+  min-height: 96px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.35rem;
+}
+
+.calendar-day {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.calendar-event {
+  display: block;
+  text-decoration: none;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  border-radius: 6px;
+  padding: 0.25rem 0.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.calendar-event.next-action {
+  background: var(--next-bg);
+  color: var(--next-ink);
+}
+
+.calendar-event.maturity {
+  background: #e8f0e9;
+  color: var(--funded);
+}
+
+.calendar-event span {
+  display: block;
 }
 
 .viewer-note {

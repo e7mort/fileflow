@@ -3,7 +3,7 @@ import { DEFAULT_PERSON_ID, TEAM } from "../domain/team";
 import { seedDeals } from "../domain/seed";
 import { STAGES, BOOKS } from "../types";
 
-export const STORAGE_KEY = "fileflow-demo-v1";
+export const STORAGE_KEY = "fileflow-demo-v2";
 
 export type PersistedState = {
   deals: Deal[];
@@ -26,8 +26,9 @@ function isDeal(value: unknown): value is Deal {
     (BOOKS as readonly string[]).includes(book) &&
     typeof stage === "string" &&
     (STAGES as readonly string[]).includes(stage) &&
-    isRecord(value.borrower) &&
-    typeof value.borrower.name === "string" &&
+    Array.isArray(value.parties) &&
+    value.parties.length > 0 &&
+    Array.isArray(value.conditions) &&
     isRecord(value.nextAction) &&
     typeof value.nextAction.title === "string" &&
     Array.isArray(value.tasks)

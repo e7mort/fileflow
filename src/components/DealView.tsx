@@ -1,10 +1,14 @@
+import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
+import { primaryBorrower } from "../domain/parties";
 import { STAGE_LABELS } from "../domain/stages";
 import { formatCad, formatDate, purposeLabel } from "../lib/format";
 import { useStore } from "../store/store";
 import { STAGES, type Deal } from "../types";
 import { BookBadge } from "./BookBadge";
+import { ConditionsList } from "./ConditionsList";
 import { Mentions } from "./Mentions";
 import { NextActionPanel } from "./NextActionPanel";
+import { PartiesPanel } from "./PartiesPanel";
 import { TaskList } from "./TaskList";
 
 function BookFields({ deal }: { deal: Deal }) {
@@ -59,10 +63,6 @@ function BookFields({ deal }: { deal: Deal }) {
         <p>{deal.brokerFee == null ? "Not recorded" : formatCad(deal.brokerFee)}</p>
       </div>
       <div className="fact">
-        <label>Lawyer / notary</label>
-        <p>{deal.lawyer ?? "Not assigned"}</p>
-      </div>
-      <div className="fact">
         <label>Charge position</label>
         <p>{deal.position === "second" ? "Second" : "First"}</p>
       </div>
@@ -72,6 +72,8 @@ function BookFields({ deal }: { deal: Deal }) {
 
 export function DealView({ deal }: { deal: Deal }) {
   const { changeStage, canWrite } = useStore();
+  const borrower = primaryBorrower(deal);
+  const maturitySoon = isMaturityReminderDue(deal.maturityDate, DEMO_TODAY);
 
   return (
     <div className="file-page" data-testid="file-view">
@@ -80,11 +82,16 @@ export function DealView({ deal }: { deal: Deal }) {
           <a className="subtle" href="#/">
             ← Pipeline
           </a>
-          <h1>{deal.borrower.name}</h1>
+          <h1>{borrower.name}</h1>
           <div className="card-meta">
             <BookBadge book={deal.book} />
             <span className="badge">{formatCad(deal.amount)}</span>
             <span className="badge">{STAGE_LABELS[deal.stage]}</span>
+            {maturitySoon ? (
+              <span className="badge maturity" data-testid="maturity-reminder">
+                Renewal in 4 months
+              </span>
+            ) : null}
           </div>
         </div>
         <div className="field">
@@ -110,20 +117,27 @@ export function DealView({ deal }: { deal: Deal }) {
           </select>
         </div>
       </div>
+      {maturitySoon && deal.maturityDate ? (
+        <div className="maturity-banner" data-testid="maturity-banner">
+          Maturity / renewal reminder: {formatDate(deal.maturityDate)}. This is a
+          reminder only. It does not decide the file and it does not send mail or
+          SMS.
+        </div>
+      ) : null}
       <div className="file-grid">
         <section className="panel">
           <h2>File</h2>
           <div className="facts">
             <div className="fact">
-              <label>Borrower</label>
-              <p>{deal.borrower.name}</p>
+              <label>Primary borrower</label>
+              <p>{borrower.name}</p>
             </div>
             <div className="fact">
               <label>Email / phone</label>
               <p>
-                {deal.borrower.email}
+                {borrower.email}
                 <br />
-                {deal.borrower.phone}
+                {borrower.phone}
               </p>
             </div>
             <div className="fact">
@@ -146,22 +160,16 @@ export function DealView({ deal }: { deal: Deal }) {
               <label>Close date</label>
               <p>{formatDate(deal.closeDate)}</p>
             </div>
+            <div className="fact">
+              <label>Maturity / renewal</label>
+              <p>{formatDate(deal.maturityDate)}</p>
+            </div>
             <BookFields deal={deal} />
-          </div>
-          <div className="fact" style={{ marginTop: "0.9rem" }}>
-            <label>Conditions</label>
-            {deal.conditions.length ? (
-              <ul className="conditions">
-                {deal.conditions.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="subtle">No open conditions listed.</p>
-            )}
           </div>
         </section>
         <NextActionPanel deal={deal} />
+        <PartiesPanel deal={deal} />
+        <ConditionsList deal={deal} />
         <TaskList deal={deal} />
         <Mentions deal={deal} />
       </div>

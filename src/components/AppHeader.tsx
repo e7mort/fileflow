@@ -23,6 +23,12 @@ export function AppHeader({ route }: { route: Route }) {
         >
           My Work
         </a>
+        <a
+          href={hrefFor({ name: "calendar" })}
+          className={route.name === "calendar" ? "active" : undefined}
+        >
+          Calendar
+        </a>
       </nav>
       <div className="header-spacer" />
       <label className="subtle" htmlFor="person-switcher">

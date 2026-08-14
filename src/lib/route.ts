@@ -3,6 +3,7 @@ import { BOOKS, type Book, type DealId } from "../types";
 export type Route =
   | { name: "board"; book: Book | "all" }
   | { name: "work" }
+  | { name: "calendar" }
   | { name: "file"; dealId: DealId };
 
 function isBook(value: string): value is Book {
@@ -13,6 +14,9 @@ export function parseHash(hash: string): Route {
   const path = hash.replace(/^#/, "") || "/";
   if (path === "/work") {
     return { name: "work" };
+  }
+  if (path === "/calendar") {
+    return { name: "calendar" };
   }
   const file = path.match(/^\/files\/([^/?]+)/);
   if (file?.[1]) {
@@ -28,6 +32,9 @@ export function parseHash(hash: string): Route {
 export function hrefFor(route: Route): string {
   if (route.name === "work") {
     return "#/work";
+  }
+  if (route.name === "calendar") {
+    return "#/calendar";
   }
   if (route.name === "file") {
     return `#/files/${route.dealId}`;

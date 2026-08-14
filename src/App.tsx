@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AppHeader } from "./components/AppHeader";
 import { Board } from "./components/Board";
+import { CalendarView } from "./components/CalendarView";
 import { DealView } from "./components/DealView";
 import { DemoBanner } from "./components/DemoBanner";
 import { MyWork } from "./components/MyWork";
@@ -27,6 +28,7 @@ export function App() {
       <DemoBanner />
       <AppHeader route={route} />
       {route.name === "work" ? <MyWork /> : null}
+      {route.name === "calendar" ? <CalendarView /> : null}
       {route.name === "board" ? <Board book={route.book} /> : null}
       {route.name === "file" && deal ? <DealView deal={deal} /> : null}
       {route.name === "file" && !deal ? (

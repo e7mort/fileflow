@@ -56,7 +56,11 @@ export function assignNextAction(deal: Deal): Deal {
     };
   }
 
-  const nextTask = unlockedOpenTasks(deal)[0];
+  const unlocked = unlockedOpenTasks(deal);
+  const currentStage = unlocked.filter((task) =>
+    task.unlockStages.includes(deal.stage),
+  );
+  const nextTask = currentStage[0] ?? unlocked[0];
   if (!nextTask) {
     return {
       ...deal,

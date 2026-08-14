@@ -245,6 +245,15 @@ describe("moveStage", () => {
     expect(moved.nextAction.title).toBe("Receive and review commitment");
   });
 
+  it("prefers current-stage work over leftover earlier tasks", () => {
+    const deal = resiDeal({
+      stage: "application",
+      tasks: instantiateTasks({ book: "residential" }),
+    });
+    const moved = moveStage(deal, "submitted");
+    expect(moved.nextAction.title).toBe("Receive and review commitment");
+  });
+
   it("adds any missing book templates when the stage changes", () => {
     const deal = resiDeal({ tasks: [] });
     const moved = moveStage(deal, "conditional");

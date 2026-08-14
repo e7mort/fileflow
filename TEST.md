@@ -59,7 +59,7 @@ Open **Alex Example**. Read the current next action title (seeded as **Collect i
 
 On the same file, use **Move stage** and choose **Submitted**. You can also drag the card on the board into the Submitted column.
 
-**Expected:** The stage badge updates. The checklist unlocks submitted-stage work (commitment, appraisal). The next action refreshes to the first unlocked open task, often **Receive and review commitment**. Locked later items stay visible with an “unlocks at …” note.
+**Expected:** The stage badge updates. The checklist unlocks submitted-stage work (commitment, appraisal). The next action prefers work for the new stage, usually **Receive and review commitment**, even if leftover application items are still open. Those leftover items stay on the checklist and stay completable. Later items stay visible with an "unlocks at ..." note.
 
 ## 7. Banner still visible
 

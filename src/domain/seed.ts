@@ -119,7 +119,7 @@ export function seedDeals(): Deal[] {
     },
   );
 
-  const sam = finish(
+  const sidney = finish(
     markDone(
       assignOwners(
         {
@@ -127,8 +127,8 @@ export function seedDeals(): Deal[] {
           book: "residential",
           stage: "conditional",
           borrower: {
-            name: "Sam Sample",
-            email: "sam.sample@example.test",
+            name: "Sidney Sample",
+            email: "sidney.sample@example.test",
             phone: "905-555-0188",
           },
           property: { address: "3 Fiction Court, Mocktown ON L6A 0A1" },
@@ -164,7 +164,7 @@ export function seedDeals(): Deal[] {
     "conditional",
   );
 
-  const quinn = finish(
+  const parker = finish(
       markDone(
         assignOwners(
           {
@@ -172,8 +172,8 @@ export function seedDeals(): Deal[] {
             book: "residential",
             stage: "clear-to-close",
             borrower: {
-              name: "Quinn Placeholder",
-              email: "quinn.placeholder@example.test",
+              name: "Parker Placeholder",
+              email: "parker.placeholder@example.test",
               phone: "613-555-0162",
             },
             property: { address: "50 Demo Sideroad, Faketown ON K1A 0A1" },
@@ -556,8 +556,8 @@ export function seedDeals(): Deal[] {
   return [
     withNotes[0] ?? alex,
     withNotes[1] ?? jordan,
-    sam,
-    quinn,
+    sidney,
+    parker,
     robin,
     skyler,
     withNotes[2] ?? avery,

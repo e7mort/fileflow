@@ -20,7 +20,7 @@ Use the book filter: **All books**, **Residential**, **Commercial**, **Private**
 
 **Expected:**
 
-- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sam, Quinn, Robin, Skyler).
+- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Skyler).
 - Commercial filter keeps Avery Showcase, Cameron Testfile, Drew Mockwell.
 - Private filter keeps Harper Fictional, Reese Demoaddr, Blake Exampleton.
 - Blake Exampleton is in **Fallen through**. Skyler Placeholder and Drew Mockwell are in **Funded**.

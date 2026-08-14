@@ -38,8 +38,13 @@ describe("seedDeals", () => {
       }
       expect(ownerIds.has(person.id)).toBe(true);
     }
-    expect(deals.every((deal) => !/e7|eric|quinn lee|james/i.test(deal.borrower.name))).toBe(
-      true,
-    );
+    expect(
+      deals.every((deal) => {
+        const first = deal.borrower.name.split(" ")[0] ?? "";
+        return !/^(sam|samuel|quinn|james|eric|e7)$/i.test(first);
+      }),
+    ).toBe(true);
+    expect(deals.some((deal) => deal.borrower.name === "Sidney Sample")).toBe(true);
+    expect(deals.some((deal) => deal.borrower.name === "Parker Placeholder")).toBe(true);
   });
 });

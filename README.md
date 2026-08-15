@@ -6,7 +6,7 @@ A shop runs one shared pipeline. Every file has exactly one current next action:
 
 Fileflow is meant to replace a generic kanban, a generic task list, and a spreadsheet that pretends to be a mortgage OS.
 
-The demo skin is a dark ink wash with frosted glass cards. Next action stays the loudest thing on a file.
+The demo skin is Attio-light: white and light-gray wash, thin borders, a clean sans-serif. Next action stays the loudest thing on a file.
 
 ## What you should see
 

@@ -148,7 +148,7 @@ On **Today**, under **New-lead / first-touch queue**, find **Kit Freshfile**. Cl
 
 ## 17. Shareable borrower checklist
 
-Open **Alex Example**. Click **Share checklist** (or go to `http://localhost:5173/#/share/d-alex`, or https://e7mort.github.io/fileflow/#/share/d-alex).
+Open **Alex Example**. Click **Share checklist**. The page shows a full URL you can copy. Locally that is `http://localhost:5173/#/share/d-alex`. After Pages is on, it is https://e7mort.github.io/fileflow/#/share/d-alex.
 
 **Expected:** A borrower-facing page for Alex Example. Conditions still needed are listed. Click **Mark received** on one item. It shows Received. No upload. No login. The demo banner is still there and still says this is not advice.
 

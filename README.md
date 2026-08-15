@@ -35,7 +35,7 @@ Owner is never invented. If nobody owns the next action, it stays unassigned. Ro
 
 ## Start
 
-Clickable demo (same app, hosted from this repo):
+A clickable hosted demo needs GitHub Pages turned on once for this repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**. After that, the app is:
 
 https://e7mort.github.io/fileflow/
 
@@ -43,7 +43,7 @@ Alex's shareable checklist:
 
 https://e7mort.github.io/fileflow/#/share/d-alex
 
-Or run it locally. You need Node 20+.
+Until that setting is on, run it locally. You need Node 20+.
 
 ```bash
 ./start.sh

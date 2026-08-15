@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions.
+You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions. Steps 13–17 are the five newest clicks: phone Today, stale nudge, realtor pulse, first-touch queue, shareable checklist.
 
 ## 1. Start the app
 
@@ -20,7 +20,7 @@ Use the book filter: **All books**, **Residential**, **Commercial**, **Private**
 
 **Expected:**
 
-- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Skyler).
+- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler).
 - Commercial filter keeps Avery Showcase, Cameron Testfile, Drew Mockwell.
 - Private filter keeps Harper Fictional, Reese Demoaddr, Blake Exampleton.
 - Blake Exampleton is in **Fallen through**. Skyler Placeholder and Drew Mockwell are in **Funded**.
@@ -45,7 +45,7 @@ Stay on Harper Fictional, or go back to Alex Example. In **Current next action**
 - Reason: `Need underwriter eyes on the file`
 - Click **Set waiting-on**
 
-**Expected:** The file shows “Waiting on Casey Underwriter” plus your reason and due date. Return to the pipeline. That card now shows a waiting-on chip with Casey and the reason. Open **My Work**, switch the header to Casey Underwriter, and the file appears under **Waiting on you**.
+**Expected:** The file shows “Waiting on Casey Underwriter” plus your reason and due date. Return to the pipeline. That card now shows a waiting-on chip with Casey and the reason. Open **Today**, switch the header to Casey Underwriter, and the file appears under **Waiting on Casey**.
 
 Click **Clear handoff** if you want to undo, or leave it. Refresh the page. The handoff is still there.
 
@@ -63,7 +63,7 @@ On the same file, use **Move stage** and choose **Submitted**. You can also drag
 
 ## 7. Banner still visible
 
-Click Pipeline, My Work, and any file.
+Click Pipeline, Today, and any file.
 
 **Expected:** The same demo banner is on every screen. Taylor Marketing (viewer) can read files and leave a note, but cannot complete tasks, set a handoff, or move a stage.
 
@@ -115,4 +115,40 @@ On **Sidney Sample**, under **People on this file**, try to add Marlowe Homes ag
 - Click **Add person**
 
 **Expected:** The person is not added twice. A message says Marlowe Homes is already assigned on this file as realtor. Try the same with `Ned Notary` or `Sidney Sample`. Same block. No silent duplicate.
+
+## 13. Today on a phone-width screen
+
+Narrow the window to about 400px, or open the app on a phone. Click **Today** (or load the app with an empty hash on a narrow viewport). Stay as Morgan Broker.
+
+**Expected:** Today lists Morgan's next actions, files waiting on Morgan, a **New-lead / first-touch queue** (Robin Fiction and Kit Freshfile), a **Stale / no-touch** section, and a **Past client / no contact** section. Each row has a **Call** link (`tel:`). The demo banner is still at the top.
+
+## 14. See a stale nudge vs a fresh file
+
+On **Today**, find **Jordan Demo** under **Stale / no-touch (14+ days)**. The note should say it has been more than 14 days since last touch, and the card is labeled **Stale**.
+
+Find **Alex Example** on Today or Pipeline. Alex is **Fresh** (touched 13 Aug 2026).
+
+Under **Past client / no contact (6 months)** you should see **Skyler Placeholder** (funded, last contact January 2026).
+
+**Expected:** Stale, fresh, and 6-month past-client are labeled so you can tell them apart. No email. No SMS.
+
+## 15. Realtor partner pulse after a stage move
+
+Click **Partners**. You should see Marlowe Homes, Brookline Referrals, and Cedar Street Realty.
+
+Open **Brookline Referrals**. Then open **Alex Example**, **Move stage** to **Submitted**, and return to **Partners → Brookline Referrals**.
+
+**Expected:** A new pulse says **Alex Example moved to Submitted**. Marlowe Homes already has a seeded pulse that Sidney Sample is in Conditional. Nothing is emailed.
+
+## 16. Clear a first-touch lead
+
+On **Today**, under **New-lead / first-touch queue**, find **Kit Freshfile**. Click **Log first touch**.
+
+**Expected:** Kit leaves the first-touch queue. Robin Fiction stays until you touch that file too. Completing the next action on a new lead also counts as first touch.
+
+## 17. Shareable borrower checklist
+
+Open **Alex Example**. Click **Share checklist** (or go to `#/share/d-alex`).
+
+**Expected:** A borrower-facing page for Alex Example. Conditions still needed are listed. Click **Mark received** on one item. It shows Received. No upload. No login. The demo banner is still there and still says this is not advice.
 

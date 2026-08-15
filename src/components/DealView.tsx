@@ -1,7 +1,10 @@
 import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
 import { primaryBorrower } from "../domain/parties";
 import { STAGE_LABELS } from "../domain/stages";
+import { isNewLead } from "../domain/touch";
 import { formatCad, formatDate, purposeLabel } from "../lib/format";
+import { telHref } from "../lib/phone";
+import { hrefFor } from "../lib/route";
 import { useStore } from "../store/store";
 import { STAGES, type Deal } from "../types";
 import { BookBadge } from "./BookBadge";
@@ -71,7 +74,7 @@ function BookFields({ deal }: { deal: Deal }) {
 }
 
 export function DealView({ deal }: { deal: Deal }) {
-  const { changeStage, canWrite } = useStore();
+  const { changeStage, canWrite, markFirstTouch } = useStore();
   const borrower = primaryBorrower(deal);
   const maturitySoon = isMaturityReminderDue(deal.maturityDate, DEMO_TODAY);
 
@@ -81,6 +84,14 @@ export function DealView({ deal }: { deal: Deal }) {
         <div className="file-title">
           <a className="subtle" href="#/">
             ← Pipeline
+          </a>
+          {" · "}
+          <a
+            className="subtle"
+            href={hrefFor({ name: "share", dealId: deal.id })}
+            data-testid="share-checklist-link"
+          >
+            Share checklist
           </a>
           <h1>{borrower.name}</h1>
           <div className="card-meta">
@@ -124,6 +135,13 @@ export function DealView({ deal }: { deal: Deal }) {
           SMS.
         </div>
       ) : null}
+      {isNewLead(deal) && canWrite ? (
+        <div className="row-actions">
+          <button type="button" className="btn" onClick={() => markFirstTouch(deal.id)}>
+            Log first touch
+          </button>
+        </div>
+      ) : null}
       <div className="file-grid">
         <section className="panel">
           <h2>File</h2>
@@ -137,7 +155,7 @@ export function DealView({ deal }: { deal: Deal }) {
               <p>
                 {borrower.email}
                 <br />
-                {borrower.phone}
+                <a href={telHref(borrower.phone)}>{borrower.phone}</a>
               </p>
             </div>
             <div className="fact">

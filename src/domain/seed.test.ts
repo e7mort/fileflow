@@ -2,15 +2,17 @@ import { describe, expect, it } from "vitest";
 import { BOOKS } from "../types";
 import { calendarEvents } from "./calendar";
 import { isMaturityReminderDue } from "./maturity";
+import { isPastClientNudge, isStaleFile } from "./nudges";
 import { findAssignedParty, primaryBorrower } from "./parties";
 import { TEAM } from "./team";
 import { seedDeals } from "./seed";
+import { isNewLead } from "./touch";
 
 describe("seedDeals", () => {
   it("seeds 8–12 fictional files across all three books and both terminal stages", () => {
     const deals = seedDeals();
     expect(deals.length).toBeGreaterThanOrEqual(8);
-    expect(deals.length).toBeLessThanOrEqual(12);
+    expect(deals.length).toBeLessThanOrEqual(14);
     for (const book of BOOKS) {
       expect(deals.filter((deal) => deal.book === book).length).toBeGreaterThanOrEqual(2);
     }
@@ -81,6 +83,24 @@ describe("seedDeals", () => {
           event.kind === "maturity" &&
           event.date === "2026-12-10" &&
           event.borrowerName === "Sidney Sample",
+      ),
+    ).toBe(true);
+  });
+
+  it("seeds new leads, a stale file, and a 6-month past client", () => {
+    const deals = seedDeals();
+    const today = new Date(2026, 7, 14);
+    expect(deals.filter((deal) => isNewLead(deal)).length).toBeGreaterThanOrEqual(2);
+    expect(deals.some((deal) => primaryBorrower(deal).name === "Kit Freshfile")).toBe(true);
+    expect(
+      deals.some(
+        (deal) => primaryBorrower(deal).name === "Jordan Demo" && isStaleFile(deal, today),
+      ),
+    ).toBe(true);
+    expect(
+      deals.some(
+        (deal) =>
+          primaryBorrower(deal).name === "Skyler Placeholder" && isPastClientNudge(deal, today),
       ),
     ).toBe(true);
   });

@@ -1,10 +1,12 @@
 import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
+import { fileTouchKind } from "../domain/nudges";
 import { primaryBorrower } from "../domain/parties";
 import { firstName, personById } from "../domain/team";
 import { formatCad, formatDate } from "../lib/format";
 import { hrefFor } from "../lib/route";
 import type { Deal } from "../types";
 import { BookBadge } from "./BookBadge";
+import { TouchBadge } from "./TouchBadge";
 
 export function DealCard({ deal }: { deal: Deal }) {
   const borrower = primaryBorrower(deal);
@@ -29,6 +31,7 @@ export function DealCard({ deal }: { deal: Deal }) {
     >
       <div className="card-meta">
         <BookBadge book={deal.book} />
+        <TouchBadge kind={fileTouchKind(deal, DEMO_TODAY)} />
       </div>
       <p className="borrower">{borrower.name}</p>
       <p className="amount">{formatCad(deal.amount)}</p>

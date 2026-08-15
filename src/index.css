@@ -513,10 +513,23 @@ a {
   padding: 0.75rem 0.85rem;
 }
 
-.work-columns {
+.work-columns,
+.today-stack {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.85rem;
+}
+
+.today-stack {
+  grid-template-columns: 1fr;
+}
+
+.today-row a {
+  text-decoration: none;
+}
+
+.today-row .row-actions {
+  margin-top: 0.45rem;
 }
 
 .handoff-form {
@@ -619,6 +632,7 @@ a {
 
   .file-grid,
   .work-columns,
+  .today-stack,
   .facts,
   .handoff-form {
     grid-template-columns: 1fr;

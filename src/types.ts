@@ -114,6 +114,25 @@ type DealBase = {
   nextAction: NextAction;
   tasks: Task[];
   mentions: Mention[];
+  lastTouchedAt: string;
+  firstTouchedAt: string | null;
+};
+
+export type PartnerId = string;
+
+export type Partner = {
+  id: PartnerId;
+  name: string;
+  email: string;
+  phone: string;
+};
+
+export type PartnerPulse = {
+  id: string;
+  partnerId: PartnerId;
+  dealId: DealId;
+  body: string;
+  createdAt: string;
 };
 
 export type ResidentialDeal = DealBase & {

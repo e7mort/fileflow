@@ -1,4 +1,13 @@
-import type { Deal, FileParty, Handoff, PersonId, Stage } from "../types";
+import type {
+  CommercialDeal,
+  Deal,
+  FileParty,
+  Handoff,
+  PersonId,
+  PrivateDeal,
+  ResidentialDeal,
+  Stage,
+} from "../types";
 import { openConditions } from "./conditions";
 import { addMention, assignNextAction, instantiateTasks, setHandoff } from "./engine";
 
@@ -14,7 +23,7 @@ function withDue(deal: Deal, due: string): Deal {
   return { ...deal, nextAction: { ...deal.nextAction, due } };
 }
 
-function markDone(deal: Deal, templateIds: string[]): Deal {
+function markDone<T extends { tasks: Deal["tasks"] }>(deal: T, templateIds: string[]): T {
   return {
     ...deal,
     tasks: deal.tasks.map((task) =>
@@ -25,10 +34,10 @@ function markDone(deal: Deal, templateIds: string[]): Deal {
   };
 }
 
-function assignOwners(
-  deal: Deal,
+function assignOwners<T extends { tasks: Deal["tasks"] }>(
+  deal: T,
   owners: Partial<Record<string, PersonId | null>>,
-): Deal {
+): T {
   return {
     ...deal,
     tasks: deal.tasks.map((task) => ({
@@ -38,9 +47,28 @@ function assignOwners(
   };
 }
 
-function finish(deal: Deal, stage: Stage, handoff?: Handoff): Deal {
-  const next = assignNextAction({ ...deal, stage });
+type SeedDeal =
+  | Omit<ResidentialDeal, "lastTouchedAt" | "firstTouchedAt">
+  | Omit<CommercialDeal, "lastTouchedAt" | "firstTouchedAt">
+  | Omit<PrivateDeal, "lastTouchedAt" | "firstTouchedAt">;
+
+function finish(deal: SeedDeal, stage: Stage, handoff?: Handoff): Deal {
+  const filled = {
+    ...deal,
+    stage,
+    lastTouchedAt: "2026-08-10T12:00:00.000Z",
+    firstTouchedAt: "2026-07-01T12:00:00.000Z",
+  };
+  const next = assignNextAction(filled);
   return handoff ? setHandoff(next, handoff) : next;
+}
+
+function stampTouch(
+  deal: Deal,
+  lastTouchedAt: string,
+  firstTouchedAt: string | null,
+): Deal {
+  return { ...deal, lastTouchedAt, firstTouchedAt };
 }
 
 export function seedDeals(): Deal[] {
@@ -50,11 +78,23 @@ export function seedDeals(): Deal[] {
           id: "d-alex",
           book: "residential",
           stage: "application",
-          parties: people("d-alex", {
-            name: "Alex Example",
-            email: "alex.example@example.test",
-            phone: "416-555-0101",
-          }),
+          parties: people(
+            "d-alex",
+            {
+              name: "Alex Example",
+              email: "alex.example@example.test",
+              phone: "416-555-0101",
+            },
+            [
+              {
+                id: "d-alex-realtor",
+                role: "realtor",
+                name: "Brookline Referrals",
+                email: "brookline.referrals@example.test",
+                phone: "416-555-0300",
+              },
+            ],
+          ),
           property: { address: "14 Example Lane, Demo City ON M5V 0A1" },
           lender: "Northpine Bank",
           product: "5-year fixed",
@@ -301,6 +341,39 @@ export function seedDeals(): Deal[] {
     "lead",
   );
 
+  const kit = finish(
+    {
+      id: "d-kit",
+      book: "residential",
+      stage: "lead",
+      parties: people("d-kit", {
+        name: "Kit Freshfile",
+        email: "kit.freshfile@example.test",
+        phone: "437-555-0220",
+      }),
+      property: { address: "2 Newlead Court, Demo City ON M5V 0A2" },
+      lender: "Not assigned",
+      product: "Not selected",
+      amount: 410000,
+      closeDate: null,
+      maturityDate: null,
+      conditions: [],
+      purpose: "purchase",
+      insurance: "uninsured",
+      stressTest: { kind: "status", status: "pending" },
+      nextAction: {
+        taskId: null,
+        title: "",
+        ownerId: null,
+        due: null,
+        waitingOn: null,
+      },
+      tasks: instantiateTasks({ book: "residential" }),
+      mentions: [],
+    },
+    "lead",
+  );
+
   const skyler = finish(
     markDone(
       {
@@ -354,11 +427,23 @@ export function seedDeals(): Deal[] {
         id: "d-avery",
         book: "commercial",
         stage: "application",
-        parties: people("d-avery", {
-          name: "Avery Showcase",
-          email: "avery.showcase@example.test",
-          phone: "416-555-0173",
-        }),
+        parties: people(
+          "d-avery",
+          {
+            name: "Avery Showcase",
+            email: "avery.showcase@example.test",
+            phone: "416-555-0173",
+          },
+          [
+            {
+              id: "d-avery-realtor",
+              role: "realtor",
+              name: "Cedar Street Realty",
+              email: "cedar.street@example.test",
+              phone: "604-555-0400",
+            },
+          ],
+        ),
         property: { address: "200 Fiction Plaza, Test Harbour ON M5J 0A1" },
         lender: "Summit Commercial",
         product: "5-year commercial term",
@@ -635,17 +720,18 @@ export function seedDeals(): Deal[] {
   ];
 
   return [
-    withDue(withNotes[0] ?? alex, "2026-08-20"),
-    withNotes[1] ?? jordan,
-    withDue(sidney, "2026-08-25"),
-    parker,
-    robin,
-    skyler,
-    withNotes[2] ?? avery,
-    cameron,
-    drew,
-    withNotes[3] ?? harper,
-    reese,
-    blake,
+    stampTouch(withDue(withNotes[0] ?? alex, "2026-08-20"), "2026-08-13T12:00:00.000Z", "2026-08-01T12:00:00.000Z"),
+    stampTouch(withNotes[1] ?? jordan, "2026-07-01T12:00:00.000Z", "2026-06-01T12:00:00.000Z"),
+    stampTouch(withDue(sidney, "2026-08-25"), "2026-08-12T12:00:00.000Z", "2026-07-20T12:00:00.000Z"),
+    stampTouch(parker, "2026-08-11T12:00:00.000Z", "2026-07-15T12:00:00.000Z"),
+    stampTouch(robin, "2026-08-14T09:00:00.000Z", null),
+    stampTouch(kit, "2026-08-14T08:00:00.000Z", null),
+    stampTouch(skyler, "2026-01-20T12:00:00.000Z", "2025-11-01T12:00:00.000Z"),
+    stampTouch(withNotes[2] ?? avery, "2026-08-11T12:00:00.000Z", "2026-07-18T12:00:00.000Z"),
+    stampTouch(cameron, "2026-08-09T12:00:00.000Z", "2026-07-10T12:00:00.000Z"),
+    stampTouch(drew, "2026-06-18T12:00:00.000Z", "2026-03-01T12:00:00.000Z"),
+    stampTouch(withNotes[3] ?? harper, "2026-08-14T09:20:00.000Z", "2026-08-01T12:00:00.000Z"),
+    stampTouch(reese, "2026-08-08T12:00:00.000Z", "2026-07-22T12:00:00.000Z"),
+    stampTouch(blake, "2026-07-20T12:00:00.000Z", "2026-06-15T12:00:00.000Z"),
   ];
 }

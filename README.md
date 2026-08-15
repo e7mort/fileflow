@@ -18,7 +18,7 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
   - Riley Assistant (processor / assistant)
   - Casey Underwriter (underwriter)
   - Taylor Marketing (viewer)
-- **My Work** for the selected person: owned next actions, files waiting on them, and their open checklist items.
+- **Today** for the selected person: owned next actions, files waiting on them, tap-to-call, a new-lead queue, stale files, and a 6-month past-client nudge. On a phone-width window this is the default landing. Pipeline stays on desktop.
 - Three books. Filter the board, then open one file from each:
   - Residential: purchase / refinance / renewal / switch, insured or uninsured, stress test as a field (rate or status).
   - Commercial: DSCR and NOI, rent roll / leases, a different condition set.
@@ -27,6 +27,9 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 - A 4-month maturity / renewal reminder on the card and the file when the date is in that window. Sidney Sample is inside the window. Alex Example is not.
 - A **Calendar** of next-action dues and maturity dates. Click an item to open the file.
 - Adding a person who is already on the file is blocked. The UI says they are already assigned.
+- **Today** is the phone-first home: next actions, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
+- **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
+- **Share checklist** (`#/share/d-alex`) is a borrower-facing conditions list. Mark received. No vault.
 
 Owner is never invented. If nobody owns the next action, it stays unassigned. Robin Fiction is seeded that way on purpose.
 

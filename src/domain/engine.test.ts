@@ -66,6 +66,8 @@ function resiDeal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
     },
     tasks: [],
     mentions: [],
+    lastTouchedAt: "2026-08-13T12:00:00.000Z",
+    firstTouchedAt: "2026-08-01T12:00:00.000Z",
     ...overrides,
   };
 }

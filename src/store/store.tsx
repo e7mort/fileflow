@@ -10,6 +10,7 @@ import type {
   Deal,
   DealId,
   Handoff,
+  PartnerPulse,
   PartyRole,
   Person,
   PersonId,
@@ -24,12 +25,20 @@ import {
   moveStage,
   setHandoff,
 } from "../domain/engine";
+import { DEMO_TODAY } from "../domain/maturity";
+import { pulseForStageMove } from "../domain/partners";
 import { addParty, type AddPartyResult } from "../domain/parties";
 import { TEAM, canMutateFiles, personById } from "../domain/team";
+import { logFirstTouch, touchDeal } from "../domain/touch";
+
+function demoNow(): string {
+  return DEMO_TODAY.toISOString();
+}
 import { defaultState, loadState, saveState } from "../lib/storage";
 
 type Store = {
   deals: Deal[];
+  pulses: PartnerPulse[];
   currentPerson: Person;
   canWrite: boolean;
   setCurrentPersonId: (id: PersonId) => void;
@@ -44,6 +53,8 @@ type Store = {
     dealId: DealId,
     input: { name: string; email: string; phone: string; role: PartyRole },
   ) => AddPartyResult | { ok: false; error: "not-found" };
+  markFirstTouch: (dealId: DealId) => void;
+  receiveSharedCondition: (dealId: DealId, conditionId: ConditionId) => void;
   resetDemo: () => void;
 };
 
@@ -70,6 +81,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const canWrite = canMutateFiles(currentPerson.role);
     return {
       deals: state.deals,
+      pulses: state.pulses,
       currentPerson,
       canWrite,
       setCurrentPersonId: (id) => persist({ ...state, currentPersonId: id }),
@@ -79,16 +91,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
         persist({
           ...state,
-          deals: updateDeal(state.deals, dealId, (deal) => completeTask(deal, taskId)),
+          deals: updateDeal(state.deals, dealId, (deal) =>
+            touchDeal(completeTask(deal, taskId), demoNow()),
+          ),
         });
       },
       changeStage: (dealId, stage) => {
         if (!canWrite) {
           return;
         }
+        const current = state.deals.find((deal) => deal.id === dealId);
+        if (!current) {
+          return;
+        }
+        const moved = touchDeal(moveStage(current, stage), demoNow());
+        const pulse = pulseForStageMove(moved, current.stage, stage, demoNow());
         persist({
           ...state,
-          deals: updateDeal(state.deals, dealId, (deal) => moveStage(deal, stage)),
+          deals: updateDeal(state.deals, dealId, () => moved),
+          pulses: pulse ? [pulse, ...state.pulses] : state.pulses,
         });
       },
       handoff: (dealId, waitingOn) => {
@@ -160,6 +181,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           });
         }
         return result;
+      },
+      markFirstTouch: (dealId) => {
+        if (!canWrite) {
+          return;
+        }
+        persist({
+          ...state,
+          deals: updateDeal(state.deals, dealId, (deal) =>
+            logFirstTouch(deal, demoNow()),
+          ),
+        });
+      },
+      receiveSharedCondition: (dealId, conditionId) => {
+        persist({
+          ...state,
+          deals: updateDeal(state.deals, dealId, (deal) =>
+            completeCondition(deal, conditionId),
+          ),
+        });
       },
       resetDemo: () => persist(defaultState()),
     };

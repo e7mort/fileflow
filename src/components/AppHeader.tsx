@@ -12,22 +12,28 @@ export function AppHeader({ route }: { route: Route }) {
       </a>
       <nav className="nav-links">
         <a
+          href={hrefFor({ name: "today" })}
+          className={route.name === "today" ? "active" : undefined}
+        >
+          Today
+        </a>
+        <a
           href="#/"
           className={route.name === "board" ? "active" : undefined}
         >
           Pipeline
         </a>
         <a
-          href={hrefFor({ name: "work" })}
-          className={route.name === "work" ? "active" : undefined}
-        >
-          My Work
-        </a>
-        <a
           href={hrefFor({ name: "calendar" })}
           className={route.name === "calendar" ? "active" : undefined}
         >
           Calendar
+        </a>
+        <a
+          href={hrefFor({ name: "partners" })}
+          className={route.name === "partners" || route.name === "partner" ? "active" : undefined}
+        >
+          Partners
         </a>
       </nav>
       <div className="header-spacer" />

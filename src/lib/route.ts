@@ -2,9 +2,12 @@ import { BOOKS, type Book, type DealId } from "../types";
 
 export type Route =
   | { name: "board"; book: Book | "all" }
-  | { name: "work" }
+  | { name: "today" }
   | { name: "calendar" }
-  | { name: "file"; dealId: DealId };
+  | { name: "partners" }
+  | { name: "partner"; partnerId: string }
+  | { name: "file"; dealId: DealId }
+  | { name: "share"; dealId: DealId };
 
 function isBook(value: string): value is Book {
   return BOOKS.some((book) => book === value);
@@ -12,11 +15,22 @@ function isBook(value: string): value is Book {
 
 export function parseHash(hash: string): Route {
   const path = hash.replace(/^#/, "") || "/";
-  if (path === "/work") {
-    return { name: "work" };
+  if (path === "/today" || path === "/work") {
+    return { name: "today" };
   }
   if (path === "/calendar") {
     return { name: "calendar" };
+  }
+  if (path === "/partners") {
+    return { name: "partners" };
+  }
+  const partner = path.match(/^\/partners\/([^/?]+)/);
+  if (partner?.[1]) {
+    return { name: "partner", partnerId: partner[1] };
+  }
+  const share = path.match(/^\/share\/([^/?]+)/);
+  if (share?.[1]) {
+    return { name: "share", dealId: share[1] };
   }
   const file = path.match(/^\/files\/([^/?]+)/);
   if (file?.[1]) {
@@ -30,17 +44,28 @@ export function parseHash(hash: string): Route {
 }
 
 export function hrefFor(route: Route): string {
-  if (route.name === "work") {
-    return "#/work";
+  switch (route.name) {
+    case "today":
+      return "#/today";
+    case "calendar":
+      return "#/calendar";
+    case "partners":
+      return "#/partners";
+    case "partner":
+      return `#/partners/${route.partnerId}`;
+    case "file":
+      return `#/files/${route.dealId}`;
+    case "share":
+      return `#/share/${route.dealId}`;
+    case "board":
+      return route.book === "all" ? "#/" : `#/books/${route.book}`;
+    default: {
+      const _exhaustive: never = route;
+      return _exhaustive;
+    }
   }
-  if (route.name === "calendar") {
-    return "#/calendar";
-  }
-  if (route.name === "file") {
-    return `#/files/${route.dealId}`;
-  }
-  if (route.book === "all") {
-    return "#/";
-  }
-  return `#/books/${route.book}`;
+}
+
+export function isPhoneViewport(): boolean {
+  return typeof window !== "undefined" && window.matchMedia("(max-width: 800px)").matches;
 }

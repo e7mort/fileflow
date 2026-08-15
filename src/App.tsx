@@ -7,20 +7,25 @@ import { DemoBanner } from "./components/DemoBanner";
 import { PartnersView } from "./components/PartnersView";
 import { ShareChecklist } from "./components/ShareChecklist";
 import { TodayView } from "./components/TodayView";
-import { isPhoneViewport, parseHash } from "./lib/route";
+import { isPhoneViewport, parseLocation } from "./lib/route";
 import { useStore } from "./store/store";
 
 export function App() {
-  const [route, setRoute] = useState(() => parseHash(window.location.hash));
+  const [route, setRoute] = useState(() => parseLocation(window.location));
   const { deals } = useStore();
 
   useEffect(() => {
-    if (!window.location.hash && isPhoneViewport()) {
+    const current = parseLocation(window.location);
+    if (!window.location.hash && current.name === "board" && isPhoneViewport()) {
       window.location.hash = "#/today";
     }
-    const onHash = () => setRoute(parseHash(window.location.hash));
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
+    const onChange = () => setRoute(parseLocation(window.location));
+    window.addEventListener("hashchange", onChange);
+    window.addEventListener("popstate", onChange);
+    return () => {
+      window.removeEventListener("hashchange", onChange);
+      window.removeEventListener("popstate", onChange);
+    };
   }, []);
 
   const deal =

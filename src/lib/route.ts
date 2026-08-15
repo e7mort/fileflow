@@ -13,34 +13,61 @@ function isBook(value: string): value is Book {
   return BOOKS.some((book) => book === value);
 }
 
-export function parseHash(hash: string): Route {
-  const path = hash.replace(/^#/, "") || "/";
-  if (path === "/today" || path === "/work") {
+function parsePath(path: string): Route {
+  const normalized = path.replace(/^#/, "") || "/";
+  if (normalized === "/today" || normalized === "/work") {
     return { name: "today" };
   }
-  if (path === "/calendar") {
+  if (normalized === "/calendar") {
     return { name: "calendar" };
   }
-  if (path === "/partners") {
+  if (normalized === "/partners") {
     return { name: "partners" };
   }
-  const partner = path.match(/^\/partners\/([^/?]+)/);
+  const partner = normalized.match(/^\/partners\/([^/?]+)/);
   if (partner?.[1]) {
     return { name: "partner", partnerId: partner[1] };
   }
-  const share = path.match(/^\/share\/([^/?]+)/);
+  const share = normalized.match(/^\/share\/([^/?]+)/);
   if (share?.[1]) {
     return { name: "share", dealId: share[1] };
   }
-  const file = path.match(/^\/files\/([^/?]+)/);
+  const file = normalized.match(/^\/files\/([^/?]+)/);
   if (file?.[1]) {
     return { name: "file", dealId: file[1] };
   }
-  const book = path.match(/^\/books\/([^/?]+)/);
+  const book = normalized.match(/^\/books\/([^/?]+)/);
   if (book?.[1] && isBook(book[1])) {
     return { name: "board", book: book[1] };
   }
   return { name: "board", book: "all" };
+}
+
+export function parseHash(hash: string): Route {
+  return parsePath(hash);
+}
+
+export function parseLocation(loc: {
+  hash: string;
+  pathname: string;
+  origin?: string;
+}): Route {
+  const hashPath = loc.hash.replace(/^#/, "");
+  if (hashPath && hashPath !== "/") {
+    return parsePath(hashPath);
+  }
+  return parsePath(stripBase(loc.pathname));
+}
+
+function stripBase(pathname: string): string {
+  const base = (typeof import.meta !== "undefined" ? import.meta.env.BASE_URL : "/").replace(
+    /\/$/,
+    "",
+  );
+  if (base && pathname.startsWith(base)) {
+    return pathname.slice(base.length) || "/";
+  }
+  return pathname || "/";
 }
 
 export function hrefFor(route: Route): string {
@@ -64,6 +91,24 @@ export function hrefFor(route: Route): string {
       return _exhaustive;
     }
   }
+}
+
+export function absoluteHashUrl(
+  hash: string,
+  loc: { origin: string },
+  base = "/",
+): string {
+  const prefix = base.endsWith("/") ? base : `${base}/`;
+  const cleaned = hash.startsWith("#") ? hash : `#${hash}`;
+  return `${loc.origin}${prefix}${cleaned}`;
+}
+
+export function sharePageUrl(dealId: string): string {
+  const hash = hrefFor({ name: "share", dealId });
+  if (typeof window === "undefined") {
+    return hash;
+  }
+  return absoluteHashUrl(hash, window.location, import.meta.env.BASE_URL);
 }
 
 export function isPhoneViewport(): boolean {

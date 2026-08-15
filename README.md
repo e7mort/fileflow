@@ -29,13 +29,21 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 - Adding a person who is already on the file is blocked. The UI says they are already assigned.
 - **Today** is the phone-first home: next actions, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
 - **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
-- **Share checklist** (`#/share/d-alex`) is a borrower-facing conditions list. Mark received. No vault.
+- **Share checklist** (`#/share/d-alex`, full URL on the page) is a borrower-facing conditions list. Mark received. No vault.
 
 Owner is never invented. If nobody owns the next action, it stays unassigned. Robin Fiction is seeded that way on purpose.
 
 ## Start
 
-You need Node 20+.
+Clickable demo (same app, hosted from this repo):
+
+https://e7mort.github.io/fileflow/
+
+Alex's shareable checklist:
+
+https://e7mort.github.io/fileflow/#/share/d-alex
+
+Or run it locally. You need Node 20+.
 
 ```bash
 ./start.sh

@@ -3,7 +3,7 @@ import type { ResidentialDeal } from "../types";
 import { DEMO_TODAY } from "./maturity";
 import { daysSinceTouch, fileTouchKind, isPastClientNudge, isStaleFile } from "./nudges";
 import { telHref } from "../lib/phone";
-import { parseHash } from "../lib/route";
+import { absoluteHashUrl, parseHash, parseLocation } from "../lib/route";
 import { pulseForStageMove, seedPulses } from "./partners";
 import { isNewLead, logFirstTouch, touchDeal } from "./touch";
 
@@ -95,6 +95,21 @@ describe("hash routes", () => {
       partnerId: "pt-marlowe",
     });
     expect(parseHash("#/share/d-alex")).toEqual({ name: "share", dealId: "d-alex" });
+  });
+
+  it("opens a share link from the path when the hash is missing", () => {
+    expect(
+      parseLocation({ hash: "", pathname: "/share/d-alex", origin: "http://localhost:5173" }),
+    ).toEqual({ name: "share", dealId: "d-alex" });
+  });
+
+  it("builds a full share URL a stranger can paste", () => {
+    expect(absoluteHashUrl("#/share/d-alex", { origin: "http://localhost:5173" })).toBe(
+      "http://localhost:5173/#/share/d-alex",
+    );
+    expect(
+      absoluteHashUrl("#/share/d-alex", { origin: "https://e7mort.github.io" }, "/fileflow/"),
+    ).toBe("https://e7mort.github.io/fileflow/#/share/d-alex");
   });
 });
 

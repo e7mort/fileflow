@@ -1,4 +1,5 @@
 import { primaryBorrower } from "../domain/parties";
+import { sharePageUrl } from "../lib/route";
 import { useStore } from "../store/store";
 import type { Deal } from "../types";
 
@@ -6,6 +7,7 @@ export function ShareChecklist({ deal }: { deal: Deal }) {
   const { receiveSharedCondition } = useStore();
   const borrower = primaryBorrower(deal);
   const open = deal.conditions.filter((item) => !item.completed);
+  const url = sharePageUrl(deal.id);
 
   return (
     <div className="work-page" data-testid="share-checklist">
@@ -36,7 +38,10 @@ export function ShareChecklist({ deal }: { deal: Deal }) {
         ))
       )}
       <p className="subtle">
-        {open.length} still needed. Share this page: #/share/{deal.id}
+        {open.length} still needed. Share this page:{" "}
+        <a href={url} data-testid="share-url">
+          {url}
+        </a>
       </p>
     </div>
   );

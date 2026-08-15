@@ -1,20 +1,24 @@
 :root {
-  color-scheme: light;
-  --wash: #f4f5f7;
-  --card: #ffffff;
-  --ink: #171717;
-  --muted: #6b7280;
-  --line: #e5e7eb;
-  --next: #b45309;
-  --next-ink: #7c2d12;
-  --next-bg: #fff7ed;
-  --wait: #9a3412;
-  --wait-bg: #fff1ec;
-  --resi: #1d4e6e;
-  --comm: #2f5a3c;
-  --priv: #8b3a2e;
-  --funded: #166534;
-  --fallen: #7f1d1d;
+  color-scheme: dark;
+  --wash: #0b1018;
+  --ink: #f4f7fb;
+  --muted: #b7c0cc;
+  --glass: rgba(18, 26, 40, 0.52);
+  --glass-strong: rgba(16, 24, 38, 0.72);
+  --glass-border: rgba(210, 224, 242, 0.16);
+  --glow: inset 1px 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  --lift: 0 10px 28px rgba(0, 0, 0, 0.32);
+  --blur: blur(20px) saturate(1.35);
+  --next: #f5b56a;
+  --next-ink: #ffe7c4;
+  --wait: #ffb086;
+  --resi: #8ec8f0;
+  --comm: #7ee0a8;
+  --priv: #ffb086;
+  --funded: #7ee0a8;
+  --fallen: #ff9aa2;
+  --blue: #7eb6ff;
   color: var(--ink);
   background: var(--wash);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
@@ -53,6 +57,19 @@ a {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  isolation: isolate;
+}
+
+.app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(900px 520px at 8% -12%, rgba(56, 110, 170, 0.22), transparent 58%),
+    radial-gradient(720px 460px at 92% 8%, rgba(40, 90, 130, 0.14), transparent 50%),
+    linear-gradient(180deg, #0d1420 0%, #0b1018 55%, #0a0e14 100%);
 }
 
 .demo-banner {
@@ -62,9 +79,12 @@ a {
   text-align: center;
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
-  color: #3f3a32;
-  background: #f3efe6;
-  border-bottom: 1px solid #e5e0d6;
+  color: #e8eef6;
+  background: rgba(10, 14, 22, 0.72);
+  border-bottom: 1px solid rgba(126, 182, 255, 0.22);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
 }
 
 .app-header {
@@ -73,8 +93,11 @@ a {
   gap: 1rem;
   flex-wrap: wrap;
   padding: 0.75rem 1.25rem;
-  background: var(--card);
-  border-bottom: 1px solid var(--line);
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glow);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
 }
 
 .wordmark {
@@ -86,12 +109,12 @@ a {
 }
 
 .wordmark span {
-  color: var(--next);
+  color: var(--blue);
 }
 
 .nav-links {
   display: flex;
-  gap: 0.15rem;
+  gap: 0.2rem;
   flex-wrap: wrap;
 }
 
@@ -100,25 +123,22 @@ a {
 .btn,
 .book-filter a,
 .book-filter button {
-  border: 1px solid transparent;
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
   padding: 0.32rem 0.7rem;
   text-decoration: none;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   color: var(--ink);
   cursor: pointer;
-}
-
-.nav-links a:hover,
-.book-filter a:hover {
-  background: #eef0f3;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .nav-links a.active,
 .book-filter a.active,
 .book-filter button.active {
-  background: var(--ink);
-  color: var(--card);
+  background: rgba(126, 182, 255, 0.18);
+  border-color: rgba(126, 182, 255, 0.4);
+  box-shadow: inset 2px 0 0 var(--blue), inset 1px 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .header-spacer {
@@ -134,27 +154,29 @@ a {
 .handoff-form input,
 .mention-form textarea,
 .handoff-form textarea {
-  border: 1px solid var(--line);
-  background: var(--card);
+  border: 1px solid var(--glass-border);
+  background: rgba(8, 12, 20, 0.55);
   border-radius: 8px;
   padding: 0.4rem 0.6rem;
   color: var(--ink);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .btn {
-  background: var(--ink);
-  color: var(--card);
+  background: rgba(126, 182, 255, 0.92);
+  color: #0b1018;
+  border-color: rgba(180, 214, 255, 0.45);
 }
 
 .btn.secondary {
-  background: var(--card);
-  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--glass-border);
   color: var(--ink);
 }
 
 .btn.danger {
-  background: #9a3412;
-  color: #fff7f4;
+  background: rgba(180, 72, 48, 0.88);
+  color: #fff4ee;
 }
 
 .btn:disabled {
@@ -186,10 +208,11 @@ a {
 .board-toolbar h1,
 .work-page h1,
 .file-title h1 {
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   margin: 0 0 0.2rem;
+  color: var(--ink);
 }
 
 .book-filter {
@@ -210,9 +233,12 @@ a {
   min-width: 220px;
   min-height: 420px;
   padding: 0.65rem;
-  border-radius: 10px;
-  background: #fafafa;
-  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glow), var(--lift);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
 }
 
 .column.drop-target {
@@ -237,21 +263,28 @@ a {
 
 .count {
   font-size: 0.72rem;
-  color: var(--muted);
+  color: var(--blue);
+  background: rgba(126, 182, 255, 0.14);
+  border: 1px solid rgba(126, 182, 255, 0.28);
+  border-radius: 999px;
+  padding: 0.05rem 0.4rem;
 }
 
 .deal-card,
 .work-item,
 .panel,
 .calendar-cell {
-  background: var(--card);
-  border: 1px solid var(--line);
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glow), var(--lift);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
 }
 
 .deal-card {
   display: block;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0.7rem 0.75rem;
   margin-bottom: 0.55rem;
   cursor: grab;
@@ -270,6 +303,7 @@ a {
 .amount {
   font-weight: 600;
   font-size: 0.9rem;
+  color: var(--muted);
 }
 
 .card-meta {
@@ -284,48 +318,49 @@ a {
   font-weight: 500;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  border-radius: 6px;
-  padding: 0.12rem 0.4rem;
-  border: 1px solid var(--line);
-  background: #f3f4f6;
-  color: #374151;
+  border-radius: 999px;
+  padding: 0.12rem 0.42rem;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
 }
 
 .badge.residential {
   color: var(--resi);
-  border-color: #d5e4ee;
-  background: #eef5f8;
+  border-color: rgba(142, 200, 240, 0.35);
+  background: rgba(50, 120, 180, 0.22);
 }
 
 .badge.commercial {
   color: var(--comm);
-  border-color: #d5e6da;
-  background: #eef6f0;
+  border-color: rgba(126, 224, 168, 0.35);
+  background: rgba(36, 130, 80, 0.22);
 }
 
 .badge.private {
   color: var(--priv);
-  border-color: #ecd9d4;
-  background: #f8eeeb;
+  border-color: rgba(255, 176, 134, 0.35);
+  background: rgba(160, 80, 36, 0.24);
 }
 
 .next-strip {
-  background: var(--next-bg);
-  border: 1px solid #f3d6b3;
+  background: rgba(140, 78, 24, 0.36);
+  border: 1px solid rgba(245, 181, 106, 0.32);
   border-left: 3px solid var(--next);
   padding: 0.4rem 0.5rem;
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
   color: var(--next-ink);
   font-size: 0.84rem;
+  box-shadow: inset 1px 1px 0 rgba(255, 220, 170, 0.14);
 }
 
 .maturity-chip,
 .maturity-banner,
 .badge.maturity {
-  background: #ecf8f0;
+  background: rgba(28, 100, 64, 0.36);
   color: var(--funded);
-  border: 1px solid #cfe8d6;
-  border-radius: 6px;
+  border: 1px solid rgba(126, 224, 168, 0.32);
+  border-radius: 8px;
 }
 
 .maturity-chip,
@@ -338,20 +373,23 @@ a {
 .maturity-banner {
   margin: 0 0 1rem;
   font-size: 0.88rem;
+  box-shadow: var(--glow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .badge.maturity {
-  padding: 0.12rem 0.4rem;
+  padding: 0.12rem 0.42rem;
   font-size: 0.66rem;
   margin: 0;
 }
 
 .waiting-chip {
   margin-top: 0.35rem;
-  background: var(--wait-bg);
+  background: rgba(140, 56, 28, 0.38);
   color: var(--wait);
-  border: 1px solid #f0d4c8;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 176, 134, 0.32);
+  border-radius: 8px;
   padding: 0.3rem 0.4rem;
   font-size: 0.76rem;
 }
@@ -377,16 +415,17 @@ a {
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0 0 0.4rem;
+  color: var(--ink);
 }
 
 .panel {
-  border-radius: 10px;
+  border-radius: 14px;
   padding: 0.9rem 1rem;
 }
 
 .next-panel {
-  background: var(--next-bg);
-  border-color: #f0d0a8;
+  background: rgba(92, 52, 18, 0.42);
+  border-color: rgba(245, 181, 106, 0.36);
 }
 
 .next-panel h2 {
@@ -439,7 +478,7 @@ a {
   gap: 0.6rem;
   align-items: center;
   padding: 0.5rem 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(210, 224, 242, 0.1);
 }
 
 .task-row.locked {
@@ -458,7 +497,7 @@ a {
 }
 
 .mention {
-  border-left: 2px solid var(--line);
+  border-left: 2px solid rgba(126, 182, 255, 0.4);
   padding-left: 0.65rem;
 }
 
@@ -470,7 +509,7 @@ a {
 .work-item {
   display: block;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0.75rem 0.85rem;
 }
 
@@ -528,7 +567,7 @@ a {
 
 .calendar-cell {
   min-height: 96px;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.3rem;
 }
 
@@ -543,22 +582,22 @@ a {
   text-decoration: none;
   font-size: 0.7rem;
   line-height: 1.25;
-  border-radius: 6px;
+  border-radius: 7px;
   padding: 0.22rem 0.28rem;
   margin-bottom: 0.22rem;
-  border: 1px solid var(--line);
+  border: 1px solid transparent;
 }
 
 .calendar-event.next-action {
-  background: var(--next-bg);
+  background: rgba(140, 78, 24, 0.4);
   color: var(--next-ink);
-  border-color: #f3d6b3;
+  border-color: rgba(245, 181, 106, 0.3);
 }
 
 .calendar-event.maturity {
-  background: #ecf8f0;
+  background: rgba(28, 100, 64, 0.4);
   color: var(--funded);
-  border-color: #cfe8d6;
+  border-color: rgba(126, 224, 168, 0.3);
 }
 
 .calendar-event span {
@@ -566,8 +605,8 @@ a {
 }
 
 .viewer-note {
-  background: #f3f4f6;
-  border: 1px solid var(--line);
+  background: rgba(126, 182, 255, 0.1);
+  border: 1px solid rgba(126, 182, 255, 0.24);
   border-radius: 8px;
   padding: 0.5rem 0.65rem;
   font-size: 0.84rem;
@@ -607,5 +646,23 @@ a {
 
   .people-switcher {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .column,
+  .deal-card,
+  .work-item,
+  .panel,
+  .calendar-cell,
+  .app-header,
+  .demo-banner {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #151c28;
+  }
+
+  .next-panel {
+    background: #3a2612;
   }
 }

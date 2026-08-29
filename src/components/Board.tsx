@@ -19,22 +19,27 @@ export function Board({ book }: { book: Book | "all" }) {
       <div className="board-toolbar">
         <div>
           <h1>Pipeline</h1>
-          <p className="subtle">Manage your files and stages. Money first. The bot is not the product.</p>
+          <p className="subtle">Manage your files and stages.</p>
         </div>
-        <div className="book-filter" data-testid="book-filter">
-          <a href="#/" className={book === "all" ? "active" : undefined}>
-            All books
-          </a>
-          {BOOKS.map((item) => (
-            <a
-              key={item}
-              href={hrefFor({ name: "board", book: item })}
-              className={book === item ? "active" : undefined}
-              data-testid={`filter-${item}`}
-            >
-              {bookLabel(item)}
+        <div className="board-toolbar-actions">
+          <div className="book-filter" data-testid="book-filter">
+            <a href="#/" className={book === "all" ? "active" : undefined}>
+              All books
             </a>
-          ))}
+            {BOOKS.map((item) => (
+              <a
+                key={item}
+                href={hrefFor({ name: "board", book: item })}
+                className={book === item ? "active" : undefined}
+                data-testid={`filter-${item}`}
+              >
+                {bookLabel(item)}
+              </a>
+            ))}
+          </div>
+          <a className="btn" href="#/capture">
+            + New file
+          </a>
         </div>
       </div>
       <PipelineKpisStrip kpis={kpis} />
@@ -67,7 +72,7 @@ export function Board({ book }: { book: Book | "all" }) {
               <div className="column-head">
                 <h2>{STAGE_LABELS[stage]}</h2>
                 <span className="count">
-                  {columnDeals.length} · {formatCadCompact(total)}
+                  {columnDeals.length} • {formatCadCompact(total)}
                 </span>
               </div>
               {columnDeals.map((deal) => (

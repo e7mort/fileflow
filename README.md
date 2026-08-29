@@ -14,7 +14,7 @@ Client acquisition sits on top of that shop. A public **Capture** page (the funn
 
 - A persistent banner on every screen: this is a demo, not a live lender system, not advice.
 - A pipeline board with mortgage stages: Lead, Application, Submitted, Conditional, Clear to close, Funded, Fallen through.
-- Cards that show borrower, amount (CAD), the next action, and whether the file is waiting on someone.
+- Cards that show borrower, a one-line job, Estd plus amount (CAD), the next action, and whether the file is waiting on someone.
 - A people switcher for a four-person fictional shop. There is no login.
   - Morgan Broker (broker)
   - Riley Assistant (processor / assistant)

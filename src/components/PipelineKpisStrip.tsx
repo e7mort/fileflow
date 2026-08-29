@@ -1,13 +1,13 @@
-import { formatCad, formatCadCompact } from "../lib/format";
+import { formatCadCompact } from "../lib/format";
 import type { PipelineKpis } from "../domain/acquire";
 
 export function PipelineKpisStrip({ kpis }: { kpis: PipelineKpis }) {
   const cards = [
-    { key: "open", label: "Open pipeline", value: formatCad(kpis.openPipeline) },
+    { key: "open", label: "Open pipeline", value: formatCadCompact(kpis.openPipeline) },
     {
       key: "funded-month",
       label: "Funded this month",
-      value: formatCad(kpis.fundedThisMonth),
+      value: formatCadCompact(kpis.fundedThisMonth),
     },
     {
       key: "consults",

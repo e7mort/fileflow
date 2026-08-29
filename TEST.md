@@ -14,7 +14,7 @@ Or `npm install && npm run dev`.
 
 ## 2. See the pipeline and the three books
 
-Stay on **Pipeline**. Four KPI cards sit above the board: open pipeline, funded this month, consults booked, all-time funded. You should see seven stage columns and about a dozen fictional files plus **Pat Inbound** (Lead, in via whatsapp). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey). Column heads include a count and a compact dollar total.
+Stay on **Pipeline**. Four KPI cards sit above the board: open pipeline, funded this month, consults booked, all-time funded (compact CAD, like $8.2M). You should see seven stage columns and about a dozen fictional files plus **Pat Inbound** (Lead, in via whatsapp). Each card shows a one-line job, **Estd** plus a green amount, and a stage dropdown. Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey). Column heads include a count and a compact dollar total (`3 • $1.6M`). A **+ New file** button opens Capture. On a wide window a shop sidebar lists Today / Pipeline / Inbox / Capture / Calendar / Partners.
 
 Use the book filter: **All books**, **Residential**, **Commercial**, **Private**.
 
@@ -160,7 +160,7 @@ Stay on **Pipeline**. Read the four KPI cards.
 
 ## 19. Capture page starts a desk thread
 
-Click **Capture**. The page has no shop header. Headline is **Don't auto-renew with your bank.**
+Click **Capture** in the header or the shop sidebar. The page has no shop chrome. Headline is **Don't auto-renew with your bank.**
 
 Fill:
 

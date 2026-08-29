@@ -8,6 +8,7 @@ import { DemoBanner } from "./components/DemoBanner";
 import { InboxView } from "./components/InboxView";
 import { PartnersView } from "./components/PartnersView";
 import { ShareChecklist } from "./components/ShareChecklist";
+import { ShopSidebar } from "./components/ShopSidebar";
 import { TodayView } from "./components/TodayView";
 import { isPhoneViewport, parseLocation } from "./lib/route";
 import { useStore } from "./store/store";
@@ -35,12 +36,10 @@ export function App() {
       ? deals.find((item) => item.id === route.dealId)
       : undefined;
 
-  const hideHeader = route.name === "share" || route.name === "capture";
+  const hideChrome = route.name === "share" || route.name === "capture";
 
-  return (
-    <div className="app-shell">
-      <DemoBanner />
-      {hideHeader ? null : <AppHeader route={route} />}
+  const main = (
+    <>
       {route.name === "today" ? <TodayView /> : null}
       {route.name === "calendar" ? <CalendarView /> : null}
       {route.name === "partners" ? <PartnersView /> : null}
@@ -59,6 +58,23 @@ export function App() {
           <a href="#/">Back to the pipeline</a>
         </div>
       ) : null}
+    </>
+  );
+
+  return (
+    <div className="app-shell">
+      <DemoBanner />
+      {hideChrome ? (
+        main
+      ) : (
+        <div className="shop-frame">
+          <ShopSidebar route={route} />
+          <div className="shop-main">
+            <AppHeader route={route} />
+            {main}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

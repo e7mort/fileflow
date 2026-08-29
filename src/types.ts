@@ -38,6 +38,61 @@ export type MentionId = string;
 export type TemplateId = string;
 export type PartyId = string;
 export type ConditionId = string;
+export type ConversationId = string;
+export type MessageId = string;
+export type ConsultId = string;
+export type ConsultSlotId = string;
+
+export const LEAD_SOURCES = ["ads", "whatsapp", "web", "realtor", "book"] as const;
+export type LeadSource = (typeof LEAD_SOURCES)[number];
+
+export const CHANNELS = ["sms", "whatsapp", "web"] as const;
+export type Channel = (typeof CHANNELS)[number];
+
+export const BOT_STEPS = [
+  "purpose",
+  "city",
+  "amount",
+  "timing",
+  "slot",
+  "handed-off",
+] as const;
+export type BotStep = (typeof BOT_STEPS)[number];
+
+export type ChatRole = "lead" | "bot" | "desk";
+
+export type ChatMessage = {
+  id: MessageId;
+  at: string;
+  from: ChatRole;
+  body: string;
+};
+
+export type Conversation = {
+  id: ConversationId;
+  channel: Channel;
+  contactName: string;
+  phone: string;
+  step: BotStep;
+  purpose: ResidentialPurpose | null;
+  city: string | null;
+  amount: number | null;
+  timing: string | null;
+  slotId: ConsultSlotId | null;
+  dealId: DealId | null;
+  unread: boolean;
+  messages: ChatMessage[];
+  updatedAt: string;
+};
+
+export type Consult = {
+  id: ConsultId;
+  conversationId: ConversationId;
+  dealId: DealId;
+  slotId: ConsultSlotId;
+  startsAt: string;
+  status: "booked" | "confirmed";
+};
 
 export type Person = {
   id: PersonId;
@@ -103,6 +158,7 @@ export type Property = {
 type DealBase = {
   id: DealId;
   stage: Stage;
+  source?: LeadSource;
   parties: FileParty[];
   property: Property;
   lender: string;

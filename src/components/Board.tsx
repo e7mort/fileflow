@@ -1,25 +1,25 @@
 import { useState } from "react";
+import { columnValue, pipelineKpis } from "../domain/acquire";
 import { STAGE_LABELS } from "../domain/stages";
-import { bookLabel } from "../lib/format";
+import { bookLabel, formatCadCompact } from "../lib/format";
 import { hrefFor } from "../lib/route";
 import { useStore } from "../store/store";
 import { BOOKS, STAGES, type Book, type Stage } from "../types";
 import { DealCard } from "./DealCard";
+import { PipelineKpisStrip } from "./PipelineKpisStrip";
 
 export function Board({ book }: { book: Book | "all" }) {
-  const { deals, changeStage, canWrite } = useStore();
+  const { deals, consults, changeStage, canWrite } = useStore();
   const [overStage, setOverStage] = useState<Stage | null>(null);
   const visible = deals.filter((deal) => book === "all" || deal.book === book);
+  const kpis = pipelineKpis(visible, consults);
 
   return (
     <div className="board-page">
       <div className="board-toolbar">
         <div>
-          <h1>Shop pipeline</h1>
-          <p className="subtle">
-            Mortgage-native stages. One next action on every file. Filter the
-            three books or leave it on all.
-          </p>
+          <h1>Pipeline</h1>
+          <p className="subtle">Manage your files and stages. Money first. The bot is not the product.</p>
         </div>
         <div className="book-filter" data-testid="book-filter">
           <a href="#/" className={book === "all" ? "active" : undefined}>
@@ -37,9 +37,11 @@ export function Board({ book }: { book: Book | "all" }) {
           ))}
         </div>
       </div>
+      <PipelineKpisStrip kpis={kpis} />
       <div className="board" data-testid="board">
         {STAGES.map((stage) => {
           const columnDeals = visible.filter((deal) => deal.stage === stage);
+          const total = columnValue(columnDeals);
           return (
             <section
               key={stage}
@@ -64,7 +66,9 @@ export function Board({ book }: { book: Book | "all" }) {
             >
               <div className="column-head">
                 <h2>{STAGE_LABELS[stage]}</h2>
-                <span className="count">{columnDeals.length}</span>
+                <span className="count">
+                  {columnDeals.length} · {formatCadCompact(total)}
+                </span>
               </div>
               {columnDeals.map((deal) => (
                 <DealCard key={deal.id} deal={deal} />

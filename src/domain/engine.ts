@@ -16,9 +16,11 @@ import { firstName, TEAM } from "./team";
 export function instantiateTasks(input: {
   book: Book;
   owners?: Partial<Record<string, PersonId | null>>;
+  idPrefix?: string;
 }): Task[] {
+  const prefix = input.idPrefix ?? input.book;
   return templatesForBook(input.book).map((template) => ({
-    id: `task-${input.book}-${template.id}`,
+    id: `task-${prefix}-${template.id}`,
     templateId: template.id,
     title: template.title,
     unlockStages: template.unlockStages,

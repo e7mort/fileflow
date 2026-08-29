@@ -8,6 +8,8 @@ Fileflow is meant to replace a generic kanban, a generic task list, and a spread
 
 The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin light edges. Next action stays the loudest thing on a file.
 
+Client acquisition sits on top of that shop. A public **Capture** page (the funnel) starts a thread. **Inbox** is the SMS / WhatsApp desk: the bot asks purpose, city, amount, and timing, then books a 20-minute consult and hands the file to Riley on reception. Pipeline KPI cards show what the shop actually cares about — open pipeline, funded this month, consults booked, all-time funded — not that a bot exists.
+
 ## What you should see
 
 - A persistent banner on every screen: this is a demo, not a live lender system, not advice.
@@ -30,6 +32,8 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 - **Today** is the phone-first home: next actions, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
 - **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
 - **Share checklist** (`#/share/d-alex`, full URL on the page) is a borrower-facing conditions list. Mark received. No vault.
+- **Capture** (`#/capture`) is a public renewal / purchase funnel. Submit opens **Inbox**.
+- **Inbox** is the SMS / WhatsApp desk. Seeded threads: Pat Inbound (already booked) and Nico Ads (mid-qualify). Simulate inbound SMS to walk a new lead to a booked consult. The new file lands in Lead with one next action for Riley.
 
 Owner is never invented. If nobody owns the next action, it stays unassigned. Robin Fiction is seeded that way on purpose.
 
@@ -58,7 +62,7 @@ npm run dev
 
 Open the URL Vite prints (usually http://localhost:5173). No account. No email. No payments.
 
-Demo data lives in the browser (`localStorage`). Completing a task or moving a stage survives a refresh. **Reset demo** in the header puts the seed back.
+Demo data lives in the browser (`localStorage`, key `fileflow-demo-v4`). Completing a task or moving a stage survives a refresh. **Reset demo** in the header puts the seed back.
 
 ## Tests
 

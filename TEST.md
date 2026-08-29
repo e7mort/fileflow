@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions. Steps 13–17 are the five newest clicks: phone Today, stale nudge, realtor pulse, first-touch queue, shareable checklist.
+You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions. Steps 13–17 are the five newest clicks: phone Today, stale nudge, realtor pulse, first-touch queue, shareable checklist. Steps 18–20 are client acquisition: pipeline money, capture funnel, SMS desk.
 
 ## 1. Start the app
 
@@ -14,7 +14,7 @@ Or `npm install && npm run dev`.
 
 ## 2. See the pipeline and the three books
 
-Stay on **Pipeline**. You should see seven stage columns and about a dozen fictional files (Alex Example, Jordan Demo, Avery Showcase, Harper Fictional, Blake Exampleton, and others). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
+Stay on **Pipeline**. Four KPI cards sit above the board: open pipeline, funded this month, consults booked, all-time funded. You should see seven stage columns and about a dozen fictional files plus **Pat Inbound** (Lead, in via whatsapp). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey). Column heads include a count and a compact dollar total.
 
 Use the book filter: **All books**, **Residential**, **Commercial**, **Private**.
 
@@ -151,4 +151,35 @@ On **Today**, under **New-lead / first-touch queue**, find **Kit Freshfile**. Cl
 Open **Alex Example**. Click **Share checklist**. The page shows a full URL you can copy. Locally that is `http://localhost:5173/#/share/d-alex`. After Pages is on, it is https://e7mort.github.io/fileflow/#/share/d-alex.
 
 **Expected:** A borrower-facing page for Alex Example. Conditions still needed are listed. Click **Mark received** on one item. It shows Received. No upload. No login. The demo banner is still there and still says this is not advice.
+
+## 18. Pipeline shows money, not a bot
+
+Stay on **Pipeline**. Read the four KPI cards.
+
+**Expected:** **Funded this month** is not $0 (Skyler Placeholder funded 8 Aug 2026). **Consults booked** is at least 1 (Pat Inbound). **Open pipeline** is larger than funded this month. Column **Lead** includes Pat Inbound with a green amount and “In via whatsapp”.
+
+## 19. Capture page starts a desk thread
+
+Click **Capture**. The page has no shop header. Headline is **Don't auto-renew with your bank.**
+
+Fill:
+
+- Name: `Dana Textin`
+- Mobile: `250-555-0110`
+- What do you need: **Purchase**
+- Click **Start the desk**
+
+**Expected:** Inbox opens on Dana’s thread. The desk asks which city. The demo banner is still there.
+
+## 20. SMS desk books a consult onto a Lead file
+
+Stay in **Inbox**. On Dana’s thread (or click **Simulate inbound SMS** if you skipped 19), reply as the lead:
+
+1. If asked for purpose: `purchase`
+2. City: `Burnaby`
+3. Amount: `540k`
+4. Timing: `this month`
+5. Slot: `1`
+
+**Expected:** The desk confirms a booked consult. A file appears in **Lead** named Dana Textin (or the inbound name). Next action is **Reception: confirm consult with …** waiting on Riley. **Consults booked** on Pipeline goes up by one. Calendar shows a **Consult** chip on that date. Nothing is emailed or texted for real.
 

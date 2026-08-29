@@ -35,6 +35,9 @@ export function DealCard({ deal }: { deal: Deal }) {
       </div>
       <p className="borrower">{borrower.name}</p>
       <p className="amount">{formatCad(deal.amount)}</p>
+      {deal.source ? (
+        <div className="subtle">In via {deal.source}</div>
+      ) : null}
       {maturitySoon && deal.maturityDate ? (
         <div className="maturity-chip" data-testid={`maturity-${deal.id}`}>
           Renewal {formatDate(deal.maturityDate)}

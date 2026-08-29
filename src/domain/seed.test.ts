@@ -9,7 +9,7 @@ import { seedDeals } from "./seed";
 import { isNewLead } from "./touch";
 
 describe("seedDeals", () => {
-  it("seeds 8–12 fictional files across all three books and both terminal stages", () => {
+  it("seeds 8–14 fictional files across all three books and both terminal stages", () => {
     const deals = seedDeals();
     expect(deals.length).toBeGreaterThanOrEqual(8);
     expect(deals.length).toBeLessThanOrEqual(14);

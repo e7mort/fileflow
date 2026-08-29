@@ -9,6 +9,7 @@ import type {
   Stage,
 } from "../types";
 import { openConditions } from "./conditions";
+import { seedPatDeal } from "./acquire";
 import { addMention, assignNextAction, instantiateTasks, setHandoff } from "./engine";
 
 function people(
@@ -389,7 +390,7 @@ export function seedDeals(): Deal[] {
         lender: "Harbour Credit Union",
         product: "5-year fixed",
         amount: 390000,
-        closeDate: "2026-07-30",
+        closeDate: "2026-08-08",
         maturityDate: "2031-07-30",
         conditions: [],
         purpose: "purchase",
@@ -733,5 +734,6 @@ export function seedDeals(): Deal[] {
     stampTouch(withNotes[3] ?? harper, "2026-08-14T09:20:00.000Z", "2026-08-01T12:00:00.000Z"),
     stampTouch(reese, "2026-08-08T12:00:00.000Z", "2026-07-22T12:00:00.000Z"),
     stampTouch(blake, "2026-07-20T12:00:00.000Z", "2026-06-15T12:00:00.000Z"),
+    stampTouch(seedPatDeal(), "2026-08-14T09:12:00.000Z", "2026-08-14T09:12:00.000Z"),
   ];
 }

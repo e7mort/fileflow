@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { AppHeader } from "./components/AppHeader";
 import { Board } from "./components/Board";
 import { CalendarView } from "./components/CalendarView";
+import { CapturePage } from "./components/CapturePage";
 import { DealView } from "./components/DealView";
 import { DemoBanner } from "./components/DemoBanner";
+import { InboxView } from "./components/InboxView";
 import { PartnersView } from "./components/PartnersView";
 import { ShareChecklist } from "./components/ShareChecklist";
 import { TodayView } from "./components/TodayView";
@@ -33,14 +35,20 @@ export function App() {
       ? deals.find((item) => item.id === route.dealId)
       : undefined;
 
+  const hideHeader = route.name === "share" || route.name === "capture";
+
   return (
     <div className="app-shell">
       <DemoBanner />
-      {route.name === "share" ? null : <AppHeader route={route} />}
+      {hideHeader ? null : <AppHeader route={route} />}
       {route.name === "today" ? <TodayView /> : null}
       {route.name === "calendar" ? <CalendarView /> : null}
       {route.name === "partners" ? <PartnersView /> : null}
       {route.name === "partner" ? <PartnersView partnerId={route.partnerId} /> : null}
+      {route.name === "inbox" ? (
+        <InboxView conversationId={route.conversationId} />
+      ) : null}
+      {route.name === "capture" ? <CapturePage /> : null}
       {route.name === "board" ? <Board book={route.book} /> : null}
       {route.name === "file" && deal ? <DealView deal={deal} /> : null}
       {route.name === "share" && deal ? <ShareChecklist deal={deal} /> : null}

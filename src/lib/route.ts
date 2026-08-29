@@ -1,4 +1,4 @@
-import { BOOKS, type Book, type DealId } from "../types";
+import { BOOKS, type Book, type ConversationId, type DealId } from "../types";
 
 export type Route =
   | { name: "board"; book: Book | "all" }
@@ -6,6 +6,8 @@ export type Route =
   | { name: "calendar" }
   | { name: "partners" }
   | { name: "partner"; partnerId: string }
+  | { name: "inbox"; conversationId: ConversationId | null }
+  | { name: "capture" }
   | { name: "file"; dealId: DealId }
   | { name: "share"; dealId: DealId };
 
@@ -20,6 +22,16 @@ function parsePath(path: string): Route {
   }
   if (normalized === "/calendar") {
     return { name: "calendar" };
+  }
+  if (normalized === "/capture" || normalized === "/apply") {
+    return { name: "capture" };
+  }
+  if (normalized === "/inbox") {
+    return { name: "inbox", conversationId: null };
+  }
+  const inbox = normalized.match(/^\/inbox\/([^/?]+)/);
+  if (inbox?.[1]) {
+    return { name: "inbox", conversationId: inbox[1] };
   }
   if (normalized === "/partners") {
     return { name: "partners" };
@@ -80,6 +92,10 @@ export function hrefFor(route: Route): string {
       return "#/partners";
     case "partner":
       return `#/partners/${route.partnerId}`;
+    case "inbox":
+      return route.conversationId ? `#/inbox/${route.conversationId}` : "#/inbox";
+    case "capture":
+      return "#/capture";
     case "file":
       return `#/files/${route.dealId}`;
     case "share":

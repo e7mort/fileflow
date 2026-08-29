@@ -13,8 +13,8 @@ function monthTitle(year: number, monthIndex: number): string {
 }
 
 export function CalendarView() {
-  const { deals } = useStore();
-  const events = useMemo(() => calendarEvents(deals), [deals]);
+  const { deals, consults } = useStore();
+  const events = useMemo(() => calendarEvents(deals, consults), [deals, consults]);
   const [year, setYear] = useState(2026);
   const [monthIndex, setMonthIndex] = useState(7);
   const cells = monthCells(year, monthIndex);
@@ -29,7 +29,7 @@ export function CalendarView() {
     <div className="work-page" data-testid="calendar">
       <h1>Calendar</h1>
       <p className="subtle">
-        Next-action due dates and maturity / renewal reminder dates. Click an
+        Next-action dues, booked consults, and maturity / renewal reminder dates. Click an
         item to open the file. Nothing syncs out of this demo.
       </p>
       <div className="board-toolbar">
@@ -61,7 +61,13 @@ export function CalendarView() {
                     href={hrefFor({ name: "file", dealId: event.dealId })}
                     data-testid={`cal-${event.kind}-${event.dealId}`}
                   >
-                    <strong>{event.kind === "maturity" ? "Renewal" : "Next"}</strong>
+                    <strong>
+                      {event.kind === "maturity"
+                        ? "Renewal"
+                        : event.kind === "consult"
+                          ? "Consult"
+                          : "Next"}
+                    </strong>
                     <span>
                       {event.borrowerName}: {event.title}
                     </span>

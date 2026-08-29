@@ -24,6 +24,18 @@ export function AppHeader({ route }: { route: Route }) {
           Pipeline
         </a>
         <a
+          href={hrefFor({ name: "inbox", conversationId: null })}
+          className={route.name === "inbox" ? "active" : undefined}
+        >
+          Inbox
+        </a>
+        <a
+          href={hrefFor({ name: "capture" })}
+          className={route.name === "capture" ? "active" : undefined}
+        >
+          Capture
+        </a>
+        <a
           href={hrefFor({ name: "calendar" })}
           className={route.name === "calendar" ? "active" : undefined}
         >

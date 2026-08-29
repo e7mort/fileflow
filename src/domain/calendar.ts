@@ -1,7 +1,7 @@
-import type { Deal, DealId } from "../types";
+import type { Consult, Deal, DealId } from "../types";
 import { primaryBorrower } from "./parties";
 
-export type CalendarEventKind = "next-action" | "maturity";
+export type CalendarEventKind = "next-action" | "maturity" | "consult";
 
 export type CalendarEvent = {
   dealId: DealId;
@@ -11,7 +11,7 @@ export type CalendarEvent = {
   borrowerName: string;
 };
 
-export function calendarEvents(deals: Deal[]): CalendarEvent[] {
+export function calendarEvents(deals: Deal[], consults: Consult[] = []): CalendarEvent[] {
   const events: CalendarEvent[] = [];
   for (const deal of deals) {
     const borrowerName = primaryBorrower(deal).name;
@@ -33,6 +33,16 @@ export function calendarEvents(deals: Deal[]): CalendarEvent[] {
         borrowerName,
       });
     }
+  }
+  for (const consult of consults) {
+    const deal = deals.find((item) => item.id === consult.dealId);
+    events.push({
+      dealId: consult.dealId,
+      date: consult.startsAt.slice(0, 10),
+      kind: "consult",
+      title: "Consult booked",
+      borrowerName: deal ? primaryBorrower(deal).name : "New lead",
+    });
   }
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }

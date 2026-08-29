@@ -10,6 +10,26 @@ export function formatCad(amount: number): string {
   return cad.format(amount);
 }
 
+/** Short money for column heads, matching the jobs-board screenshot style. */
+export function formatCadCompact(amount: number): string {
+  const sign = amount < 0 ? "-" : "";
+  const abs = Math.abs(amount);
+  if (abs === 0) {
+    return "$0";
+  }
+  if (abs >= 1_000_000) {
+    const millions = abs / 1_000_000;
+    const digits = millions >= 10 ? 0 : 1;
+    return `${sign}$${millions.toFixed(digits).replace(/\.0$/, "")}M`;
+  }
+  if (abs >= 10_000) {
+    const thousands = abs / 1_000;
+    const digits = thousands >= 100 ? 0 : 1;
+    return `${sign}$${thousands.toFixed(digits).replace(/\.0$/, "")}k`;
+  }
+  return `${sign}${cad.format(abs)}`;
+}
+
 export function formatDate(iso: string | null): string {
   if (!iso) {
     return "No date";

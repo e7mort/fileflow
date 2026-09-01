@@ -1,6 +1,8 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions. Steps 13–17 are the five newest clicks: phone Today, stale nudge, realtor pulse, first-touch queue, shareable checklist. Steps 18–20 are client acquisition: pipeline money, capture funnel, SMS desk.
+You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions. The pipeline looks like a jobs board (sidebar, compact KPIs, **Estd**, **+ New file**). Steps 13–17 are phone Today, stale nudge, realtor pulse, first-touch, shareable checklist. Steps 18–20 are client acquisition: pipeline money, capture funnel, SMS desk.
+
+On a window wider than 1100px, shop links live in the **left Fileflow sidebar**. On a narrower window the sidebar is gone and the same links sit in the **header**. Person switcher and **Reset demo** stay in the header either way.
 
 ## 1. Start the app
 
@@ -14,13 +16,13 @@ Or `npm install && npm run dev`.
 
 ## 2. See the pipeline and the three books
 
-Stay on **Pipeline**. Four KPI cards sit above the board: open pipeline, funded this month, consults booked, all-time funded (compact CAD, like $8.2M). You should see seven stage columns and about a dozen fictional files plus **Pat Inbound** (Lead, in via whatsapp). Each card shows a one-line job, **Estd** plus a green amount, and a stage dropdown. Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey). Column heads include a count and a compact dollar total (`3 • $1.6M`). A **+ New file** button opens Capture. On a wide window a shop sidebar lists Today / Pipeline / Inbox / Capture / Calendar / Partners.
+Stay on **Pipeline**. Four KPI cards sit above the board: open pipeline, funded this month, consults booked, all-time funded (compact CAD, like $8.2M). You should see seven stage columns and about a dozen fictional files plus **Pat Inbound** (Lead, in via whatsapp). Each card shows a one-line job, **Estd** plus a green amount, and a stage dropdown. Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey). Column heads include a count and a compact dollar total (`3 • $1.6M` on Lead). A **+ New file** button opens Capture. On a wide window a shop sidebar lists Today / Pipeline / Inbox / Capture / Calendar / Partners.
 
 Use the book filter: **All books**, **Residential**, **Commercial**, **Private**.
 
 **Expected:**
 
-- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler).
+- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler, Pat Inbound).
 - Commercial filter keeps Avery Showcase, Cameron Testfile, Drew Mockwell.
 - Private filter keeps Harper Fictional, Reese Demoaddr, Blake Exampleton.
 - Blake Exampleton is in **Fallen through**. Skyler Placeholder and Drew Mockwell are in **Funded**.
@@ -71,11 +73,11 @@ If anything above fails, reset the demo from the header and run the script again
 
 ## 8. Maturity / renewal reminder (about 4 months out)
 
-On **Pipeline**, find **Sidney Sample** (Conditional, residential renewal). The card should show a green **Renewal** chip with 10 Dec 2026.
+On **Pipeline**, find **Sidney Sample** (Conditional, residential renewal). The card should show a green **Renewal** chip with Dec 10, 2026.
 
-Open Sidney Sample. A maturity / renewal reminder banner should sit under the title. The file field **Maturity / renewal** is 10 Dec 2026.
+Open Sidney Sample. A maturity / renewal reminder banner should sit under the title. The file field **Maturity / renewal** is Dec 10, 2026.
 
-Open **Alex Example**. That file has a maturity of 15 Oct 2031. There is no renewal chip on the card and no reminder banner on the file.
+Open **Alex Example**. That file has a maturity of Oct 15, 2031. There is no renewal chip on the card and no reminder banner on the file.
 
 **Expected:** Sidney is inside the 4-month window. Alex is not. This is a reminder only. No email or SMS.
 
@@ -100,7 +102,7 @@ Click **Mark done** on Proof of down payment. Type `Appraisal invoice` in **Add 
 
 ## 11. Calendar of next actions and maturities
 
-Click **Calendar** in the header. August 2026 is the starting month.
+Click **Calendar** in the sidebar (wide window) or the header nav (narrow window). August 2026 is the starting month.
 
 **Expected:** Alex Example appears on 20 Aug 2026 as a next-action item. The **Upcoming** list also shows it. Click the Alex item. The Alex Example file opens.
 
@@ -134,7 +136,7 @@ Under **Past client / no contact (6 months)** you should see **Skyler Placeholde
 
 ## 15. Realtor partner pulse after a stage move
 
-Click **Partners**. You should see Marlowe Homes, Brookline Referrals, and Cedar Street Realty.
+Click **Partners** in the sidebar or header nav. You should see Marlowe Homes, Brookline Referrals, and Cedar Street Realty.
 
 Open **Brookline Referrals**. Then open **Alex Example**, **Move stage** to **Submitted**, and return to **Partners → Brookline Referrals**.
 
@@ -148,7 +150,7 @@ On **Today**, under **New-lead / first-touch queue**, find **Kit Freshfile**. Cl
 
 ## 17. Shareable borrower checklist
 
-Open **Alex Example**. Click **Share checklist**. The page shows a full URL you can copy. Locally that is `http://localhost:5173/#/share/d-alex`. After Pages is on, it is https://e7mort.github.io/fileflow/#/share/d-alex.
+Open **Alex Example**. Click **Share checklist**. The page shows a full URL you can copy. Locally that is `http://localhost:5173/#/share/d-alex`. GitHub Pages is not live until Settings → Pages uses GitHub Actions; after that click the same path is https://e7mort.github.io/fileflow/#/share/d-alex.
 
 **Expected:** A borrower-facing page for Alex Example. Conditions still needed are listed. Click **Mark received** on one item. It shows Received. No upload. No login. The demo banner is still there and still says this is not advice.
 
@@ -156,11 +158,11 @@ Open **Alex Example**. Click **Share checklist**. The page shows a full URL you 
 
 Stay on **Pipeline**. Read the four KPI cards.
 
-**Expected:** **Funded this month** is not $0 (Skyler Placeholder funded 8 Aug 2026). **Consults booked** is at least 1 (Pat Inbound). **Open pipeline** is larger than funded this month. Column **Lead** includes Pat Inbound with a green amount and “In via whatsapp”.
+**Expected:** **Funded this month** is not $0 (Skyler Placeholder funded 8 Aug 2026, **$390k**). **Consults booked** is at least 1 (Pat Inbound). **Open pipeline** is larger than funded this month (about **$8.2M**). Column **Lead** includes Pat Inbound with a green amount and “In via whatsapp”.
 
 ## 19. Capture page starts a desk thread
 
-Click **Capture** in the header or the shop sidebar. The page has no shop chrome. Headline is **Don't auto-renew with your bank.**
+Click **Capture** in the sidebar (wide window), the header nav (narrow window), or **+ New file** on Pipeline. The page has no shop sidebar and no person switcher. A public Fileflow bar links to Inbox and Pipeline. Headline is **Don't auto-renew with your bank.** Name, mobile, and purpose stack as labeled fields (label above the input, not beside it).
 
 Fill:
 
@@ -182,4 +184,3 @@ Stay in **Inbox**. On Dana’s thread (or click **Simulate inbound SMS** if you 
 5. Slot: `1`
 
 **Expected:** The desk confirms a booked consult. A file appears in **Lead** named Dana Textin (or the inbound name). Next action is **Reception: confirm consult with …** waiting on Riley. **Consults booked** on Pipeline goes up by one. Calendar shows a **Consult** chip on that date. Nothing is emailed or texted for real.
-

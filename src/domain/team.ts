@@ -1,4 +1,6 @@
 import type { Deal, Person, Role, Stage, Task } from "../types";
+import { isHoiBinderOpen } from "./closepack";
+import { hasFundingConfirm } from "./invoice";
 import { earliestUnlockIndex } from "./templates";
 import { stageIndex } from "./stages";
 
@@ -68,6 +70,10 @@ export function canCompleteTask(role: Role, task: Pick<Task, "kind" | "templateI
   return true;
 }
 
+export function canRecordFundingConfirm(role: Role): boolean {
+  return role === "lo" || role === "uw";
+}
+
 export function canAdvanceToFunded(deal: Deal, to: Stage): boolean {
   if (to !== "funded" && to !== "review") {
     return true;
@@ -84,10 +90,19 @@ export function stageAdvanceBlock(deal: Deal, to: Stage, role?: Role): string | 
   if (role === "assistant" && to === "application") {
     return "Assistant cannot accept an application or move a file into Application.";
   }
-  if (canAdvanceToFunded(deal, to)) {
+  if (to !== "funded" && to !== "review") {
     return null;
   }
-  return "Compliance / AML verification must be done before this file is funded.";
+  if (!canAdvanceToFunded(deal, to)) {
+    return "Compliance / AML verification must be done before this file is funded.";
+  }
+  if (isHoiBinderOpen(deal)) {
+    return "HOI binder (loss payee) is still open. This file cannot be treated as funded.";
+  }
+  if (!hasFundingConfirm(deal)) {
+    return "Funding confirm required. Close date is not proof.";
+  }
+  return null;
 }
 
 export function firstName(name: string): string {

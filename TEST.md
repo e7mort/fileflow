@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match. Steps 22–23 are the Canada pack: pre-approval with no property docs, and lawyer signing that is not funded. Step 24 is Assistant (unlicensed) gates.
+You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match. Steps 22–23 are the Canada pack: pre-approval with no property docs, and lawyer signing that is not funded. Step 24 is Assistant (unlicensed) gates. Step 25 is the live-file overlay: side doors, funding confirm, close pack, and what actually moves a file.
 
 ## 1. Start the app
 
@@ -14,16 +14,16 @@ Or `npm install && npm run dev`.
 
 ## 2. See the pipeline and the three books
 
-Stay on **Pipeline**. You should see twelve stage columns, in order: **Lead**, **Discovery**, **Pre-approval**, **Application**, **Lender UW**, **Conditional**, **File complete**, **Instructions**, **Lawyer signing**, **Funded**, **Review**, **Fallen through**. Lender UW is the lender’s column (shop UW does not own it). Lawyer signing is not funded. About a dozen fictional files (Alex Example, Jordan Demo, Remy Ratehold, Avery Showcase, Harper Fictional, Blake Exampleton, and others). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
+Stay on **Pipeline**. You should see fourteen stage columns, in order: **Lead**, **Discovery**, **Pre-approval**, **Application**, **Lender UW**, **Conditional**, **File complete**, **Instructions**, **Lawyer signing**, **Funded**, **Review**, **Fallen through**, **On Hold**, **Inactive**. Lender UW is the lender’s column (shop UW does not own it). Lawyer signing is not funded. On Hold and Inactive are side doors — an open file can sit On Hold without looking funded. About a dozen-plus fictional files (Alex Example, Jordan Demo, Remy Ratehold, Avery Showcase, Harper Fictional, Blake Exampleton, Haven Holdfile, Idris Coldfile, and others). Several cards show File #, stage, action owner, docs/action, and lender, with close date secondary. Several show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
 
 Use the book filter: **All books**, **Residential**, **Commercial**, **Private**.
 
 **Expected:**
 
-- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler, Remy Ratehold, Devon Discovery).
+- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler, Remy Ratehold, Devon Discovery, Haven Holdfile, Idris Coldfile).
 - Commercial filter keeps Avery Showcase, Cameron Testfile, Drew Mockwell.
 - Private filter keeps Harper Fictional, Reese Demoaddr, Blake Exampleton.
-- Blake Exampleton is in **Fallen through**. Skyler Placeholder is in **Funded**. Drew Mockwell is in **Review**.
+- Blake Exampleton is in **Fallen through**. Haven Holdfile is in **On Hold** and is **not** funded. Idris Coldfile is in **Inactive**. Skyler Placeholder is in **Funded** with a funding confirm. Drew Mockwell is in **Review**.
 - Amounts are in CAD.
 
 ## 3. Open one file from each book
@@ -178,7 +178,7 @@ Switch to **Finley Compliance**. Open **Parker Placeholder**. Complete **Lawyer 
 
 Still as Finley, open Parker **before** completing AML if you reset, and **Move stage** to **Funded**.
 
-**Expected:** The file does not leave Lawyer signing. A note says Compliance / AML verification must be done before this file is funded. After AML is done, LO / Assistant / UW can move Parker to Funded. Lawyer signing is still not itself funded.
+**Expected:** The file does not leave Lawyer signing. A note says Compliance / AML verification must be done before this file is funded. After AML is done, **Move stage** to **Funded** still fails: HOI binder is still open, so the file cannot be treated as funded. Filling Close date does not change that. After HOI is on file **and** an LO/UW records a funding confirm, LO or UW can move Parker to Funded. Assistant cannot record a funding confirm. Lawyer signing is still not itself funded.
 
 ## 20. Review-stage file
 
@@ -198,7 +198,7 @@ Click **Reset demo**. Open **Jordan Demo**.
 - Never trust a parallel spreadsheet deal key alone.
 - If operational File # and MOS file id/FILEKEY disagree, mark the file **CONFLICTING** and display both ids.
 
-Funded in Fileflow is **No** (Jordan is File complete). MOS close date and MOS document flags are labeled as **not proof of funded**.
+Funded in Fileflow is **No** (Jordan is File complete, and there is no funding confirm). MOS close date and MOS document flags are labeled as **not proof of funded**. Dragging to Funded or filling Close date is not proof.
 
 Open **Sidney Sample**. Commission / payout tracking shows FILEKEY **FF-003**, lender Cedar Trust, payout amount, Income Tracking Status **Posted**, and Income Tracking Date **Aug 1, 2026**. Bound invoices include **inv-sidney-hit** via **FILEKEY**, identity match. Funded in Fileflow is still **No** even if a MOS close date or document flag is present.
 
@@ -214,9 +214,9 @@ Click **Reset demo**. Open **Remy Ratehold** (Pre-approval).
 
 ## 23. Lawyer signing is not funded
 
-Open **Parker Placeholder**.
+Click **Reset demo**. Open **Parker Placeholder**.
 
-**Expected:** Stage is **Lawyer signing**, not Funded. Funded in Fileflow is **No**. The file still has HOI binder / loss payee work. Team My Day still shows one next action per LO, Assistant, UW, Compliance, and Marketing.
+**Expected:** Stage is **Lawyer signing**, not Funded. Close date is on the file (27 Aug 2026) and is **secondary**. Funded in Fileflow is **No**. There is no funding confirm. **Close pack** always shows six rows: signed commitment, compliance sent, HOI binder (loss payee), lawyer/notary named, title, funding confirm. HOI binder is **Open**. **SOP columns** stay visible: HOI binder, lawyer named, instructions sent. **What moves this file** shows File #, stage, action owner, docs/action, and lender. A lawyer-signing file with HOI still open cannot be treated as funded. Team My Day still shows one next action per LO, Assistant, UW, Compliance, and Marketing.
 
 ## 24. Assistant (unlicensed) gates
 
@@ -225,4 +225,22 @@ Click **Reset demo**. Switch the header to **Riley Assistant**. Open **Remy Rate
 **Expected:** You can complete an already-unlocked named chase such as **Pre-approval · 2 pay stubs** or **Pre-approval · Collect ID**. You can leave a note. **Move stage** to **Application** does not work. A note says Assistant cannot accept an application.
 
 Open **Alex Example**. Application · PSA stays disabled for Assistant. There is no submit-to-lender button. Shop UW remains Casey’s seat, not this one.
+
+## 25. Funding confirm, On Hold, and what moves a file
+
+Click **Reset demo**. On **Pipeline**, find **Haven Holdfile** in **On Hold**.
+
+**Expected:** The card is not in Funded. Funded in Fileflow on the file is **No**. Close date can be present. The file still has a next action. File #, stage, action owner, docs/action, and lender are on the card.
+
+Find **Idris Coldfile** in **Inactive**. That column is a side door, not a happy-path column. No unlocked work.
+
+Open **Skyler Placeholder**.
+
+**Expected:** Stage is Funded. Funding confirm is on file (date and reference **FC-SKYLER-2026-02**). Funded in Fileflow is **Yes**. Close pack rows are visible, not silently empty.
+
+Open **Parker Placeholder** again. **Move stage** to **Funded** without a funding confirm.
+
+**Expected:** The file stays in Lawyer signing. A note says funding confirm is required and/or HOI binder is still open. Close date is not proof. MOS close date is not proof.
+
+Switch to **Riley Assistant**. On Parker, there is no working **Record funding confirm** control (Assistant cannot record it).
 

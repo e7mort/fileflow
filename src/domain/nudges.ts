@@ -17,7 +17,12 @@ export function daysSinceTouch(deal: Deal, today: Date): number {
 }
 
 export function isStaleFile(deal: Deal, today: Date): boolean {
-  if (deal.stage === "funded" || deal.stage === "review" || deal.stage === "fallen-through") {
+  if (
+    deal.stage === "funded" ||
+    deal.stage === "review" ||
+    deal.stage === "fallen-through" ||
+    deal.stage === "inactive"
+  ) {
     return false;
   }
   return daysSinceTouch(deal, today) >= STALE_AFTER_DAYS;

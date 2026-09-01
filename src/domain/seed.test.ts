@@ -12,13 +12,15 @@ describe("seedDeals", () => {
   it("seeds 8–12 fictional files across all three books and both terminal stages", () => {
     const deals = seedDeals();
     expect(deals.length).toBeGreaterThanOrEqual(8);
-    expect(deals.length).toBeLessThanOrEqual(16);
+    expect(deals.length).toBeLessThanOrEqual(18);
     for (const book of BOOKS) {
       expect(deals.filter((deal) => deal.book === book).length).toBeGreaterThanOrEqual(2);
     }
     expect(deals.some((deal) => deal.stage === "funded")).toBe(true);
     expect(deals.some((deal) => deal.stage === "review")).toBe(true);
     expect(deals.some((deal) => deal.stage === "fallen-through")).toBe(true);
+    expect(deals.some((deal) => deal.stage === "on-hold")).toBe(true);
+    expect(deals.some((deal) => deal.stage === "inactive")).toBe(true);
   });
 
   it("includes waiting-on handoffs and never invents an owner on Robin Fiction", () => {

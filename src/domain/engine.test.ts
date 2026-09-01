@@ -122,14 +122,22 @@ describe("isTaskUnlocked", () => {
     expect(isTaskUnlocked(income, "conditional")).toBe(true);
   });
 
-  it("locks leftover application work on funded files, and all work on fallen-through", () => {
+  it("locks leftover application work on funded files, and all work on fallen-through or inactive", () => {
     const income = task({
       id: "t-inc",
       title: "Collect income docs",
       unlockStages: ["lead", "application"],
     });
+    const funding = task({
+      id: "t-fund",
+      title: "Funded · Funding confirm",
+      unlockStages: ["funded"],
+    });
     expect(isTaskUnlocked(income, "funded")).toBe(false);
     expect(isTaskUnlocked(income, "fallen-through")).toBe(false);
+    expect(isTaskUnlocked(income, "inactive")).toBe(false);
+    expect(isTaskUnlocked(income, "on-hold")).toBe(true);
+    expect(isTaskUnlocked(funding, "on-hold")).toBe(false);
   });
 });
 

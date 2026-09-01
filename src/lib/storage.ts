@@ -4,7 +4,7 @@ import { seedPulses } from "../domain/partners";
 import { seedDeals, seedInvoices } from "../domain/seed";
 import { STAGES, BOOKS } from "../types";
 
-export const STORAGE_KEY = "fileflow-demo-v6";
+export const STORAGE_KEY = "fileflow-demo-v7";
 
 export type PersistedState = {
   deals: Deal[];
@@ -38,7 +38,8 @@ function isDeal(value: unknown): value is Deal {
     typeof value.lastTouchedAt === "string" &&
     typeof value.fileNumber === "string" &&
     typeof value.mosFileId === "string" &&
-    typeof value.fileKey === "string"
+    typeof value.fileKey === "string" &&
+    (value.fundingConfirmRef === null || typeof value.fundingConfirmRef === "string")
   );
 }
 

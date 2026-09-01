@@ -11,6 +11,8 @@ export const STAGES = [
   "funded",
   "review",
   "fallen-through",
+  "on-hold",
+  "inactive",
 ] as const;
 
 export type Stage = (typeof STAGES)[number];
@@ -115,6 +117,7 @@ export type FileIdentity = {
   fileKey: string;
   spreadsheetDealKey: string;
   fundedAt: string | null;
+  fundingConfirmRef: string | null;
   mosCloseDate: string | null;
   mosDocumentFlags: string | null;
   payoutAmount: number;
@@ -145,6 +148,7 @@ export function alignedFileIdentity(
     fileKey: extra.fileKey ?? extra.mosFileId ?? fileNumber,
     spreadsheetDealKey: extra.spreadsheetDealKey ?? fileNumber,
     fundedAt: extra.fundedAt ?? null,
+    fundingConfirmRef: extra.fundingConfirmRef ?? null,
     mosCloseDate: extra.mosCloseDate ?? null,
     mosDocumentFlags: extra.mosDocumentFlags ?? null,
     payoutAmount: extra.payoutAmount ?? 0,

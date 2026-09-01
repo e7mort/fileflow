@@ -13,6 +13,8 @@ export const STAGE_LABELS: Record<Stage, string> = {
   funded: "Funded",
   review: "Review",
   "fallen-through": "Fallen through",
+  "on-hold": "On Hold",
+  inactive: "Inactive",
 };
 
 export const STAGE_NOTES: Partial<Record<Stage, string>> = {
@@ -20,6 +22,8 @@ export const STAGE_NOTES: Partial<Record<Stage, string>> = {
   "lender-uw": "Lender owns this column, not shop UW.",
   "lawyer-signing": "Not funded. HOI binder with loss payee before funds.",
   review: "Invoice match is commission / payout, not borrower income.",
+  "on-hold": "Open file. Not funded. Close date does not move this file.",
+  inactive: "Terminal. No open action.",
 };
 
 export const STAGE_DEFAULT_NEXT: Record<Stage, string> = {
@@ -35,6 +39,8 @@ export const STAGE_DEFAULT_NEXT: Record<Stage, string> = {
   funded: "Confirm funding, closing statement, and registered charge",
   review: "Match the lender invoice and close the file",
   "fallen-through": "File fallen through. No open action.",
+  "on-hold": "File is on hold. Next action stays open. This is not funded.",
+  inactive: "File is inactive. No open action.",
 };
 
 export function stageIndex(stage: Stage): number {
@@ -42,7 +48,7 @@ export function stageIndex(stage: Stage): number {
 }
 
 export function isTerminalStage(stage: Stage): boolean {
-  return stage === "fallen-through";
+  return stage === "fallen-through" || stage === "inactive";
 }
 
 export function isStage(value: string): value is Stage {

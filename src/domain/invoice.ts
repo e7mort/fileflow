@@ -34,8 +34,12 @@ export function isConflicting(deal: Deal): boolean {
   return deal.fileNumber !== deal.mosFileId || deal.fileNumber !== deal.fileKey;
 }
 
+export function hasFundingConfirm(deal: Pick<Deal, "fundedAt" | "fundingConfirmRef">): boolean {
+  return Boolean(deal.fundedAt) || Boolean(deal.fundingConfirmRef?.trim());
+}
+
 export function isFundedInFileflow(deal: Deal): boolean {
-  return deal.stage === "funded" || deal.stage === "review" || deal.fundedAt != null;
+  return hasFundingConfirm(deal);
 }
 
 export function identityMatches(invoice: Invoice, deal: Deal): boolean {

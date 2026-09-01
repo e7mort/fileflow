@@ -10,7 +10,9 @@ import { hrefFor } from "../lib/route";
 import { useStore } from "../store/store";
 import { STAGES, type Deal } from "../types";
 import { BookBadge } from "./BookBadge";
+import { ClosePackPanel } from "./ClosePackPanel";
 import { ConditionsList } from "./ConditionsList";
+import { FileMover } from "./FileMover";
 import { InvoiceMatchPanel } from "./InvoiceMatchPanel";
 import { Mentions } from "./Mentions";
 import { NextActionPanel } from "./NextActionPanel";
@@ -169,6 +171,10 @@ export function DealView({ deal }: { deal: Deal }) {
         </div>
       ) : null}
       <div className="file-grid">
+        <section className="panel" data-testid="file-mover-panel">
+          <h2>What moves this file</h2>
+          <FileMover deal={deal} />
+        </section>
         <section className="panel">
           <h2>File</h2>
           <div className="facts">
@@ -203,8 +209,8 @@ export function DealView({ deal }: { deal: Deal }) {
               <p>{formatCad(deal.amount)}</p>
             </div>
             <div className="fact">
-              <label>Close date</label>
-              <p>{formatDate(deal.closeDate)}</p>
+              <label>Close date (secondary)</label>
+              <p className="mover-close">{formatDate(deal.closeDate)}</p>
             </div>
             <div className="fact">
               <label>Maturity / renewal</label>
@@ -214,6 +220,7 @@ export function DealView({ deal }: { deal: Deal }) {
           </div>
         </section>
         <NextActionPanel deal={deal} />
+        <ClosePackPanel deal={deal} />
         <InvoiceMatchPanel deal={deal} />
         <PartiesPanel deal={deal} />
         <ConditionsList deal={deal} />

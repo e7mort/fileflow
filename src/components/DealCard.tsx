@@ -7,6 +7,7 @@ import { formatCad, formatDate } from "../lib/format";
 import { hrefFor } from "../lib/route";
 import type { Deal } from "../types";
 import { BookBadge } from "./BookBadge";
+import { FileMover } from "./FileMover";
 import { TouchBadge } from "./TouchBadge";
 
 export function DealCard({ deal }: { deal: Deal }) {
@@ -36,6 +37,7 @@ export function DealCard({ deal }: { deal: Deal }) {
       </div>
       <p className="borrower">{borrower.name}</p>
       <p className="amount">{formatCad(deal.amount)}</p>
+      <FileMover deal={deal} compact />
       {maturitySoon && deal.maturityDate ? (
         <div className="maturity-chip" data-testid={`maturity-${deal.id}`}>
           Renewal {formatDate(deal.maturityDate)}

@@ -107,7 +107,7 @@ describe("shop roles", () => {
 });
 
 describe("canada board", () => {
-  it("uses the Canada pipeline and keeps Fallen through as a side door", () => {
+  it("uses the Canada pipeline and keeps Fallen through, On Hold, and Inactive as side doors", () => {
     expect(STAGES).toEqual([
       "lead",
       "discovery",
@@ -121,16 +121,23 @@ describe("canada board", () => {
       "funded",
       "review",
       "fallen-through",
+      "on-hold",
+      "inactive",
     ]);
     expect(STAGE_LABELS["lender-uw"]).toBe("Lender UW");
     expect(STAGE_LABELS["lawyer-signing"]).toBe("Lawyer signing");
+    expect(STAGE_LABELS["on-hold"]).toBe("On Hold");
+    expect(STAGE_LABELS.inactive).toBe("Inactive");
     expect(STAGE_NOTES["lender-uw"]).toMatch(/lender owns this column/i);
     expect(STAGE_NOTES["lawyer-signing"]).toMatch(/not funded/i);
     expect(STAGE_NOTES["pre-approval"]).toMatch(/rate hold is not approval/i);
+    expect(STAGE_NOTES["on-hold"]).toMatch(/not funded/i);
     expect(isTerminalStage("lawyer-signing")).toBe(false);
     expect(isTerminalStage("funded")).toBe(false);
     expect(isTerminalStage("review")).toBe(false);
+    expect(isTerminalStage("on-hold")).toBe(false);
     expect(isTerminalStage("fallen-through")).toBe(true);
+    expect(isTerminalStage("inactive")).toBe(true);
   });
 });
 
@@ -206,6 +213,9 @@ describe("stage-gated docs", () => {
     expect(isTaskUnlocked(invoice, "review")).toBe(true);
     expect(isTaskUnlocked(stubs, "funded")).toBe(false);
     expect(isTaskUnlocked(stubs, "fallen-through")).toBe(false);
+    expect(isTaskUnlocked(stubs, "inactive")).toBe(false);
+    expect(isTaskUnlocked(stubs, "on-hold")).toBe(true);
+    expect(isTaskUnlocked(invoice, "on-hold")).toBe(false);
   });
 });
 
@@ -276,6 +286,7 @@ describe("lawyer-signing is not funded", () => {
     expect(canAdvanceToFunded(deal, "instructions")).toBe(true);
     const cleared = { ...deal, tasks: deal.tasks.map((item) => ({ ...item, completed: true })) };
     expect(canAdvanceToFunded(cleared, "funded")).toBe(true);
+    expect(stageAdvanceBlock(cleared, "funded", "lo")).toMatch(/HOI binder/i);
   });
 
   it("does not treat review close-out AML as a funded gate", () => {
@@ -291,6 +302,66 @@ describe("lawyer-signing is not funded", () => {
       ],
     });
     expect(canAdvanceToFunded(deal, "funded")).toBe(true);
+  });
+
+  it("blocks Funded while HOI binder is open, even when AML is done", () => {
+    const deal = resiDeal({
+      stage: "lawyer-signing",
+      fundedAt: "2026-08-14",
+      fundingConfirmRef: "FC-TEST",
+      tasks: [
+        task({
+          id: "t-aml",
+          templateId: "tpl-aml-check",
+          title: "Lawyer signing · AML / ID verification",
+          unlockStages: ["lawyer-signing"],
+          kind: "compliance",
+          completed: true,
+        }),
+        task({
+          id: "t-hoi",
+          templateId: "tpl-hoi-binder",
+          title: "Lawyer signing · HOI binder with loss payee (before funds)",
+          unlockStages: ["lawyer-signing"],
+        }),
+      ],
+    });
+    expect(stageAdvanceBlock(deal, "funded", "lo")).toMatch(/HOI binder/i);
+    expect(stageAdvanceBlock(deal, "review", "lo")).toMatch(/HOI binder/i);
+    const hoiDone = { ...deal, tasks: deal.tasks.map((item) => ({ ...item, completed: true })) };
+    expect(stageAdvanceBlock(hoiDone, "funded", "lo")).toBeNull();
+  });
+
+  it("blocks Funded without a funding confirm even when close date and AML/HOI are done", () => {
+    const deal = resiDeal({
+      stage: "lawyer-signing",
+      closeDate: "2026-08-27",
+      fundedAt: null,
+      fundingConfirmRef: null,
+      mosCloseDate: "2026-08-01",
+      tasks: [
+        task({
+          id: "t-aml",
+          templateId: "tpl-aml-check",
+          title: "Lawyer signing · AML / ID verification",
+          unlockStages: ["lawyer-signing"],
+          kind: "compliance",
+          completed: true,
+        }),
+        task({
+          id: "t-hoi",
+          templateId: "tpl-hoi-binder",
+          title: "Lawyer signing · HOI binder with loss payee (before funds)",
+          unlockStages: ["lawyer-signing"],
+          completed: true,
+        }),
+      ],
+    });
+    expect(stageAdvanceBlock(deal, "funded", "lo")).toMatch(/funding confirm required/i);
+    expect(stageAdvanceBlock(deal, "funded", "lo")).toMatch(/close date is not proof/i);
+    expect(
+      stageAdvanceBlock({ ...deal, fundedAt: "2026-08-14" }, "funded", "lo"),
+    ).toBeNull();
   });
 });
 
@@ -330,6 +401,7 @@ describe("seed spine", () => {
 
     const parker = deals.find((deal) => primaryBorrower(deal).name === "Parker Placeholder");
     expect(parker?.stage).toBe("lawyer-signing");
+    expect(parker?.closeDate).toBe("2026-08-27");
     expect(isFundedInFileflow(parker!)).toBe(false);
     expect(parker?.nextAction.title).toContain("AML / ID verification");
     expect(parker?.nextAction.ownerId).toBe("p-finley");

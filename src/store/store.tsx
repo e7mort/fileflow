@@ -24,12 +24,13 @@ import {
   clearHandoff,
   completeTask,
   moveStage,
+  recordFundingConfirm,
   setHandoff,
 } from "../domain/engine";
 import { DEMO_TODAY } from "../domain/maturity";
 import { pulseForStageMove } from "../domain/partners";
 import { addParty, type AddPartyResult } from "../domain/parties";
-import { TEAM, canCompleteTask, canEditDocList, canMutateFiles, personById, stageAdvanceBlock } from "../domain/team";
+import { TEAM, canCompleteTask, canEditDocList, canMutateFiles, canRecordFundingConfirm, personById, stageAdvanceBlock } from "../domain/team";
 import { logFirstTouch, touchDeal } from "../domain/touch";
 
 import { defaultState, loadState, saveState } from "../lib/storage";
@@ -46,10 +47,15 @@ type Store = {
   canWrite: boolean;
   canEditDocs: boolean;
   canCompleteDealTask: (dealId: DealId, taskId: TaskId) => boolean;
+  canRecordFunding: boolean;
   stageBlocked: (dealId: DealId, stage: Stage) => string | null;
   setCurrentPersonId: (id: PersonId) => void;
   completeDealTask: (dealId: DealId, taskId: TaskId) => void;
   changeStage: (dealId: DealId, stage: Stage) => void;
+  recordDealFundingConfirm: (
+    dealId: DealId,
+    input: { fundedAt: string | null; fundingConfirmRef: string | null },
+  ) => void;
   handoff: (dealId: DealId, waitingOn: Handoff) => void;
   finishHandoff: (dealId: DealId) => void;
   mention: (dealId: DealId, body: string) => void;
@@ -101,6 +107,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
         return canCompleteTask(currentPerson.role, task);
       },
+      canRecordFunding: canRecordFundingConfirm(currentPerson.role),
       stageBlocked: (dealId, stage) => {
         const deal = state.deals.find((item) => item.id === dealId);
         if (!deal) {
@@ -136,6 +143,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ...state,
           deals: updateDeal(state.deals, dealId, () => moved),
           pulses: pulse ? [pulse, ...state.pulses] : state.pulses,
+        });
+      },
+      recordDealFundingConfirm: (dealId, input) => {
+        if (!canRecordFundingConfirm(currentPerson.role)) {
+          return;
+        }
+        persist({
+          ...state,
+          deals: updateDeal(state.deals, dealId, (deal) =>
+            touchDeal(recordFundingConfirm(deal, input), demoNow()),
+          ),
         });
       },
       handoff: (dealId, waitingOn) => {

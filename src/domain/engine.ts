@@ -32,8 +32,11 @@ export function instantiateTasks(input: {
 }
 
 export function isTaskUnlocked(task: Task, stage: Stage): boolean {
-  if (stage === "fallen-through") {
+  if (stage === "fallen-through" || stage === "inactive") {
     return false;
+  }
+  if (stage === "on-hold") {
+    return earliestUnlockIndex(task.unlockStages) < stageIndex("funded");
   }
   if (stage === "funded" || stage === "review") {
     return task.unlockStages.includes(stage);
@@ -90,6 +93,15 @@ export function assignNextAction(deal: Deal): Deal {
       waitingOn: null,
     },
   };
+}
+
+export function recordFundingConfirm(
+  deal: Deal,
+  input: { fundedAt: string | null; fundingConfirmRef: string | null },
+): Deal {
+  const fundedAt = input.fundedAt?.trim() || null;
+  const fundingConfirmRef = input.fundingConfirmRef?.trim() || null;
+  return { ...deal, fundedAt, fundingConfirmRef };
 }
 
 export function completeTask(deal: Deal, taskId: TaskId): Deal {

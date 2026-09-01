@@ -82,9 +82,9 @@ export function InvoiceMatchPanel({ deal }: { deal: Deal }) {
         </div>
       </div>
       <p className="subtle">
-        Funded is the Fileflow stage (Funded or Review) or an explicit funded date
-        on this file. MOS close date and MOS document flags are not proof the file
-        funded.
+        Funded requires an explicit funding confirm (date or reference) on
+        this file. Stage, close date, MOS close date, and MOS document flags
+        are not proof the file funded.
       </p>
       <h3 className="invoice-subhead">Bound invoices</h3>
       {bound.length === 0 ? (

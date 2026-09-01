@@ -11,8 +11,8 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 ## What you should see
 
 - A persistent banner on every screen: this is a demo, not a live lender system, not advice.
-- A pipeline board with Canada stages: Lead, Discovery, Pre-approval, Application, Lender UW, Conditional, File complete, Instructions, Lawyer signing, Funded, Review, plus Fallen through as a side door. Lender UW is the lender’s column. Lawyer signing is not funded.
-- Cards that show borrower, amount (CAD), the next action, and whether the file is waiting on someone.
+- A pipeline board with Canada stages: Lead, Discovery, Pre-approval, Application, Lender UW, Conditional, File complete, Instructions, Lawyer signing, Funded, Review, plus side doors Fallen through, On Hold, and Inactive. Lender UW is the lender’s column. Lawyer signing is not funded. An open file can sit On Hold without looking funded.
+- Cards that show File #, stage, action owner, docs/action, and lender. Close date is secondary. Borrower, amount (CAD), the next action, and whether the file is waiting on someone stay on the card.
 - A people switcher for a five-seat fictional shop. Roles, not names. There is no login.
   - Morgan Broker (LO)
   - Riley Assistant (Assistant)
@@ -24,14 +24,14 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
   - Residential: purchase / refinance / renewal / switch, insured or uninsured, stress test as a field (rate or status).
   - Commercial: DSCR and NOI, rent roll / leases, a different condition set.
   - Private: term, exit, broker fee, lawyer / notary, first or second position, a shorter checklist.
-- File view: borrowers (more than one is allowed), realtor, lawyer / notary, property, lender, product, amount, close date, maturity date, an editable conditions list (no document vault), invoice match (commission / payout tracking, not borrower income), the loud next action, the book-specific checklist, in-app @mentions, and a first-class handoff (person + reason + due).
-- Invoice join: operational File # first, else MOS file id or FILEKEY. Never client name. Never a spreadsheet deal key alone. A file whose File # disagrees with MOS id / FILEKEY is **CONFLICTING**. Funded is the Fileflow stage or an explicit funded date — not a MOS close date or document flag. Unmatched invoices live at `#/invoices`.
+- File view: borrowers (more than one is allowed), realtor, lawyer / notary, property, lender, product, amount, close date (secondary), maturity date, an editable conditions list (no document vault), close pack (signed commitment, compliance sent, HOI binder, lawyer named, title, funding confirm — always shown), SOP columns (HOI binder, lawyer named, instructions sent), invoice match (commission / payout tracking, not borrower income), the loud next action, the book-specific checklist, in-app @mentions, and a first-class handoff (person + reason + due).
+- Invoice join: operational File # first, else MOS file id or FILEKEY. Never client name. Never a spreadsheet deal key alone. A file whose File # disagrees with MOS id / FILEKEY is **CONFLICTING**. Funded requires an explicit funding confirm (date or reference) — not stage, close date, MOS close date, or a MOS document flag. Unmatched invoices live at `#/invoices`.
 - A 4-month maturity / renewal reminder on the card and the file when the date is in that window. Sidney Sample is inside the window. Alex Example is not.
 - A **Calendar** of next-action dues and maturity dates. Click an item to open the file.
 - Adding a person who is already on the file is blocked. The UI says they are already assigned.
 - **Today** is Team My Day: one next action per role, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
 - Stage-gated docs follow the public CA pack and are labeled on the checklist (Pre-approval through Review). Commercial and private keep extras (NOI/DSCR, private term/exit/fee) on top. There is no submit-to-Filogix button.
-- Shop UW is file-complete / conditions inside the shop, not lender UW. Assistant (unlicensed) can chase named income docs and schedule, and cannot accept an application, add to the doc list, vet PSA, discuss commitments, or act as UW. Compliance can complete AML items. Files cannot be funded while AML at lawyer signing is open. Marketing cannot mutate files.
+- Shop UW is file-complete / conditions inside the shop, not lender UW. Assistant (unlicensed) can chase named income docs and schedule, and cannot accept an application, add to the doc list, vet PSA, discuss commitments, act as UW, or record a funding confirm. Compliance can complete AML items. Files cannot be funded while AML at lawyer signing is open, while HOI binder is open, or without a funding confirm. Marketing cannot mutate files.
 - **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
 - **Share checklist** (`#/share/d-alex`, full URL on the page) is a borrower-facing conditions list. Mark received. No vault.
 
@@ -62,7 +62,7 @@ npm run dev
 
 Open the URL Vite prints (usually http://localhost:5173). No account. No email. No payments.
 
-Demo data lives in the browser (`localStorage`). Completing a task or moving a stage survives a refresh. **Reset demo** in the header puts the seed back. The current persist key is `fileflow-demo-v6`.
+Demo data lives in the browser (`localStorage`). Completing a task or moving a stage survives a refresh. **Reset demo** in the header puts the seed back. The current persist key is `fileflow-demo-v7`.
 
 ## Tests
 

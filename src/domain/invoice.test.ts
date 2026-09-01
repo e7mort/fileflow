@@ -51,6 +51,7 @@ function file(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
     fileKey: "FF-003",
     spreadsheetDealKey: "SS-SIDNEY",
     fundedAt: null,
+    fundingConfirmRef: null,
     mosCloseDate: "2026-08-01",
     mosDocumentFlags: "funded-docs",
     payoutAmount: 4620,
@@ -179,21 +180,38 @@ describe("conflicting ids and funded proof", () => {
     ).toBe(true);
   });
 
-  it("treats Fileflow stage or funded date as funded, not MOS close date or document flags", () => {
-    expect(isFundedInFileflow(file({ stage: "application", fundedAt: null }))).toBe(false);
-    expect(isFundedInFileflow(file({ stage: "funded", fundedAt: null }))).toBe(true);
-    expect(isFundedInFileflow(file({ stage: "review", fundedAt: null }))).toBe(true);
-    expect(isFundedInFileflow(file({ stage: "application", fundedAt: "2026-07-30" }))).toBe(true);
+  it("treats only an explicit funding confirm as funded, not stage, close date, or MOS close", () => {
+    expect(isFundedInFileflow(file({ stage: "application", fundedAt: null, fundingConfirmRef: null }))).toBe(
+      false,
+    );
+    expect(isFundedInFileflow(file({ stage: "funded", fundedAt: null, fundingConfirmRef: null }))).toBe(false);
+    expect(isFundedInFileflow(file({ stage: "review", fundedAt: null, fundingConfirmRef: null }))).toBe(false);
+    expect(
+      isFundedInFileflow(
+        file({
+          stage: "lawyer-signing",
+          closeDate: "2026-08-27",
+          fundedAt: null,
+          fundingConfirmRef: null,
+        }),
+      ),
+    ).toBe(false);
     expect(
       isFundedInFileflow(
         file({
           stage: "lawyer-signing",
           fundedAt: null,
+          fundingConfirmRef: null,
+          closeDate: "2026-08-27",
           mosCloseDate: "2026-07-28",
           mosDocumentFlags: "funded-docs",
         }),
       ),
     ).toBe(false);
+    expect(isFundedInFileflow(file({ stage: "lawyer-signing", fundedAt: "2026-08-01" }))).toBe(true);
+    expect(
+      isFundedInFileflow(file({ stage: "application", fundedAt: null, fundingConfirmRef: "FC-TEST-1" })),
+    ).toBe(true);
   });
 
   it("requires FILEKEY + lender + payout amount + tracking status/date for identity", () => {

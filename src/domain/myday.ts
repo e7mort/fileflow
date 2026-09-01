@@ -48,7 +48,9 @@ function compareLoudest(personId: string, today: Date) {
 }
 
 export function loudestForPerson(deals: Deal[], personId: string, today: Date = DEMO_TODAY): Deal | null {
-  const active = deals.filter((deal) => deal.stage !== "fallen-through");
+  const active = deals.filter(
+    (deal) => deal.stage !== "fallen-through" && deal.stage !== "inactive",
+  );
   const waiting = active.filter((deal) => deal.nextAction.waitingOn?.personId === personId);
   const owned = active.filter((deal) => deal.nextAction.ownerId === personId);
   const pool = [

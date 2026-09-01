@@ -271,11 +271,14 @@ export function seedDeals(): Deal[] {
             id: "d-quinn",
             book: "residential",
             stage: "lawyer-signing",
-            parties: people("d-quinn", {
-              name: "Parker Placeholder",
-              email: "parker.placeholder@example.test",
-              phone: "613-555-0162",
-            }),
+            parties: people(
+              "d-quinn",
+              {
+                name: "Parker Placeholder",
+                email: "parker.placeholder@example.test",
+                phone: "613-555-0162",
+              },
+            ),
             property: { address: "50 Demo Sideroad, Faketown ON K1A 0A1" },
             lender: "Northpine Bank",
             product: "5-year fixed",
@@ -449,11 +452,23 @@ export function seedDeals(): Deal[] {
         id: "d-skyler",
         book: "residential",
         stage: "funded",
-        parties: people("d-skyler", {
-          name: "Skyler Placeholder",
-          email: "skyler.placeholder@example.test",
-          phone: "705-555-0190",
-        }),
+        parties: people(
+          "d-skyler",
+          {
+            name: "Skyler Placeholder",
+            email: "skyler.placeholder@example.test",
+            phone: "705-555-0190",
+          },
+          [
+            {
+              id: "d-skyler-lawyer",
+              role: "lawyer",
+              name: "Lee Counsel",
+              email: "lee.counsel@example.test",
+              phone: "705-555-0191",
+            },
+          ],
+        ),
         property: { address: "21 Mockingbird Way, Testham ON P3A 0A1" },
         lender: "Harbour Credit Union",
         product: "5-year fixed",
@@ -747,6 +762,78 @@ export function seedDeals(): Deal[] {
     "fallen-through",
   );
 
+  const haven = finish(
+    markDone(
+      assignOwners(
+        {
+          id: "d-haven",
+          book: "residential",
+          stage: "on-hold",
+          parties: people("d-haven", {
+            name: "Haven Holdfile",
+            email: "haven.holdfile@example.test",
+            phone: "416-555-0288",
+          }),
+          property: { address: "6 Pause Court, Holdtown ON M4M 0A1" },
+          lender: "Cedar Trust",
+          product: "5-year fixed",
+          amount: 495000,
+          closeDate: "2026-10-08",
+          maturityDate: null,
+          conditions: openConditions("d-haven", ["Updated pay stubs after parental leave"]),
+          purpose: "purchase",
+          insurance: "uninsured",
+          stressTest: { kind: "status", status: "pending" },
+          nextAction: {
+            taskId: null,
+            title: "",
+            ownerId: null,
+            due: null,
+            waitingOn: null,
+          },
+          tasks: instantiateTasks({ book: "residential" }),
+          mentions: [],
+        },
+        { "tpl-commitment": "p-morgan", "tpl-outstanding": "p-casey" },
+      ),
+      idsBefore("residential", "conditional"),
+    ),
+    "on-hold",
+  );
+
+  const idris = finish(
+    {
+      id: "d-idris",
+      book: "residential",
+      stage: "inactive",
+      parties: people("d-idris", {
+        name: "Idris Coldfile",
+        email: "idris.coldfile@example.test",
+        phone: "519-555-0290",
+      }),
+      property: { address: "18 Shelf Street, Coldton ON N6A 0A1" },
+      lender: "Not assigned",
+      product: "Not selected",
+      amount: 320000,
+      closeDate: "2026-09-01",
+      maturityDate: null,
+      conditions: [],
+      purpose: "refinance",
+      insurance: "uninsured",
+      stressTest: { kind: "status", status: "pending" },
+      nextAction: {
+        taskId: null,
+        title: "",
+        ownerId: null,
+        due: null,
+        waitingOn: null,
+      },
+      tasks: instantiateTasks({ book: "residential" }),
+      mentions: [],
+    },
+    "inactive",
+  );
+
   const withNotes = [
     addMention(alex, {
       authorId: "p-morgan",
@@ -786,6 +873,8 @@ export function seedDeals(): Deal[] {
     stampTouch(withNotes[3] ?? harper, "2026-08-14T09:20:00.000Z", "2026-08-01T12:00:00.000Z"),
     stampTouch(reese, "2026-08-08T12:00:00.000Z", "2026-07-22T12:00:00.000Z"),
     stampTouch(blake, "2026-07-20T12:00:00.000Z", "2026-06-15T12:00:00.000Z"),
+    stampTouch(haven, "2026-08-10T12:00:00.000Z", "2026-07-12T12:00:00.000Z"),
+    stampTouch(idris, "2026-06-01T12:00:00.000Z", "2026-05-01T12:00:00.000Z"),
   ];
 
   return stamped.map((deal) => ({ ...deal, ...fileIdentityFor(deal.id) }));
@@ -816,6 +905,8 @@ const FILE_IDENTITIES: Record<string, FileIdentity> = {
     payoutAmount: 6336,
     payoutTrackingStatus: "Pending",
     payoutTrackingDate: "2026-08-12",
+    mosCloseDate: "2026-08-01",
+    mosDocumentFlags: "Close date on MOS",
   }),
   "d-robin": alignedFileIdentity("FF-005"),
   "d-kit": alignedFileIdentity("FF-006"),
@@ -827,6 +918,7 @@ const FILE_IDENTITIES: Record<string, FileIdentity> = {
   }),
   "d-skyler": alignedFileIdentity("FF-007", {
     fundedAt: "2026-02-10",
+    fundingConfirmRef: "FC-SKYLER-2026-02",
     payoutAmount: 4680,
     payoutTrackingStatus: "Posted",
     payoutTrackingDate: "2026-02-12",
@@ -843,6 +935,7 @@ const FILE_IDENTITIES: Record<string, FileIdentity> = {
   }),
   "d-drew": alignedFileIdentity("FF-010", {
     fundedAt: "2026-06-18",
+    fundingConfirmRef: "FC-DREW-2026-06",
     payoutAmount: 19200,
     payoutTrackingStatus: "Posted",
     payoutTrackingDate: "2026-06-20",
@@ -858,6 +951,12 @@ const FILE_IDENTITIES: Record<string, FileIdentity> = {
     payoutTrackingDate: "2026-08-08",
   }),
   "d-blake": alignedFileIdentity("FF-013"),
+  "d-haven": alignedFileIdentity("FF-016", {
+    payoutAmount: 5940,
+    payoutTrackingStatus: "Not tracked",
+    payoutTrackingDate: null,
+  }),
+  "d-idris": alignedFileIdentity("FF-017"),
 };
 
 function fileIdentityFor(dealId: string): FileIdentity {

@@ -7,8 +7,9 @@ import { BOOKS, STAGES, type Book, type Stage } from "../types";
 import { DealCard } from "./DealCard";
 
 export function Board({ book }: { book: Book | "all" }) {
-  const { deals, changeStage, canWrite } = useStore();
+  const { deals, changeStage, canWrite, stageBlocked } = useStore();
   const [overStage, setOverStage] = useState<Stage | null>(null);
+  const [dropGate, setDropGate] = useState<string | null>(null);
   const visible = deals.filter((deal) => book === "all" || deal.book === book);
 
   return (
@@ -19,7 +20,9 @@ export function Board({ book }: { book: Book | "all" }) {
           <p className="subtle">
             Mortgage-native Canada stages. One next action on every file.
             Lender UW is the lender's column. Shop UW is file-complete /
-            conditions. Filter the three books or leave it on all.
+            conditions. On Hold and Inactive are side doors — an open file can
+            sit On Hold without looking funded. Filter the three books or leave
+            it on all.
           </p>
         </div>
         <div className="book-filter" data-testid="book-filter">
@@ -38,6 +41,11 @@ export function Board({ book }: { book: Book | "all" }) {
           ))}
         </div>
       </div>
+      {dropGate ? (
+        <p className="viewer-note" data-testid="board-stage-gate">
+          {dropGate}
+        </p>
+      ) : null}
       <div className="board" data-testid="board">
         {STAGES.map((stage) => {
           const columnDeals = visible.filter((deal) => deal.stage === stage);
@@ -59,6 +67,12 @@ export function Board({ book }: { book: Book | "all" }) {
                 setOverStage(null);
                 const dealId = event.dataTransfer.getData("text/plain");
                 if (dealId && canWrite) {
+                  const blocked = stageBlocked(dealId, stage);
+                  if (blocked) {
+                    setDropGate(blocked);
+                    return;
+                  }
+                  setDropGate(null);
                   changeStage(dealId, stage);
                 }
               }}

@@ -1,10 +1,15 @@
+# GitHub Pages deploy. `enablement: true` asks GitHub to create the Pages
+# site if it is missing. That still does not replace a human click:
+# Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Until that is set, GET /repos/e7mort/fileflow/pages is 404 and
+# https://e7mort.github.io/fileflow/ is not a live demo.
 name: GitHub Pages
 
 on:
   push:
     branches:
       - main
-      - cursor/fileflow-mortgage-crm-94f4
+      - cursor/client-acquisition-system-ee0c
 
 permissions:
   contents: read

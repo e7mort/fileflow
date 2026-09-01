@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { STAGE_LABELS } from "../domain/stages";
+import { STAGE_LABELS, STAGE_NOTES } from "../domain/stages";
 import { bookLabel } from "../lib/format";
 import { hrefFor } from "../lib/route";
 import { useStore } from "../store/store";
@@ -17,8 +17,9 @@ export function Board({ book }: { book: Book | "all" }) {
         <div>
           <h1>Shop pipeline</h1>
           <p className="subtle">
-            Mortgage-native stages. One next action on every file. Filter the
-            three books or leave it on all.
+            Mortgage-native Canada stages. One next action on every file.
+            Lender UW is the lender's column. Shop UW is file-complete /
+            conditions. Filter the three books or leave it on all.
           </p>
         </div>
         <div className="book-filter" data-testid="book-filter">
@@ -66,6 +67,9 @@ export function Board({ book }: { book: Book | "all" }) {
                 <h2>{STAGE_LABELS[stage]}</h2>
                 <span className="count">{columnDeals.length}</span>
               </div>
+              {STAGE_NOTES[stage] ? (
+                <p className="column-note">{STAGE_NOTES[stage]}</p>
+              ) : null}
               {columnDeals.map((deal) => (
                 <DealCard key={deal.id} deal={deal} />
               ))}

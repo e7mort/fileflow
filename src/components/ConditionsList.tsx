@@ -3,7 +3,7 @@ import { useStore } from "../store/store";
 import type { Deal } from "../types";
 
 export function ConditionsList({ deal }: { deal: Deal }) {
-  const { canWrite, addDealCondition, completeDealCondition } = useStore();
+  const { canWrite, canEditDocs, addDealCondition, completeDealCondition, currentPerson } = useStore();
   const [title, setTitle] = useState("");
 
   return (
@@ -40,7 +40,7 @@ export function ConditionsList({ deal }: { deal: Deal }) {
           </div>
         ))
       )}
-      {canWrite ? (
+      {canEditDocs ? (
         <form
           className="row-actions"
           onSubmit={(event) => {
@@ -62,6 +62,10 @@ export function ConditionsList({ deal }: { deal: Deal }) {
             Add condition
           </button>
         </form>
+      ) : currentPerson.role === "processor" ? (
+        <p className="subtle">
+          Processor chases docs the LO already named and cannot add to the list.
+        </p>
       ) : null}
     </section>
   );

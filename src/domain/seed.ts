@@ -1,5 +1,6 @@
 import {
   alignedFileIdentity,
+  type Book,
   type CommercialDeal,
   type Deal,
   type FileIdentity,
@@ -13,6 +14,8 @@ import {
 } from "../types";
 import { openConditions } from "./conditions";
 import { addMention, assignNextAction, instantiateTasks, setHandoff } from "./engine";
+import { stageIndex } from "./stages";
+import { earliestUnlockIndex, templatesForBook } from "./templates";
 
 function people(
   id: string,
@@ -77,6 +80,18 @@ function stampTouch(
   return { ...deal, lastTouchedAt, firstTouchedAt };
 }
 
+function idsBefore(book: Book, stage: Stage): string[] {
+  return templatesForBook(book)
+    .filter((template) => earliestUnlockIndex(template.unlockStages) < stageIndex(stage))
+    .map((template) => template.id);
+}
+
+function idsThrough(book: Book, stage: Stage): string[] {
+  return templatesForBook(book)
+    .filter((template) => earliestUnlockIndex(template.unlockStages) <= stageIndex(stage))
+    .map((template) => template.id);
+}
+
 export function seedDeals(): Deal[] {
   const alex = finish(
       assignOwners(
@@ -124,7 +139,7 @@ export function seedDeals(): Deal[] {
           tasks: instantiateTasks({ book: "residential" }),
           mentions: [],
         },
-        { "tpl-income-docs": "p-morgan", "tpl-application-package": "p-riley", "tpl-id-docs": "p-morgan" },
+        { "tpl-psa": "p-morgan", "tpl-pay-stubs": "p-riley", "tpl-id-docs": "p-morgan" },
       ),
     "application",
     {
@@ -140,7 +155,7 @@ export function seedDeals(): Deal[] {
           {
             id: "d-jordan",
             book: "residential",
-            stage: "submitted",
+            stage: "file-complete",
             parties: people("d-jordan", {
               name: "Jordan Demo",
               email: "jordan.demo@example.test",
@@ -169,20 +184,14 @@ export function seedDeals(): Deal[] {
             tasks: instantiateTasks({ book: "residential" }),
             mentions: [],
           },
-          { "tpl-commitment": "p-casey", "tpl-appraisal": "p-riley" },
+          { "tpl-fresh-stubs": "p-casey", "tpl-hoi-progress": "p-riley" },
         ),
-        [
-          "tpl-id-docs",
-          "tpl-income-docs",
-          "tpl-application-package",
-          "tpl-stress-test",
-          "tpl-submit-lender",
-        ],
+        idsBefore("residential", "file-complete"),
       ),
-    "submitted",
+    "file-complete",
     {
       personId: "p-casey",
-      reason: "Underwriter to review the commitment once it lands",
+      reason: "Shop UW to chase remaining file-complete items",
       due: "2026-08-22",
     },
   );
@@ -248,17 +257,9 @@ export function seedDeals(): Deal[] {
           tasks: instantiateTasks({ book: "residential" }),
           mentions: [],
         },
-        { "tpl-outstanding": "p-casey", "tpl-title": "p-riley" },
+        { "tpl-outstanding": "p-casey", "tpl-disclosures": "p-riley" },
       ),
-      [
-        "tpl-id-docs",
-        "tpl-income-docs",
-        "tpl-application-package",
-        "tpl-stress-test",
-        "tpl-submit-lender",
-        "tpl-commitment",
-        "tpl-appraisal",
-      ],
+      idsBefore("residential", "conditional"),
     ),
     "conditional",
   );
@@ -269,7 +270,7 @@ export function seedDeals(): Deal[] {
           {
             id: "d-quinn",
             book: "residential",
-            stage: "clear-to-close",
+            stage: "lawyer-signing",
             parties: people("d-quinn", {
               name: "Parker Placeholder",
               email: "parker.placeholder@example.test",
@@ -295,24 +296,14 @@ export function seedDeals(): Deal[] {
             tasks: instantiateTasks({ book: "residential" }),
             mentions: [],
           },
-          { "tpl-lawyer": "p-riley", "tpl-insurance": "p-riley", "tpl-aml-check": "p-finley" },
+          { "tpl-aml-check": "p-finley", "tpl-hoi-binder": "p-riley" },
         ),
-        [
-          "tpl-id-docs",
-          "tpl-income-docs",
-          "tpl-application-package",
-          "tpl-stress-test",
-          "tpl-submit-lender",
-          "tpl-commitment",
-          "tpl-appraisal",
-          "tpl-title",
-          "tpl-outstanding",
-        ],
+        idsBefore("residential", "lawyer-signing"),
       ),
-    "clear-to-close",
+    "lawyer-signing",
     {
       personId: "p-riley",
-      reason: "Confirm lawyer has the insurance binder",
+      reason: "Confirm HOI binder with loss payee before funds",
       due: "2026-08-20",
     },
   );
@@ -383,6 +374,75 @@ export function seedDeals(): Deal[] {
     "lead",
   );
 
+  const devon = finish(
+    {
+      id: "d-devon",
+      book: "residential",
+      stage: "discovery",
+      parties: people("d-devon", {
+        name: "Devon Discovery",
+        email: "devon.discovery@example.test",
+        phone: "905-555-0244",
+      }),
+      property: { address: "Not confirmed" },
+      lender: "Not assigned",
+      product: "Not selected",
+      amount: 480000,
+      closeDate: null,
+      maturityDate: null,
+      conditions: [],
+      purpose: "purchase",
+      insurance: "uninsured",
+      stressTest: { kind: "status", status: "pending" },
+      nextAction: {
+        taskId: null,
+        title: "",
+        ownerId: null,
+        due: null,
+        waitingOn: null,
+      },
+      tasks: instantiateTasks({ book: "residential" }),
+      mentions: [],
+    },
+    "discovery",
+  );
+
+  const remy = finish(
+    assignOwners(
+      {
+        id: "d-remy",
+        book: "residential",
+        stage: "pre-approval",
+        parties: people("d-remy", {
+          name: "Remy Ratehold",
+          email: "remy.ratehold@example.test",
+          phone: "416-555-0271",
+        }),
+        property: { address: null },
+        lender: "Northpine Bank",
+        product: "Rate hold — not an approval",
+        amount: 550000,
+        closeDate: null,
+        maturityDate: null,
+        conditions: [],
+        purpose: "purchase",
+        insurance: "uninsured",
+        stressTest: { kind: "status", status: "pending" },
+        nextAction: {
+          taskId: null,
+          title: "",
+          ownerId: null,
+          due: null,
+          waitingOn: null,
+        },
+        tasks: instantiateTasks({ book: "residential" }),
+        mentions: [],
+      },
+      { "tpl-id-docs": "p-morgan", "tpl-pay-stubs": "p-riley" },
+    ),
+    "pre-approval",
+  );
+
   const skyler = finish(
     markDone(
       {
@@ -414,23 +474,7 @@ export function seedDeals(): Deal[] {
         tasks: instantiateTasks({ book: "residential" }),
         mentions: [],
       },
-        [
-          "tpl-id-docs",
-          "tpl-income-docs",
-          "tpl-application-package",
-          "tpl-stress-test",
-          "tpl-submit-lender",
-          "tpl-commitment",
-          "tpl-appraisal",
-          "tpl-title",
-          "tpl-outstanding",
-          "tpl-insurance",
-          "tpl-lawyer",
-          "tpl-aml-check",
-          "tpl-pickup",
-          "tpl-invoice-match",
-          "tpl-aml-closeout",
-        ],
+        idsThrough("residential", "funded"),
     ),
     "funded",
   );
@@ -516,11 +560,11 @@ export function seedDeals(): Deal[] {
             tasks: instantiateTasks({ book: "commercial" }),
             mentions: [],
           },
-          { "tpl-outstanding": "p-casey", "tpl-environmental": "p-riley" },
+          { "tpl-registration-instructions": "p-riley", "tpl-environmental": "p-riley" },
         ),
-        ["tpl-id-docs", "tpl-rent-roll", "tpl-noi", "tpl-dscr", "tpl-submit-lender", "tpl-commitment"],
+        idsBefore("commercial", "instructions"),
       ),
-    "conditional",
+    "instructions",
     {
       personId: "p-riley",
       reason: "Need the current rent roll from the borrower",
@@ -559,21 +603,9 @@ export function seedDeals(): Deal[] {
           tasks: instantiateTasks({ book: "commercial" }),
           mentions: [],
         },
-        { "tpl-pickup": "p-riley", "tpl-invoice-match": "p-riley", "tpl-aml-closeout": "p-finley" },
+        { "tpl-invoice-match": "p-riley", "tpl-aml-closeout": "p-finley" },
       ),
-      [
-        "tpl-id-docs",
-        "tpl-rent-roll",
-        "tpl-noi",
-        "tpl-dscr",
-        "tpl-submit-lender",
-        "tpl-commitment",
-        "tpl-appraisal",
-        "tpl-environmental",
-        "tpl-outstanding",
-        "tpl-lawyer",
-        "tpl-aml-check",
-      ],
+      idsThrough("commercial", "funded"),
     ),
     "review",
   );
@@ -637,7 +669,7 @@ export function seedDeals(): Deal[] {
         {
           id: "d-reese",
           book: "private",
-          stage: "submitted",
+          stage: "lender-uw",
           parties: people("d-reese", {
             name: "Reese Demoaddr",
             email: "reese.demoaddr@example.test",
@@ -676,9 +708,9 @@ export function seedDeals(): Deal[] {
         },
         { "tpl-commitment": "p-riley" },
       ),
-      ["tpl-id-docs", "tpl-term-sheet", "tpl-exit", "tpl-broker-fee", "tpl-submit-lender"],
+      idsBefore("private", "lender-uw"),
     ),
-    "submitted",
+    "lender-uw",
   );
 
   const blake = finish(
@@ -745,6 +777,8 @@ export function seedDeals(): Deal[] {
     stampTouch(parker, "2026-08-11T12:00:00.000Z", "2026-07-15T12:00:00.000Z"),
     stampTouch(robin, "2026-08-14T09:00:00.000Z", null),
     stampTouch(kit, "2026-08-14T08:00:00.000Z", null),
+    stampTouch(devon, "2026-08-13T16:00:00.000Z", "2026-08-13T16:00:00.000Z"),
+    stampTouch(remy, "2026-08-12T11:00:00.000Z", "2026-08-05T12:00:00.000Z"),
     stampTouch(skyler, "2026-01-20T12:00:00.000Z", "2025-11-01T12:00:00.000Z"),
     stampTouch(withNotes[2] ?? avery, "2026-08-11T12:00:00.000Z", "2026-07-18T12:00:00.000Z"),
     stampTouch(cameron, "2026-08-09T12:00:00.000Z", "2026-07-10T12:00:00.000Z"),
@@ -785,6 +819,12 @@ const FILE_IDENTITIES: Record<string, FileIdentity> = {
   }),
   "d-robin": alignedFileIdentity("FF-005"),
   "d-kit": alignedFileIdentity("FF-006"),
+  "d-devon": alignedFileIdentity("FF-014"),
+  "d-remy": alignedFileIdentity("FF-015", {
+    payoutAmount: 0,
+    payoutTrackingStatus: "Not tracked",
+    payoutTrackingDate: null,
+  }),
   "d-skyler": alignedFileIdentity("FF-007", {
     fundedAt: "2026-02-10",
     payoutAmount: 4680,

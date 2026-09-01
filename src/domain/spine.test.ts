@@ -4,9 +4,18 @@ import { instantiateTasks, isTaskUnlocked, moveStage } from "./engine";
 import { DEMO_TODAY } from "./maturity";
 import { teamMyDay } from "./myday";
 import { primaryBorrower } from "./parties";
-import { canAdvancePastClearToClose, canCompleteTask, canMutateFiles, roleLabel, TEAM } from "./team";
+import {
+  canAdvanceToFunded,
+  canCompleteTask,
+  canEditDocList,
+  canMutateFiles,
+  roleLabel,
+  stageAdvanceBlock,
+  TEAM,
+} from "./team";
 import { seedDeals } from "./seed";
-import { isTerminalStage, STAGE_LABELS } from "./stages";
+import { isFundedInFileflow } from "./invoice";
+import { isTerminalStage, STAGE_LABELS, STAGE_NOTES } from "./stages";
 
 function task(partial: Partial<Task> & Pick<Task, "id" | "title">): Task {
   return {
@@ -17,6 +26,7 @@ function task(partial: Partial<Task> & Pick<Task, "id" | "title">): Task {
     completed: partial.completed ?? false,
     completedAt: partial.completedAt ?? null,
     kind: partial.kind ?? "standard",
+    packLabel: partial.packLabel ?? "",
     ...partial,
   };
 }
@@ -25,7 +35,7 @@ function resiDeal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
   return {
     id: "d-test",
     book: "residential",
-    stage: "clear-to-close",
+    stage: "lawyer-signing",
     parties: [
       {
         id: "p-alex",
@@ -95,19 +105,28 @@ describe("shop roles", () => {
   });
 });
 
-describe("review stage", () => {
-  it("places Review after Funded, with Fallen through still last", () => {
+describe("canada board", () => {
+  it("uses the Canada pipeline and keeps Fallen through as a side door", () => {
     expect(STAGES).toEqual([
       "lead",
+      "discovery",
+      "pre-approval",
       "application",
-      "submitted",
+      "lender-uw",
       "conditional",
-      "clear-to-close",
+      "file-complete",
+      "instructions",
+      "lawyer-signing",
       "funded",
       "review",
       "fallen-through",
     ]);
-    expect(STAGE_LABELS.review).toBe("Review");
+    expect(STAGE_LABELS["lender-uw"]).toBe("Lender UW");
+    expect(STAGE_LABELS["lawyer-signing"]).toBe("Lawyer signing");
+    expect(STAGE_NOTES["lender-uw"]).toMatch(/lender owns this column/i);
+    expect(STAGE_NOTES["lawyer-signing"]).toMatch(/not funded/i);
+    expect(STAGE_NOTES["pre-approval"]).toMatch(/rate hold is not approval/i);
+    expect(isTerminalStage("lawyer-signing")).toBe(false);
     expect(isTerminalStage("funded")).toBe(false);
     expect(isTerminalStage("review")).toBe(false);
     expect(isTerminalStage("fallen-through")).toBe(true);
@@ -115,84 +134,134 @@ describe("review stage", () => {
 });
 
 describe("stage-gated docs", () => {
-  it("includes ID, income, commitment, appraisal, conditions, title, insurance, lawyer, and close-out", () => {
+  it("labels public CA checklists on the residential spine", () => {
     const titles = instantiateTasks({ book: "residential" }).map((item) => item.title);
-    expect(titles).toContain("Collect ID");
-    expect(titles).toContain("Collect income docs");
-    expect(titles).toContain("Receive and review commitment");
-    expect(titles).toContain("Order appraisal");
-    expect(titles).toContain("Clear outstanding conditions");
-    expect(titles).toContain("Title search");
-    expect(titles).toContain("Confirm property insurance");
-    expect(titles).toContain("Instruct lawyer / solicitor");
-    expect(titles).toContain("Confirm solicitor pickup");
-    expect(titles).toContain("Match lender invoice");
-    expect(titles).toContain("AML / compliance close-out");
-    expect(titles).toContain("AML / ID verification");
+    expect(titles).toContain("Pre-approval · Collect ID");
+    expect(titles).toContain("Pre-approval · 2 pay stubs");
+    expect(titles).toContain("Pre-approval · Letter of employment (≤30 days)");
+    expect(titles).toContain("Pre-approval · T4");
+    expect(titles).toContain("Pre-approval · NOA");
+    expect(titles).toContain("Pre-approval · Debts list");
+    expect(titles).toContain("Pre-approval · 90-day down payment");
+    expect(titles).toContain("Pre-approval · Gift letter");
+    expect(titles).toContain("Application · PSA + amendments");
+    expect(titles).toContain("Application · MLS listing");
+    expect(titles).toContain("Application · Deposit confirmation");
+    expect(titles).toContain("Application · Realtor + lawyer names");
+    expect(titles).toContain("Application · Appraisal");
+    expect(titles).toContain("Application · Condo status (if any)");
+    expect(titles).toContain("Application · Void cheque");
+    expect(titles).toContain("Application · Names match");
+    expect(titles).toContain("Application · Official PDFs");
+    expect(titles).toContain("Conditional · Signed commitment");
+    expect(titles).toContain("Conditional · Disclosures");
+    expect(titles).toContain("Conditional · Condition list");
+    expect(titles).toContain("File complete · Fresh stubs / employment letter");
+    expect(titles).toContain("File complete · HOI in progress");
+    expect(titles).toContain("Instructions · Mortgage registration instructions to lawyer");
+    expect(titles).toContain("Instructions · Financing-condition removal / NOF");
+    expect(titles).toContain("Lawyer signing · HOI binder with loss payee (before funds)");
+    expect(titles).toContain("Lawyer signing · Wet Charge");
+    expect(titles).toContain("Lawyer signing · Down payment + costs in trust");
+    expect(titles).toContain("Lawyer signing · AML / ID verification");
+    expect(titles).toContain("Funded · Funding confirm");
+    expect(titles).toContain("Funded · Closing statement");
+    expect(titles).toContain("Funded · Registered charge");
+    expect(titles).toContain("Review · Completeness + 7-year file / 5-year FINTRAC");
+    expect(titles).toContain("Review · Lawyer report");
+    expect(titles).toContain("Review · Match lender invoice (commission / payout)");
+    expect(titles).not.toContain("Submit to Filogix");
   });
 
   it("keeps commercial and private extras beside the generic docs", () => {
     const commercial = instantiateTasks({ book: "commercial" }).map((item) => item.title);
-    expect(commercial).toContain("Collect ID");
+    expect(commercial).toContain("Pre-approval · Collect ID");
     expect(commercial).toContain("Collect rent roll and leases");
-    expect(commercial).toContain("Match lender invoice");
+    expect(commercial).toContain("Review · Match lender invoice (commission / payout)");
     const privateTitles = instantiateTasks({ book: "private" }).map((item) => item.title);
-    expect(privateTitles).toContain("Collect ID");
+    expect(privateTitles).toContain("Pre-approval · Collect ID");
     expect(privateTitles).toContain("Document exit strategy");
-    expect(privateTitles).toContain("AML / compliance close-out");
+    expect(privateTitles).toContain("Review · Completeness + 7-year file / 5-year FINTRAC");
   });
 
-  it("unlocks pickup and invoice-match on funded and review, not leftover income docs", () => {
-    const pickup = task({
-      id: "t-pick",
-      title: "Confirm solicitor pickup",
-      unlockStages: ["funded", "review"],
+  it("locks property docs at pre-approval and leftover income work at funded", () => {
+    const psa = task({
+      id: "t-psa",
+      title: "Application · PSA + amendments",
+      unlockStages: ["application"],
     });
-    const income = task({
-      id: "t-inc",
-      title: "Collect income docs",
-      unlockStages: ["lead", "application"],
+    const invoice = task({
+      id: "t-inv",
+      title: "Review · Match lender invoice (commission / payout)",
+      unlockStages: ["review"],
     });
-    expect(isTaskUnlocked(pickup, "funded")).toBe(true);
-    expect(isTaskUnlocked(pickup, "review")).toBe(true);
-    expect(isTaskUnlocked(income, "funded")).toBe(false);
-    expect(isTaskUnlocked(income, "fallen-through")).toBe(false);
+    const stubs = task({
+      id: "t-stubs",
+      title: "Pre-approval · 2 pay stubs",
+      unlockStages: ["pre-approval"],
+    });
+    expect(isTaskUnlocked(psa, "pre-approval")).toBe(false);
+    expect(isTaskUnlocked(psa, "application")).toBe(true);
+    expect(isTaskUnlocked(invoice, "review")).toBe(true);
+    expect(isTaskUnlocked(stubs, "funded")).toBe(false);
+    expect(isTaskUnlocked(stubs, "fallen-through")).toBe(false);
   });
 });
 
-describe("clear-to-close compliance gate", () => {
-  it("blocks a move past Clear to close while AML verification is open", () => {
+describe("shop UW vs lender UW and processor gates", () => {
+  it("does not let shop UW own the Lender UW column, and Marketing still cannot own files", () => {
+    expect(roleLabel("uw")).toBe("UW");
+    expect(STAGE_NOTES["lender-uw"]).toMatch(/not shop UW/i);
+    expect(canMutateFiles("marketing")).toBe(false);
+    expect(canEditDocList("marketing")).toBe(false);
+  });
+
+  it("lets Processor chase named docs but not accept applications or decide the list", () => {
+    const stubs = task({ id: "t-stubs", title: "Pre-approval · 2 pay stubs", kind: "standard" });
+    expect(canCompleteTask("processor", stubs)).toBe(true);
+    expect(canEditDocList("processor")).toBe(false);
+    expect(canEditDocList("lo")).toBe(true);
+    expect(stageAdvanceBlock(resiDeal({ stage: "pre-approval" }), "application", "processor")).toMatch(
+      /cannot accept an application/i,
+    );
+    expect(stageAdvanceBlock(resiDeal({ stage: "pre-approval" }), "application", "lo")).toBeNull();
+  });
+});
+
+describe("lawyer-signing is not funded", () => {
+  it("blocks a move to Funded while AML verification is open", () => {
     const deal = resiDeal({
+      stage: "lawyer-signing",
       tasks: [
         task({
           id: "t-aml",
           templateId: "tpl-aml-check",
-          title: "AML / ID verification",
-          unlockStages: ["clear-to-close"],
+          title: "Lawyer signing · AML / ID verification",
+          unlockStages: ["lawyer-signing"],
           kind: "compliance",
         }),
       ],
     });
-    expect(canAdvancePastClearToClose(deal, "funded")).toBe(false);
-    expect(canAdvancePastClearToClose(deal, "review")).toBe(false);
-    expect(canAdvancePastClearToClose(deal, "conditional")).toBe(true);
+    expect(canAdvanceToFunded(deal, "funded")).toBe(false);
+    expect(canAdvanceToFunded(deal, "review")).toBe(false);
+    expect(canAdvanceToFunded(deal, "instructions")).toBe(true);
     const cleared = { ...deal, tasks: deal.tasks.map((item) => ({ ...item, completed: true })) };
-    expect(canAdvancePastClearToClose(cleared, "funded")).toBe(true);
+    expect(canAdvanceToFunded(cleared, "funded")).toBe(true);
   });
 
-  it("does not treat funded close-out AML as a CTC gate", () => {
+  it("does not treat review close-out AML as a funded gate", () => {
     const deal = resiDeal({
       tasks: [
         task({
           id: "t-close",
           templateId: "tpl-aml-closeout",
           title: "AML / compliance close-out",
-          unlockStages: ["funded", "review"],
+          unlockStages: ["review"],
           kind: "compliance",
         }),
       ],
     });
-    expect(canAdvancePastClearToClose(deal, "funded")).toBe(true);
+    expect(canAdvanceToFunded(deal, "funded")).toBe(true);
   });
 });
 
@@ -211,39 +280,44 @@ describe("team my day", () => {
     expect(primaryBorrower(byRole.processor?.deal!).name).toBe("Harper Fictional");
     expect(primaryBorrower(byRole.uw?.deal!).name).toBe("Jordan Demo");
     expect(primaryBorrower(byRole.compliance?.deal!).name).toBe("Parker Placeholder");
+    expect(byRole.uw?.note).toMatch(/shop UW/i);
     expect(byRole.marketing?.deal).toBeTruthy();
     expect(byRole.marketing?.readOnly).toBe(true);
   });
 });
 
 describe("seed spine", () => {
-  it("seeds a Review file and a Compliance-owned AML item", () => {
+  it("seeds Canada stages, a pre-approval with no property docs, and a lawyer-signing file that is not funded", () => {
     const deals = seedDeals();
-    expect(deals.some((deal) => deal.stage === "review")).toBe(true);
-    expect(deals.some((deal) => primaryBorrower(deal).name === "Drew Mockwell" && deal.stage === "review")).toBe(
-      true,
-    );
+    for (const stage of STAGES) {
+      expect(deals.some((deal) => deal.stage === stage)).toBe(true);
+    }
+    const remy = deals.find((deal) => primaryBorrower(deal).name === "Remy Ratehold");
+    expect(remy?.stage).toBe("pre-approval");
+    expect(remy?.property.address).toBeNull();
+    const remyTitles = remy?.tasks.filter((task) => isTaskUnlocked(task, remy.stage)).map((task) => task.title) ?? [];
+    expect(remyTitles.some((title) => /PSA|MLS|appraisal/i.test(title))).toBe(false);
+    expect(remyTitles.some((title) => title.startsWith("Pre-approval ·"))).toBe(true);
+
     const parker = deals.find((deal) => primaryBorrower(deal).name === "Parker Placeholder");
-    expect(parker?.stage).toBe("clear-to-close");
-    expect(parker?.nextAction.title).toBe("AML / ID verification");
+    expect(parker?.stage).toBe("lawyer-signing");
+    expect(isFundedInFileflow(parker!)).toBe(false);
+    expect(parker?.nextAction.title).toContain("AML / ID verification");
     expect(parker?.nextAction.ownerId).toBe("p-finley");
+
+    const drew = deals.find((deal) => primaryBorrower(deal).name === "Drew Mockwell");
+    expect(drew?.stage).toBe("review");
+    expect(drew?.nextAction.title).toMatch(/invoice/i);
   });
 });
 
 describe("moveStage still prefers current-stage work", () => {
-  it("opens commitment work when a file lands in Submitted", () => {
+  it("opens signed-commitment work when a file lands in Conditional, not Lender UW leftovers", () => {
     const deal = resiDeal({
       stage: "application",
-      tasks: instantiateTasks({ book: "residential" }).map((item) =>
-        item.templateId === "tpl-id-docs" ||
-        item.templateId === "tpl-income-docs" ||
-        item.templateId === "tpl-application-package" ||
-        item.templateId === "tpl-stress-test" ||
-        item.templateId === "tpl-submit-lender"
-          ? { ...item, completed: true, completedAt: "2026-08-01" }
-          : item,
-      ),
+      tasks: instantiateTasks({ book: "residential" }),
     });
-    expect(moveStage(deal, "submitted").nextAction.title).toBe("Receive and review commitment");
+    expect(moveStage(deal, "conditional").nextAction.title).toBe("Conditional · Signed commitment");
+    expect(moveStage(deal, "lender-uw").nextAction.title).toMatch(/lender is underwriting/i);
   });
 });

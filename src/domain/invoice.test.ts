@@ -187,7 +187,7 @@ describe("conflicting ids and funded proof", () => {
     expect(
       isFundedInFileflow(
         file({
-          stage: "application",
+          stage: "lawyer-signing",
           fundedAt: null,
           mosCloseDate: "2026-07-28",
           mosDocumentFlags: "funded-docs",

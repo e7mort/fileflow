@@ -1,4 +1,5 @@
 import type { Deal, Person, Role, Stage, Task } from "../types";
+import { earliestUnlockIndex } from "./templates";
 import { stageIndex } from "./stages";
 
 export const TEAM: Person[] = [
@@ -38,6 +39,10 @@ export function canMutateFiles(role: Role): boolean {
   return role !== "marketing";
 }
 
+export function canEditDocList(role: Role): boolean {
+  return role === "lo" || role === "uw";
+}
+
 export function canCompleteTask(role: Role, task: Pick<Task, "kind">): boolean {
   if (role === "marketing") {
     return false;
@@ -48,7 +53,7 @@ export function canCompleteTask(role: Role, task: Pick<Task, "kind">): boolean {
   return true;
 }
 
-export function canAdvancePastClearToClose(deal: Deal, to: Stage): boolean {
+export function canAdvanceToFunded(deal: Deal, to: Stage): boolean {
   if (to !== "funded" && to !== "review") {
     return true;
   }
@@ -56,15 +61,18 @@ export function canAdvancePastClearToClose(deal: Deal, to: Stage): boolean {
     (task) =>
       task.kind === "compliance" &&
       !task.completed &&
-      task.unlockStages.some((stage) => stageIndex(stage) <= stageIndex("clear-to-close")),
+      earliestUnlockIndex(task.unlockStages) <= stageIndex("lawyer-signing"),
   );
 }
 
-export function stageAdvanceBlock(deal: Deal, to: Stage): string | null {
-  if (canAdvancePastClearToClose(deal, to)) {
+export function stageAdvanceBlock(deal: Deal, to: Stage, role?: Role): string | null {
+  if (role === "processor" && to === "application") {
+    return "Processor cannot accept an application or move a file into Application.";
+  }
+  if (canAdvanceToFunded(deal, to)) {
     return null;
   }
-  return "Compliance / AML verification must be done before this file leaves Clear to close.";
+  return "Compliance / AML verification must be done before this file is funded.";
 }
 
 export function firstName(name: string): string {

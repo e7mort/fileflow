@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match.
+You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match. Steps 22–23 are the Canada pack: pre-approval with no property docs, and lawyer signing that is not funded.
 
 ## 1. Start the app
 
@@ -14,13 +14,13 @@ Or `npm install && npm run dev`.
 
 ## 2. See the pipeline and the three books
 
-Stay on **Pipeline**. You should see eight stage columns, including **Review** after **Funded**, and about a dozen fictional files (Alex Example, Jordan Demo, Avery Showcase, Harper Fictional, Blake Exampleton, and others). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
+Stay on **Pipeline**. You should see twelve stage columns, in order: **Lead**, **Discovery**, **Pre-approval**, **Application**, **Lender UW**, **Conditional**, **File complete**, **Instructions**, **Lawyer signing**, **Funded**, **Review**, **Fallen through**. Lender UW is the lender’s column (shop UW does not own it). Lawyer signing is not funded. About a dozen fictional files (Alex Example, Jordan Demo, Remy Ratehold, Avery Showcase, Harper Fictional, Blake Exampleton, and others). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
 
 Use the book filter: **All books**, **Residential**, **Commercial**, **Private**.
 
 **Expected:**
 
-- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler).
+- Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler, Remy Ratehold, Devon Discovery).
 - Commercial filter keeps Avery Showcase, Cameron Testfile, Drew Mockwell.
 - Private filter keeps Harper Fictional, Reese Demoaddr, Blake Exampleton.
 - Blake Exampleton is in **Fallen through**. Skyler Placeholder is in **Funded**. Drew Mockwell is in **Review**.
@@ -28,7 +28,7 @@ Use the book filter: **All books**, **Residential**, **Commercial**, **Private**
 
 ## 3. Open one file from each book
 
-Open **Alex Example** (residential). Confirm purpose, insured/uninsured, and a stress test field (status or qualifying rate). Confirm the next action is loud, the checklist includes **Collect ID** / income docs / application package, and a note mentions @Riley.
+Open **Alex Example** (residential). Confirm purpose, insured/uninsured, and a stress test field (status or qualifying rate). Confirm the next action is loud, the checklist is labeled with pack names (**Pre-approval**, **Application**, **Conditional**, and later CA stages), and a note mentions @Riley. There is no Submit to Filogix button.
 
 Open **Avery Showcase** (commercial). Confirm DSCR and NOI fields, rent-roll / NOI / DSCR checklist items, and commercial conditions (rent roll, corporate search).
 
@@ -51,15 +51,15 @@ Click **Clear handoff** if you want to undo, or leave it. Refresh the page. The 
 
 ## 5. Complete a task and watch the next action change
 
-Open **Alex Example**. Read the current next action title (seeded as **Collect ID** unless you already completed it). Click **Complete this action**.
+Open **Alex Example**. Read the current next action title (seeded as **Application · PSA + amendments** unless you already completed it). Click **Complete this action**.
 
-**Expected:** The next action changes to the next unlocked residential task, usually **Collect income docs**. Owner stays whoever that task already had (Morgan), or unassigned. It does not silently become you. The completed item is struck through on the checklist.
+**Expected:** The next action changes to the next unlocked residential application task, usually **Application · MLS listing**. Owner stays whoever that task already had (Morgan), or unassigned. It does not silently become you. The completed item is struck through on the checklist.
 
 ## 6. Move the file to another stage
 
-On the same file, use **Move stage** and choose **Submitted**. You can also drag the card on the board into the Submitted column.
+On the same file, use **Move stage** and choose **Conditional**. You can also drag the card on the board into the Conditional column.
 
-**Expected:** The stage badge updates. The checklist unlocks submitted-stage work (commitment, appraisal). The next action prefers work for the new stage, usually **Receive and review commitment**, even if leftover application items are still open. Those leftover items stay on the checklist and stay completable. Later items stay visible with an "unlocks at ..." note.
+**Expected:** The stage badge updates. The checklist unlocks Conditional pack items (signed commitment, disclosures, condition list). The next action prefers work for the new stage, usually **Conditional · Signed commitment**, even if leftover application items are still open. Those leftover items stay on the checklist and stay completable. Later items stay visible with an "unlocks at ..." note. **Lender UW** is a different column, owned by the lender, not shop UW.
 
 ## 7. Banner still visible
 
@@ -136,9 +136,9 @@ Under **Past client / no contact (6 months)** you should see **Skyler Placeholde
 
 Click **Partners**. You should see Marlowe Homes, Brookline Referrals, and Cedar Street Realty.
 
-Open **Brookline Referrals**. Then open **Alex Example**, **Move stage** to **Submitted**, and return to **Partners → Brookline Referrals**.
+Open **Brookline Referrals**. Then open **Alex Example**, **Move stage** to **Lender UW**, and return to **Partners → Brookline Referrals**.
 
-**Expected:** A new pulse says **Alex Example moved to Submitted**. Marlowe Homes already has a seeded pulse that Sidney Sample is in Conditional. Nothing is emailed.
+**Expected:** A new pulse says **Alex Example moved to Lender UW**. Marlowe Homes already has a seeded pulse that Sidney Sample is in Conditional. Nothing is emailed.
 
 ## 16. Clear a first-touch lead
 
@@ -160,7 +160,7 @@ Click **Reset demo**, then **Today**. Stay as Morgan Broker.
 
 - **LO · Morgan Broker** → Alex Example
 - **Processor · Riley Assistant** → Harper Fictional
-- **UW · Casey Underwriter** → Jordan Demo
+- **UW · Casey Underwriter** → Jordan Demo (shop UW / file-complete, not lender UW)
 - **Compliance · Finley Compliance** → Parker Placeholder (next action **AML / ID verification**)
 - **Marketing · Taylor Marketing** → a read-only watch (Sidney Sample / Marlowe Homes)
 
@@ -172,19 +172,19 @@ Switch to **Taylor Marketing**. Open **Alex Example**.
 
 **Expected:** No complete-task, handoff, or stage move. A note says Marketing is read-only. You can still leave a note.
 
-Switch to **Finley Compliance**. Open **Parker Placeholder**. Complete **AML / ID verification**.
+Switch to **Finley Compliance**. Open **Parker Placeholder**. Complete **Lawyer signing · AML / ID verification**.
 
-**Expected:** The AML item completes. Other checklist items (insurance, lawyer) stay disabled for Compliance.
+**Expected:** The AML item completes. Other checklist items (HOI binder, Wet Charge) stay disabled for Compliance.
 
 Still as Finley, open Parker **before** completing AML if you reset, and **Move stage** to **Funded**.
 
-**Expected:** The file does not leave Clear to close. A note says Compliance / AML verification must be done first. After AML is done, LO/Processor/UW can move Parker to Funded.
+**Expected:** The file does not leave Lawyer signing. A note says Compliance / AML verification must be done before this file is funded. After AML is done, LO/Processor/UW can move Parker to Funded. Lawyer signing is still not itself funded.
 
 ## 20. Review-stage file
 
 On **Pipeline**, find **Drew Mockwell** in the **Review** column (after Funded). Open the file.
 
-**Expected:** Stage badge is Review. Checklist includes **Confirm solicitor pickup**, **Match lender invoice**, and **AML / compliance close-out**. Next action is pickup or invoice-match. This is post-fund close-out, not a live lender system.
+**Expected:** Stage badge is Review. Checklist includes **Review · Match lender invoice (commission / payout)**, lawyer report, and 7-year / FINTRAC retention. Next action is invoice-match. This is post-close close-out, not a live lender system.
 
 ## 21. Invoice match (commission / payout, not borrower income)
 
@@ -198,11 +198,23 @@ Click **Reset demo**. Open **Jordan Demo**.
 - Never trust a parallel spreadsheet deal key alone.
 - If operational File # and MOS file id/FILEKEY disagree, mark the file **CONFLICTING** and display both ids.
 
-Funded in Fileflow is **No** (Jordan is Submitted). MOS close date and MOS document flags are labeled as **not proof of funded**.
+Funded in Fileflow is **No** (Jordan is File complete). MOS close date and MOS document flags are labeled as **not proof of funded**.
 
 Open **Sidney Sample**. Commission / payout tracking shows FILEKEY **FF-003**, lender Cedar Trust, payout amount, Income Tracking Status **Posted**, and Income Tracking Date **Aug 1, 2026**. Bound invoices include **inv-sidney-hit** via **FILEKEY**, identity match. Funded in Fileflow is still **No** even if a MOS close date or document flag is present.
 
 Click **Invoices** (or **Unmatched invoices** on the file).
 
 **Expected:** **inv-sidney-hit** is bound via FILEKEY to Sidney Sample. **inv-name-miss** is unmatched. The unmatched row still shows the name Sidney Sample and has no FILEKEY. It did not bind on name. There is no document vault. Nothing is emailed.
+
+## 22. Pre-approval with no property docs
+
+Click **Reset demo**. Open **Remy Ratehold** (Pre-approval).
+
+**Expected:** Property is **No property on file**. A note says rate hold is not approval. The unlocked checklist is the Pre-approval pack (ID, 2 pay stubs, employment letter ≤30 days, T4, NOA, debts, 90-day down payment, gift letter). PSA, MLS, and appraisal are locked until Application. There is no document vault.
+
+## 23. Lawyer signing is not funded
+
+Open **Parker Placeholder**.
+
+**Expected:** Stage is **Lawyer signing**, not Funded. Funded in Fileflow is **No**. The file still has HOI binder / loss payee work. Team My Day still shows one next action per LO, Processor, UW, Compliance, and Marketing.
 

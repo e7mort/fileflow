@@ -23,6 +23,7 @@ function task(partial: Partial<Task> & Pick<Task, "id" | "title">): Task {
     completed: partial.completed ?? false,
     completedAt: partial.completedAt ?? null,
     kind: partial.kind ?? "standard",
+    packLabel: partial.packLabel ?? "",
     ...partial,
   };
 }
@@ -78,8 +79,8 @@ describe("instantiateTasks", () => {
   it("creates residential templates and omits commercial-only items", () => {
     const tasks = instantiateTasks({ book: "residential" });
     const titles = tasks.map((item) => item.title);
-    expect(titles).toContain("Collect income docs");
-    expect(titles).toContain("Build application package");
+    expect(titles).toContain("Pre-approval · 2 pay stubs");
+    expect(titles).toContain("Application · PSA + amendments");
     expect(titles).not.toContain("Complete NOI worksheet");
     expect(titles).not.toContain("Document exit strategy");
   });
@@ -89,7 +90,7 @@ describe("instantiateTasks", () => {
     expect(titles).toContain("Complete NOI worksheet");
     expect(titles).toContain("Record DSCR");
     expect(titles).toContain("Collect rent roll and leases");
-    expect(titles).not.toContain("Collect income docs");
+    expect(titles).not.toContain("Document exit strategy");
   });
 
   it("creates private templates including exit, fee, and second-position", () => {
@@ -97,19 +98,19 @@ describe("instantiateTasks", () => {
     expect(titles).toContain("Document exit strategy");
     expect(titles).toContain("Broker fee agreement");
     expect(titles).toContain("Title / second-position search");
-    expect(titles).not.toContain("Order appraisal");
+    expect(titles).not.toContain("Complete NOI worksheet");
   });
 });
 
 describe("isTaskUnlocked", () => {
-  it("locks a submitted-stage task while the file is still in application", () => {
-    const appraisal = task({
-      id: "t-app",
-      title: "Order appraisal",
-      unlockStages: ["submitted", "conditional"],
+  it("locks an application property-doc task while the file is still in pre-approval", () => {
+    const psa = task({
+      id: "t-psa",
+      title: "Application · PSA + amendments",
+      unlockStages: ["application"],
     });
-    expect(isTaskUnlocked(appraisal, "application")).toBe(false);
-    expect(isTaskUnlocked(appraisal, "submitted")).toBe(true);
+    expect(isTaskUnlocked(psa, "pre-approval")).toBe(false);
+    expect(isTaskUnlocked(psa, "application")).toBe(true);
   });
 
   it("keeps leftover earlier tasks unlocked after the file moves forward", () => {
@@ -170,7 +171,7 @@ describe("assignNextAction", () => {
     });
     const next = assignNextAction(deal).nextAction;
     expect(next.taskId).toBeNull();
-    expect(next.title).toBe("Work outstanding conditions");
+    expect(next.title).toBe("Work the signed commitment and condition list");
     expect(next.ownerId).toBeNull();
     expect(next.waitingOn).toBeNull();
   });
@@ -248,17 +249,16 @@ describe("moveStage", () => {
     const deal = resiDeal({
       stage: "application",
       tasks: instantiateTasks({ book: "residential" }).map((item) =>
-        item.templateId === "tpl-income-docs" ||
-        item.templateId === "tpl-application-package" ||
-        item.templateId === "tpl-stress-test" ||
-        item.templateId === "tpl-submit-lender"
+        item.templateId === "tpl-id-docs" ||
+        item.templateId === "tpl-pay-stubs" ||
+        item.templateId === "tpl-psa"
           ? { ...item, completed: true, completedAt: "2026-08-01" }
           : item,
       ),
     });
-    const moved = moveStage(deal, "submitted");
-    expect(moved.stage).toBe("submitted");
-    expect(moved.nextAction.title).toBe("Receive and review commitment");
+    const moved = moveStage(deal, "conditional");
+    expect(moved.stage).toBe("conditional");
+    expect(moved.nextAction.title).toBe("Conditional · Signed commitment");
   });
 
   it("prefers current-stage work over leftover earlier tasks", () => {
@@ -266,14 +266,14 @@ describe("moveStage", () => {
       stage: "application",
       tasks: instantiateTasks({ book: "residential" }),
     });
-    const moved = moveStage(deal, "submitted");
-    expect(moved.nextAction.title).toBe("Receive and review commitment");
+    const moved = moveStage(deal, "conditional");
+    expect(moved.nextAction.title).toBe("Conditional · Signed commitment");
   });
 
   it("adds any missing book templates when the stage changes", () => {
     const deal = resiDeal({ tasks: [] });
     const moved = moveStage(deal, "conditional");
-    expect(moved.tasks.some((item) => item.title === "Title search")).toBe(true);
+    expect(moved.tasks.some((item) => item.title === "Conditional · Signed commitment")).toBe(true);
   });
 });
 

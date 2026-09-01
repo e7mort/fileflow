@@ -22,6 +22,7 @@ export function instantiateTasks(input: {
     templateId: template.id,
     title: template.title,
     unlockStages: template.unlockStages,
+    packLabel: template.packLabel,
     ownerId: input.owners?.[template.id] ?? null,
     due: null,
     completed: false,
@@ -35,7 +36,7 @@ export function isTaskUnlocked(task: Task, stage: Stage): boolean {
     return false;
   }
   if (stage === "funded" || stage === "review") {
-    return task.unlockStages.includes("funded") || task.unlockStages.includes("review");
+    return task.unlockStages.includes(stage);
   }
   return stageIndex(stage) >= earliestUnlockIndex(task.unlockStages);
 }
@@ -64,7 +65,8 @@ export function assignNextAction(deal: Deal): Deal {
   const currentStage = unlocked.filter((task) =>
     task.unlockStages.includes(deal.stage),
   );
-  const nextTask = currentStage[0] ?? unlocked[0];
+  const nextTask =
+    currentStage[0] ?? (deal.stage === "lender-uw" ? undefined : unlocked[0]);
   if (!nextTask) {
     return {
       ...deal,
@@ -121,6 +123,7 @@ function mergeTemplates(deal: Deal): Task[] {
       completed: false,
       completedAt: null,
       kind: template.kind,
+      packLabel: template.packLabel,
     }));
   return [...deal.tasks, ...additions];
 }

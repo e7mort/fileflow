@@ -11,8 +11,9 @@ export function TaskList({ deal }: { deal: Deal }) {
     <section className="panel" data-testid="task-list">
       <h2>Stage-gated checklist</h2>
       <p className="subtle">
-        Templates for the {deal.book} book. Locked items unlock when the file
-        reaches that stage.
+        Public CA pack labels (Pre-approval through Review) for the {deal.book}{" "}
+        book. Locked items unlock when the file reaches that stage. One next
+        action on the file — this is not a task board.
       </p>
       {deal.tasks.map((task) => {
         const unlocked = isTaskUnlocked(task, deal.stage);
@@ -24,7 +25,12 @@ export function TaskList({ deal }: { deal: Deal }) {
             className={`task-row${task.completed ? " done" : ""}${unlocked ? "" : " locked"}`}
           >
             <div>
-              <div className="task-title">{task.title}</div>
+              <div className="task-title">
+                {task.packLabel ? (
+                  <span className="pack-label">{task.packLabel}</span>
+                ) : null}{" "}
+                {task.title}
+              </div>
               <div className="subtle">
                 {owner ? `Owner ${firstName(owner.name)}` : "Owner unassigned"}
                 {unlocked

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { isConflicting } from "../domain/invoice";
 import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
 import { primaryBorrower } from "../domain/parties";
-import { STAGE_LABELS } from "../domain/stages";
+import { STAGE_LABELS, STAGE_NOTES } from "../domain/stages";
 import { isNewLead } from "../domain/touch";
 import { formatCad, formatDate, purposeLabel } from "../lib/format";
 import { telHref } from "../lib/phone";
@@ -156,6 +156,11 @@ export function DealView({ deal }: { deal: Deal }) {
           SMS.
         </div>
       ) : null}
+      {STAGE_NOTES[deal.stage] ? (
+        <div className="maturity-banner" data-testid="stage-note">
+          {STAGE_NOTES[deal.stage]}
+        </div>
+      ) : null}
       {isNewLead(deal) && canWrite ? (
         <div className="row-actions">
           <button type="button" className="btn" onClick={() => markFirstTouch(deal.id)}>
@@ -181,7 +186,9 @@ export function DealView({ deal }: { deal: Deal }) {
             </div>
             <div className="fact">
               <label>Property</label>
-              <p>{deal.property.address}</p>
+              <p data-testid="property-address">
+                {deal.property.address ?? "No property on file"}
+              </p>
             </div>
             <div className="fact">
               <label>Lender</label>

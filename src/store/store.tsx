@@ -29,7 +29,7 @@ import {
 import { DEMO_TODAY } from "../domain/maturity";
 import { pulseForStageMove } from "../domain/partners";
 import { addParty, type AddPartyResult } from "../domain/parties";
-import { TEAM, canCompleteTask, canMutateFiles, personById, stageAdvanceBlock } from "../domain/team";
+import { TEAM, canCompleteTask, canEditDocList, canMutateFiles, personById, stageAdvanceBlock } from "../domain/team";
 import { logFirstTouch, touchDeal } from "../domain/touch";
 
 import { defaultState, loadState, saveState } from "../lib/storage";
@@ -44,6 +44,7 @@ type Store = {
   pulses: PartnerPulse[];
   currentPerson: Person;
   canWrite: boolean;
+  canEditDocs: boolean;
   canCompleteDealTask: (dealId: DealId, taskId: TaskId) => boolean;
   stageBlocked: (dealId: DealId, stage: Stage) => string | null;
   setCurrentPersonId: (id: PersonId) => void;
@@ -84,12 +85,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Store>(() => {
     const canWrite = canMutateFiles(currentPerson.role);
+    const canEditDocs = canEditDocList(currentPerson.role);
     return {
       deals: state.deals,
       invoices: state.invoices,
       pulses: state.pulses,
       currentPerson,
       canWrite,
+      canEditDocs,
       canCompleteDealTask: (dealId, taskId) => {
         const deal = state.deals.find((item) => item.id === dealId);
         const task = deal?.tasks.find((item) => item.id === taskId);
@@ -103,7 +106,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (!deal) {
           return "File not found";
         }
-        return stageAdvanceBlock(deal, stage);
+        return stageAdvanceBlock(deal, stage, currentPerson.role);
       },
       setCurrentPersonId: (id) => persist({ ...state, currentPersonId: id }),
       completeDealTask: (dealId, taskId) => {
@@ -124,7 +127,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           return;
         }
         const current = state.deals.find((deal) => deal.id === dealId);
-        if (!current || stageAdvanceBlock(current, stage)) {
+        if (!current || stageAdvanceBlock(current, stage, currentPerson.role)) {
           return;
         }
         const moved = touchDeal(moveStage(current, stage), demoNow());
@@ -166,7 +169,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         });
       },
       addDealCondition: (dealId, title) => {
-        if (!canWrite) {
+        if (!canEditDocs) {
           return;
         }
         persist({

@@ -143,9 +143,9 @@ describe("new lead / first touch", () => {
 
 describe("realtor pulse", () => {
   it("writes an in-app pulse when a file with a realtor changes stage", () => {
-    const pulse = pulseForStageMove(deal(), "application", "submitted", "2026-08-14T14:00:00.000Z");
+    const pulse = pulseForStageMove(deal(), "application", "lender-uw", "2026-08-14T14:00:00.000Z");
     expect(pulse?.partnerId).toBe("pt-brookline");
-    expect(pulse?.body).toBe("Alex Example moved to Submitted");
+    expect(pulse?.body).toBe("Alex Example moved to Lender UW");
   });
 
   it("seeds Marlowe Homes with Sidney already in Conditional", () => {
@@ -164,6 +164,6 @@ describe("realtor pulse", () => {
         },
       ],
     });
-    expect(pulseForStageMove(lone, "application", "submitted", "2026-08-14T14:00:00.000Z")).toBeNull();
+    expect(pulseForStageMove(lone, "application", "lender-uw", "2026-08-14T14:00:00.000Z")).toBeNull();
   });
 });

@@ -12,7 +12,7 @@ describe("seedDeals", () => {
   it("seeds 8–12 fictional files across all three books and both terminal stages", () => {
     const deals = seedDeals();
     expect(deals.length).toBeGreaterThanOrEqual(8);
-    expect(deals.length).toBeLessThanOrEqual(14);
+    expect(deals.length).toBeLessThanOrEqual(16);
     for (const book of BOOKS) {
       expect(deals.filter((deal) => deal.book === book).length).toBeGreaterThanOrEqual(2);
     }

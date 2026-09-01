@@ -88,13 +88,18 @@ export function teamMyDay(deals: Deal[], today: Date = DEMO_TODAY): TeamDayRow[]
       deal?.nextAction.waitingOn?.personId === person.id
         ? deal.nextAction.waitingOn.reason
         : null;
+    const action = waiting ?? deal?.nextAction.title ?? `No next action for ${roleLabel(person.role)}.`;
+    const note =
+      person.role === "uw" && deal
+        ? `Shop UW · file-complete / conditions, not lender UW · ${action}`
+        : deal
+          ? action
+          : `No next action for ${roleLabel(person.role)}.`;
     return {
       role: person.role,
       person,
       deal,
-      note: deal
-        ? waiting ?? deal.nextAction.title
-        : `No next action for ${roleLabel(person.role)}.`,
+      note,
       readOnly: false,
     };
   });

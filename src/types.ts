@@ -1,9 +1,13 @@
 export const STAGES = [
   "lead",
+  "discovery",
+  "pre-approval",
   "application",
-  "submitted",
+  "lender-uw",
   "conditional",
-  "clear-to-close",
+  "file-complete",
+  "instructions",
+  "lawyer-signing",
   "funded",
   "review",
   "fallen-through",
@@ -72,6 +76,7 @@ export type Task = {
   completed: boolean;
   completedAt: string | null;
   kind: TaskKind;
+  packLabel: string;
 };
 
 export type Mention = {
@@ -101,7 +106,7 @@ export type Condition = {
 };
 
 export type Property = {
-  address: string;
+  address: string | null;
 };
 
 export type FileIdentity = {
@@ -213,4 +218,5 @@ export type TaskTemplate = {
   unlockStages: Stage[];
   order: number;
   kind: TaskKind;
+  packLabel: string;
 };

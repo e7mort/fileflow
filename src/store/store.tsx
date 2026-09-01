@@ -10,6 +10,7 @@ import type {
   Deal,
   DealId,
   Handoff,
+  Invoice,
   PartnerPulse,
   PartyRole,
   Person,
@@ -39,6 +40,7 @@ function demoNow(): string {
 
 type Store = {
   deals: Deal[];
+  invoices: Invoice[];
   pulses: PartnerPulse[];
   currentPerson: Person;
   canWrite: boolean;
@@ -84,6 +86,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const canWrite = canMutateFiles(currentPerson.role);
     return {
       deals: state.deals,
+      invoices: state.invoices,
       pulses: state.pulses,
       currentPerson,
       canWrite,

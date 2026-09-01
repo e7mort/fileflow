@@ -4,6 +4,7 @@ import { Board } from "./components/Board";
 import { CalendarView } from "./components/CalendarView";
 import { DealView } from "./components/DealView";
 import { DemoBanner } from "./components/DemoBanner";
+import { InvoicesView } from "./components/InvoicesView";
 import { PartnersView } from "./components/PartnersView";
 import { ShareChecklist } from "./components/ShareChecklist";
 import { TodayView } from "./components/TodayView";
@@ -41,6 +42,7 @@ export function App() {
       {route.name === "calendar" ? <CalendarView /> : null}
       {route.name === "partners" ? <PartnersView /> : null}
       {route.name === "partner" ? <PartnersView partnerId={route.partnerId} /> : null}
+      {route.name === "invoices" ? <InvoicesView /> : null}
       {route.name === "board" ? <Board book={route.book} /> : null}
       {route.name === "file" && deal ? <DealView deal={deal} /> : null}
       {route.name === "share" && deal ? <ShareChecklist deal={deal} /> : null}

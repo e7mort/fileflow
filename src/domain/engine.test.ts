@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Deal, ResidentialDeal, Task } from "../types";
+import { alignedFileIdentity, type Deal, type ResidentialDeal, type Task } from "../types";
 import {
   addMention,
   assignNextAction,
@@ -69,6 +69,7 @@ function resiDeal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
     mentions: [],
     lastTouchedAt: "2026-08-13T12:00:00.000Z",
     firstTouchedAt: "2026-08-01T12:00:00.000Z",
+    ...alignedFileIdentity("FF-T"),
     ...overrides,
   };
 }

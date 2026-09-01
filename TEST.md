@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review.
+You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match.
 
 ## 1. Start the app
 
@@ -184,5 +184,25 @@ Still as Finley, open Parker **before** completing AML if you reset, and **Move 
 
 On **Pipeline**, find **Drew Mockwell** in the **Review** column (after Funded). Open the file.
 
-**Expected:** Stage badge is Review. Checklist includes **Confirm solicitor pickup**, **Match lender invoice**, and **AML / compliance close-out**. Next action is pickup or invoice-match. This is post-fund close-out, not a live lender system and not E7.
+**Expected:** Stage badge is Review. Checklist includes **Confirm solicitor pickup**, **Match lender invoice**, and **AML / compliance close-out**. Next action is pickup or invoice-match. This is post-fund close-out, not a live lender system.
+
+## 21. Invoice match (commission / payout, not borrower income)
+
+Click **Reset demo**. Open **Jordan Demo**.
+
+**Expected:** The file is marked **CONFLICTING**. Operational File # is **FF-002**. MOS file id and FILEKEY are **MOS-77881**. Both ids are on the **Invoice match** panel. Join rules are listed on the file:
+
+- Match invoices to a file by **operational File #** first.
+- Else match **MOS file id** or **FILEKEY**.
+- Never match on client/borrower name.
+- Never trust a parallel spreadsheet deal key alone.
+- If operational File # and MOS file id/FILEKEY disagree, mark the file **CONFLICTING** and display both ids.
+
+Funded in Fileflow is **No** (Jordan is Submitted). MOS close date and MOS document flags are labeled as **not proof of funded**.
+
+Open **Sidney Sample**. Commission / payout tracking shows FILEKEY **FF-003**, lender Cedar Trust, payout amount, Income Tracking Status **Posted**, and Income Tracking Date **Aug 1, 2026**. Bound invoices include **inv-sidney-hit** via **FILEKEY**, identity match. Funded in Fileflow is still **No** even if a MOS close date or document flag is present.
+
+Click **Invoices** (or **Unmatched invoices** on the file).
+
+**Expected:** **inv-sidney-hit** is bound via FILEKEY to Sidney Sample. **inv-name-miss** is unmatched. The unmatched row still shows the name Sidney Sample and has no FILEKEY. It did not bind on name. There is no document vault. Nothing is emailed.
 

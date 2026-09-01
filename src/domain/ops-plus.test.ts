@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ResidentialDeal } from "../types";
+import { alignedFileIdentity, type ResidentialDeal } from "../types";
 import { DEMO_TODAY } from "./maturity";
 import { daysSinceTouch, fileTouchKind, isPastClientNudge, isStaleFile } from "./nudges";
 import { telHref } from "../lib/phone";
@@ -49,6 +49,7 @@ function deal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
     mentions: [],
     lastTouchedAt: "2026-08-13T12:00:00.000Z",
     firstTouchedAt: "2026-08-01T12:00:00.000Z",
+    ...alignedFileIdentity("FF-T"),
     ...overrides,
   };
 }
@@ -95,6 +96,7 @@ describe("hash routes", () => {
       partnerId: "pt-marlowe",
     });
     expect(parseHash("#/share/d-alex")).toEqual({ name: "share", dealId: "d-alex" });
+    expect(parseHash("#/invoices")).toEqual({ name: "invoices" });
   });
 
   it("opens a share link from the path when the hash is missing", () => {

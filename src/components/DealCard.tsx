@@ -1,3 +1,4 @@
+import { isConflicting } from "../domain/invoice";
 import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
 import { fileTouchKind } from "../domain/nudges";
 import { primaryBorrower } from "../domain/parties";
@@ -38,6 +39,11 @@ export function DealCard({ deal }: { deal: Deal }) {
       {maturitySoon && deal.maturityDate ? (
         <div className="maturity-chip" data-testid={`maturity-${deal.id}`}>
           Renewal {formatDate(deal.maturityDate)}
+        </div>
+      ) : null}
+      {isConflicting(deal) ? (
+        <div className="conflict-chip" data-testid={`conflict-${deal.id}`}>
+          CONFLICTING
         </div>
       ) : null}
       <div className="next-strip">

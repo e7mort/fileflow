@@ -104,7 +104,51 @@ export type Property = {
   address: string;
 };
 
-type DealBase = {
+export type FileIdentity = {
+  fileNumber: string;
+  mosFileId: string;
+  fileKey: string;
+  spreadsheetDealKey: string;
+  fundedAt: string | null;
+  mosCloseDate: string | null;
+  mosDocumentFlags: string | null;
+  payoutAmount: number;
+  payoutTrackingStatus: string;
+  payoutTrackingDate: string | null;
+};
+
+export type Invoice = {
+  id: string;
+  operationalFileNumber: string | null;
+  mosFileId: string | null;
+  fileKey: string | null;
+  spreadsheetDealKey: string | null;
+  borrowerName: string | null;
+  lender: string;
+  payoutAmount: number;
+  incomeTrackingStatus: string;
+  incomeTrackingDate: string | null;
+};
+
+export function alignedFileIdentity(
+  fileNumber: string,
+  extra: Partial<FileIdentity> = {},
+): FileIdentity {
+  return {
+    fileNumber,
+    mosFileId: extra.mosFileId ?? fileNumber,
+    fileKey: extra.fileKey ?? extra.mosFileId ?? fileNumber,
+    spreadsheetDealKey: extra.spreadsheetDealKey ?? fileNumber,
+    fundedAt: extra.fundedAt ?? null,
+    mosCloseDate: extra.mosCloseDate ?? null,
+    mosDocumentFlags: extra.mosDocumentFlags ?? null,
+    payoutAmount: extra.payoutAmount ?? 0,
+    payoutTrackingStatus: extra.payoutTrackingStatus ?? "Not tracked",
+    payoutTrackingDate: extra.payoutTrackingDate ?? null,
+  };
+}
+
+type DealBase = FileIdentity & {
   id: DealId;
   stage: Stage;
   parties: FileParty[];

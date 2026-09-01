@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { isConflicting } from "../domain/invoice";
 import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
 import { primaryBorrower } from "../domain/parties";
 import { STAGE_LABELS } from "../domain/stages";
@@ -10,6 +11,7 @@ import { useStore } from "../store/store";
 import { STAGES, type Deal } from "../types";
 import { BookBadge } from "./BookBadge";
 import { ConditionsList } from "./ConditionsList";
+import { InvoiceMatchPanel } from "./InvoiceMatchPanel";
 import { Mentions } from "./Mentions";
 import { NextActionPanel } from "./NextActionPanel";
 import { PartiesPanel } from "./PartiesPanel";
@@ -103,6 +105,11 @@ export function DealView({ deal }: { deal: Deal }) {
             {maturitySoon ? (
               <span className="badge maturity" data-testid="maturity-reminder">
                 Renewal in 4 months
+              </span>
+            ) : null}
+            {isConflicting(deal) ? (
+              <span className="badge conflict" data-testid="file-conflict-badge">
+                CONFLICTING
               </span>
             ) : null}
           </div>
@@ -200,6 +207,7 @@ export function DealView({ deal }: { deal: Deal }) {
           </div>
         </section>
         <NextActionPanel deal={deal} />
+        <InvoiceMatchPanel deal={deal} />
         <PartiesPanel deal={deal} />
         <ConditionsList deal={deal} />
         <TaskList deal={deal} />

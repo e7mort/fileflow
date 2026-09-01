@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ROLES, STAGES, type ResidentialDeal, type Task } from "../types";
+import { ROLES, STAGES, alignedFileIdentity, type ResidentialDeal, type Task } from "../types";
 import { instantiateTasks, isTaskUnlocked, moveStage } from "./engine";
 import { DEMO_TODAY } from "./maturity";
 import { teamMyDay } from "./myday";
@@ -56,6 +56,7 @@ function resiDeal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
     mentions: [],
     lastTouchedAt: "2026-08-13T12:00:00.000Z",
     firstTouchedAt: "2026-08-01T12:00:00.000Z",
+    ...alignedFileIdentity("FF-T"),
     ...overrides,
   };
 }

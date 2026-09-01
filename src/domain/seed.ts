@@ -1,12 +1,15 @@
-import type {
-  CommercialDeal,
-  Deal,
-  FileParty,
-  Handoff,
-  PersonId,
-  PrivateDeal,
-  ResidentialDeal,
-  Stage,
+import {
+  alignedFileIdentity,
+  type CommercialDeal,
+  type Deal,
+  type FileIdentity,
+  type FileParty,
+  type Handoff,
+  type Invoice,
+  type PersonId,
+  type PrivateDeal,
+  type ResidentialDeal,
+  type Stage,
 } from "../types";
 import { openConditions } from "./conditions";
 import { addMention, assignNextAction, instantiateTasks, setHandoff } from "./engine";
@@ -47,13 +50,16 @@ function assignOwners<T extends { tasks: Deal["tasks"] }>(
   };
 }
 
+type IdentityKey = keyof FileIdentity;
+
 type SeedDeal =
-  | Omit<ResidentialDeal, "lastTouchedAt" | "firstTouchedAt">
-  | Omit<CommercialDeal, "lastTouchedAt" | "firstTouchedAt">
-  | Omit<PrivateDeal, "lastTouchedAt" | "firstTouchedAt">;
+  | Omit<ResidentialDeal, "lastTouchedAt" | "firstTouchedAt" | IdentityKey>
+  | Omit<CommercialDeal, "lastTouchedAt" | "firstTouchedAt" | IdentityKey>
+  | Omit<PrivateDeal, "lastTouchedAt" | "firstTouchedAt" | IdentityKey>;
 
 function finish(deal: SeedDeal, stage: Stage, handoff?: Handoff): Deal {
   const filled = {
+    ...alignedFileIdentity("UNSET"),
     ...deal,
     stage,
     lastTouchedAt: "2026-08-10T12:00:00.000Z",
@@ -732,7 +738,7 @@ export function seedDeals(): Deal[] {
     }),
   ];
 
-  return [
+  const stamped = [
     stampTouch(withDue(withNotes[0] ?? alex, "2026-08-20"), "2026-08-13T12:00:00.000Z", "2026-08-01T12:00:00.000Z"),
     stampTouch(withNotes[1] ?? jordan, "2026-07-01T12:00:00.000Z", "2026-06-01T12:00:00.000Z"),
     stampTouch(withDue(sidney, "2026-08-25"), "2026-08-12T12:00:00.000Z", "2026-07-20T12:00:00.000Z"),
@@ -746,5 +752,127 @@ export function seedDeals(): Deal[] {
     stampTouch(withNotes[3] ?? harper, "2026-08-14T09:20:00.000Z", "2026-08-01T12:00:00.000Z"),
     stampTouch(reese, "2026-08-08T12:00:00.000Z", "2026-07-22T12:00:00.000Z"),
     stampTouch(blake, "2026-07-20T12:00:00.000Z", "2026-06-15T12:00:00.000Z"),
+  ];
+
+  return stamped.map((deal) => ({ ...deal, ...fileIdentityFor(deal.id) }));
+}
+
+const FILE_IDENTITIES: Record<string, FileIdentity> = {
+  "d-alex": alignedFileIdentity("FF-001", {
+    payoutAmount: 7344,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-10",
+  }),
+  "d-jordan": alignedFileIdentity("FF-002", {
+    mosFileId: "MOS-77881",
+    fileKey: "MOS-77881",
+    spreadsheetDealKey: "SS-77881",
+    payoutAmount: 5280,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-05",
+  }),
+  "d-sam": alignedFileIdentity("FF-003", {
+    payoutAmount: 4620,
+    payoutTrackingStatus: "Posted",
+    payoutTrackingDate: "2026-08-01",
+    mosCloseDate: "2026-07-15",
+    mosDocumentFlags: "Commitment on file",
+  }),
+  "d-quinn": alignedFileIdentity("FF-004", {
+    payoutAmount: 6336,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-12",
+  }),
+  "d-robin": alignedFileIdentity("FF-005"),
+  "d-kit": alignedFileIdentity("FF-006"),
+  "d-skyler": alignedFileIdentity("FF-007", {
+    fundedAt: "2026-02-10",
+    payoutAmount: 4680,
+    payoutTrackingStatus: "Posted",
+    payoutTrackingDate: "2026-02-12",
+  }),
+  "d-avery": alignedFileIdentity("FF-008", {
+    payoutAmount: 22200,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-11",
+  }),
+  "d-cameron": alignedFileIdentity("FF-009", {
+    payoutAmount: 28800,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-09",
+  }),
+  "d-drew": alignedFileIdentity("FF-010", {
+    fundedAt: "2026-06-18",
+    payoutAmount: 19200,
+    payoutTrackingStatus: "Posted",
+    payoutTrackingDate: "2026-06-20",
+  }),
+  "d-harper": alignedFileIdentity("FF-011", {
+    payoutAmount: 4800,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-14",
+  }),
+  "d-reese": alignedFileIdentity("FF-012", {
+    payoutAmount: 3500,
+    payoutTrackingStatus: "Pending",
+    payoutTrackingDate: "2026-08-08",
+  }),
+  "d-blake": alignedFileIdentity("FF-013"),
+};
+
+function fileIdentityFor(dealId: string): FileIdentity {
+  return FILE_IDENTITIES[dealId] ?? alignedFileIdentity(dealId);
+}
+
+export function seedInvoices(): Invoice[] {
+  return [
+    {
+      id: "inv-alex-file",
+      operationalFileNumber: "FF-001",
+      mosFileId: "FF-001",
+      fileKey: "FF-001",
+      spreadsheetDealKey: "FF-001",
+      borrowerName: "Alex Example",
+      lender: "Northpine Bank",
+      payoutAmount: 7344,
+      incomeTrackingStatus: "Pending",
+      incomeTrackingDate: "2026-08-10",
+    },
+    {
+      id: "inv-sidney-hit",
+      operationalFileNumber: null,
+      mosFileId: null,
+      fileKey: "FF-003",
+      spreadsheetDealKey: "SS-SIDNEY",
+      borrowerName: "Sidney Sample",
+      lender: "Cedar Trust",
+      payoutAmount: 4620,
+      incomeTrackingStatus: "Posted",
+      incomeTrackingDate: "2026-08-01",
+    },
+    {
+      id: "inv-name-miss",
+      operationalFileNumber: null,
+      mosFileId: null,
+      fileKey: null,
+      spreadsheetDealKey: "SS-SIDNEY",
+      borrowerName: "Sidney Sample",
+      lender: "Cedar Trust",
+      payoutAmount: 4620,
+      incomeTrackingStatus: "Posted",
+      incomeTrackingDate: "2026-08-01",
+    },
+    {
+      id: "inv-jordan-mos",
+      operationalFileNumber: null,
+      mosFileId: "MOS-77881",
+      fileKey: "MOS-77881",
+      spreadsheetDealKey: "SS-77881",
+      borrowerName: "Jordan Demo",
+      lender: "Harbour Credit Union",
+      payoutAmount: 5280,
+      incomeTrackingStatus: "Pending",
+      incomeTrackingDate: "2026-08-05",
+    },
   ];
 }

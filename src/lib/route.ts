@@ -6,6 +6,7 @@ export type Route =
   | { name: "calendar" }
   | { name: "partners" }
   | { name: "partner"; partnerId: string }
+  | { name: "invoices" }
   | { name: "file"; dealId: DealId }
   | { name: "share"; dealId: DealId };
 
@@ -23,6 +24,9 @@ function parsePath(path: string): Route {
   }
   if (normalized === "/partners") {
     return { name: "partners" };
+  }
+  if (normalized === "/invoices") {
+    return { name: "invoices" };
   }
   const partner = normalized.match(/^\/partners\/([^/?]+)/);
   if (partner?.[1]) {
@@ -78,6 +82,8 @@ export function hrefFor(route: Route): string {
       return "#/calendar";
     case "partners":
       return "#/partners";
+    case "invoices":
+      return "#/invoices";
     case "partner":
       return `#/partners/${route.partnerId}`;
     case "file":

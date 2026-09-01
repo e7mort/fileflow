@@ -394,6 +394,48 @@ a {
   font-size: 0.76rem;
 }
 
+.conflict-chip,
+.badge.conflict {
+  background: rgba(140, 36, 48, 0.4);
+  color: var(--fallen);
+  border: 1px solid rgba(255, 154, 162, 0.38);
+}
+
+.conflict-chip {
+  margin-top: 0.35rem;
+  border-radius: 8px;
+  padding: 0.3rem 0.4rem;
+  font-size: 0.76rem;
+}
+
+.badge.conflict {
+  padding: 0.12rem 0.42rem;
+  font-size: 0.66rem;
+}
+
+.join-rules {
+  margin: 0.4rem 0 0.7rem;
+  padding-left: 1.15rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.invoice-subhead {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0.8rem 0 0.3rem;
+}
+
+.invoice-rows {
+  margin: 0.2rem 0 0.6rem;
+  padding-left: 1.1rem;
+  font-size: 0.86rem;
+}
+
+.invoice-rows li {
+  margin: 0.25rem 0;
+}
+
 .file-header {
   display: flex;
   justify-content: space-between;

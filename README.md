@@ -24,12 +24,13 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
   - Residential: purchase / refinance / renewal / switch, insured or uninsured, stress test as a field (rate or status).
   - Commercial: DSCR and NOI, rent roll / leases, a different condition set.
   - Private: term, exit, broker fee, lawyer / notary, first or second position, a shorter checklist.
-- File view: borrowers (more than one is allowed), realtor, lawyer / notary, property, lender, product, amount, close date, maturity date, an editable conditions list (no document vault), the loud next action, the book-specific checklist, in-app @mentions, and a first-class handoff (person + reason + due).
+- File view: borrowers (more than one is allowed), realtor, lawyer / notary, property, lender, product, amount, close date, maturity date, an editable conditions list (no document vault), invoice match (commission / payout tracking, not borrower income), the loud next action, the book-specific checklist, in-app @mentions, and a first-class handoff (person + reason + due).
+- Invoice join: operational File # first, else MOS file id or FILEKEY. Never client name. Never a spreadsheet deal key alone. A file whose File # disagrees with MOS id / FILEKEY is **CONFLICTING**. Funded is the Fileflow stage or an explicit funded date — not a MOS close date or document flag. Unmatched invoices live at `#/invoices`.
 - A 4-month maturity / renewal reminder on the card and the file when the date is in that window. Sidney Sample is inside the window. Alex Example is not.
 - A **Calendar** of next-action dues and maturity dates. Click an item to open the file.
 - Adding a person who is already on the file is blocked. The UI says they are already assigned.
 - **Today** is Team My Day: one next action per role, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
-- Stage-gated docs are generic (ID, income, commitment, appraisal, conditions, title, insurance, lawyer, pickup, invoice match, AML). Not E7-branded.
+- Stage-gated docs are generic (ID, income, commitment, appraisal, conditions, title, insurance, lawyer, pickup, invoice match, AML).
 - Compliance can complete AML checklist items and files cannot leave Clear to close until that verification is done. Marketing cannot mutate files.
 - **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
 - **Share checklist** (`#/share/d-alex`, full URL on the page) is a borrower-facing conditions list. Mark received. No vault.

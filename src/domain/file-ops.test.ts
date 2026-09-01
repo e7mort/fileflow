@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { FileParty, ResidentialDeal } from "../types";
+import { alignedFileIdentity, type FileParty, type ResidentialDeal } from "../types";
 import { calendarEvents } from "./calendar";
 import { addCondition, completeCondition } from "./conditions";
 import { addParty, primaryBorrower } from "./parties";
@@ -54,6 +54,7 @@ function deal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
     mentions: [],
     lastTouchedAt: "2026-08-13T12:00:00.000Z",
     firstTouchedAt: "2026-08-01T12:00:00.000Z",
+    ...alignedFileIdentity("FF-T"),
     ...overrides,
   };
 }

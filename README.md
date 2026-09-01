@@ -15,7 +15,7 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 - Cards that show borrower, amount (CAD), the next action, and whether the file is waiting on someone.
 - A people switcher for a five-seat fictional shop. Roles, not names. There is no login.
   - Morgan Broker (LO)
-  - Riley Assistant (Processor)
+  - Riley Assistant (Assistant)
   - Casey Underwriter (UW)
   - Finley Compliance (Compliance)
   - Taylor Marketing (Marketing, read-only)
@@ -31,7 +31,7 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 - Adding a person who is already on the file is blocked. The UI says they are already assigned.
 - **Today** is Team My Day: one next action per role, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
 - Stage-gated docs follow the public CA pack and are labeled on the checklist (Pre-approval through Review). Commercial and private keep extras (NOI/DSCR, private term/exit/fee) on top. There is no submit-to-Filogix button.
-- Shop UW is file-complete / conditions inside the shop, not lender UW. Processor can chase docs the LO already named and cannot accept an application or decide the doc list. Compliance can complete AML items. Files cannot be funded while AML at lawyer signing is open. Marketing cannot mutate files.
+- Shop UW is file-complete / conditions inside the shop, not lender UW. Assistant (unlicensed) can chase named income docs and schedule, and cannot accept an application, add to the doc list, vet PSA, discuss commitments, or act as UW. Compliance can complete AML items. Files cannot be funded while AML at lawyer signing is open. Marketing cannot mutate files.
 - **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
 - **Share checklist** (`#/share/d-alex`, full URL on the page) is a borrower-facing conditions list. Mark received. No vault.
 

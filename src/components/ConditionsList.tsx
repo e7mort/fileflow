@@ -62,9 +62,9 @@ export function ConditionsList({ deal }: { deal: Deal }) {
             Add condition
           </button>
         </form>
-      ) : currentPerson.role === "processor" ? (
+      ) : currentPerson.role === "assistant" ? (
         <p className="subtle">
-          Processor chases docs the LO already named and cannot add to the list.
+          Assistant chases docs the LO already named and cannot add to the list.
         </p>
       ) : null}
     </section>

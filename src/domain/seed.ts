@@ -144,7 +144,7 @@ export function seedDeals(): Deal[] {
     "application",
     {
       personId: "p-riley",
-      reason: "Processor to chase T4s and employment letter",
+      reason: "Assistant to chase T4s and employment letter",
       due: "2026-08-18",
     },
   );

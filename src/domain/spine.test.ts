@@ -72,16 +72,17 @@ function resiDeal(overrides: Partial<ResidentialDeal> = {}): ResidentialDeal {
 }
 
 describe("shop roles", () => {
-  it("exposes LO, Processor, UW, Compliance, and Marketing seats", () => {
-    expect([...ROLES]).toEqual(["lo", "processor", "uw", "compliance", "marketing"]);
+  it("exposes LO, Assistant, UW, Compliance, and Marketing seats", () => {
+    expect([...ROLES]).toEqual(["lo", "assistant", "uw", "compliance", "marketing"]);
     expect(TEAM.map((person) => person.role)).toEqual([
       "lo",
-      "processor",
+      "assistant",
       "uw",
       "compliance",
       "marketing",
     ]);
     expect(roleLabel("lo")).toBe("LO");
+    expect(roleLabel("assistant")).toBe("Assistant");
     expect(roleLabel("uw")).toBe("UW");
     expect(TEAM.some((person) => person.name === "Finley Compliance")).toBe(true);
     expect(
@@ -208,7 +209,7 @@ describe("stage-gated docs", () => {
   });
 });
 
-describe("shop UW vs lender UW and processor gates", () => {
+describe("shop UW vs lender UW and assistant gates", () => {
   it("does not let shop UW own the Lender UW column, and Marketing still cannot own files", () => {
     expect(roleLabel("uw")).toBe("UW");
     expect(STAGE_NOTES["lender-uw"]).toMatch(/not shop UW/i);
@@ -216,12 +217,40 @@ describe("shop UW vs lender UW and processor gates", () => {
     expect(canEditDocList("marketing")).toBe(false);
   });
 
-  it("lets Processor chase named docs but not accept applications or decide the list", () => {
-    const stubs = task({ id: "t-stubs", title: "Pre-approval · 2 pay stubs", kind: "standard" });
-    expect(canCompleteTask("processor", stubs)).toBe(true);
-    expect(canEditDocList("processor")).toBe(false);
+  it("lets Assistant chase named income docs, not vet PSA, discuss commitments, or act as UW", () => {
+    const stubs = task({
+      id: "t-stubs",
+      templateId: "tpl-pay-stubs",
+      title: "Pre-approval · 2 pay stubs",
+      kind: "standard",
+    });
+    const psa = task({
+      id: "t-psa",
+      templateId: "tpl-psa",
+      title: "Application · PSA + amendments",
+      kind: "standard",
+    });
+    const commitment = task({
+      id: "t-commit",
+      templateId: "tpl-commitment",
+      title: "Conditional · Signed commitment",
+      kind: "standard",
+    });
+    const fileComplete = task({
+      id: "t-complete",
+      templateId: "tpl-fresh-stubs",
+      title: "File complete · Fresh stubs / employment letter",
+      kind: "standard",
+    });
+    expect(canCompleteTask("assistant", stubs)).toBe(true);
+    expect(canCompleteTask("assistant", psa)).toBe(false);
+    expect(canCompleteTask("assistant", commitment)).toBe(false);
+    expect(canCompleteTask("assistant", fileComplete)).toBe(false);
+    expect(canCompleteTask("lo", psa)).toBe(true);
+    expect(canCompleteTask("uw", fileComplete)).toBe(true);
+    expect(canEditDocList("assistant")).toBe(false);
     expect(canEditDocList("lo")).toBe(true);
-    expect(stageAdvanceBlock(resiDeal({ stage: "pre-approval" }), "application", "processor")).toMatch(
+    expect(stageAdvanceBlock(resiDeal({ stage: "pre-approval" }), "application", "assistant")).toMatch(
       /cannot accept an application/i,
     );
     expect(stageAdvanceBlock(resiDeal({ stage: "pre-approval" }), "application", "lo")).toBeNull();
@@ -270,14 +299,14 @@ describe("team my day", () => {
     const rows = teamMyDay(seedDeals(), DEMO_TODAY);
     expect(rows.map((row) => row.role)).toEqual([
       "lo",
-      "processor",
+      "assistant",
       "uw",
       "compliance",
       "marketing",
     ]);
     const byRole = Object.fromEntries(rows.map((row) => [row.role, row]));
     expect(primaryBorrower(byRole.lo?.deal!).name).toBe("Alex Example");
-    expect(primaryBorrower(byRole.processor?.deal!).name).toBe("Harper Fictional");
+    expect(primaryBorrower(byRole.assistant?.deal!).name).toBe("Harper Fictional");
     expect(primaryBorrower(byRole.uw?.deal!).name).toBe("Jordan Demo");
     expect(primaryBorrower(byRole.compliance?.deal!).name).toBe("Parker Placeholder");
     expect(byRole.uw?.note).toMatch(/shop UW/i);

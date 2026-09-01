@@ -129,14 +129,15 @@ export function NextActionPanel({ deal }: { deal: Deal }) {
       ) : null}
       {!canWrite ? (
         <p className="viewer-note">
-          Marketing is read-only. Switch to LO, Processor, UW, or Compliance to
+          Marketing is read-only. Switch to LO, Assistant, UW, or Compliance to
           complete work or create a handoff.
         </p>
       ) : null}
       {canWrite && nextTask && !canCompleteNext ? (
         <p className="viewer-note">
-          {currentPerson.name} can complete compliance / AML checklist items.
-          Switch to LO, Processor, or UW for this action.
+          {currentPerson.role === "assistant"
+            ? "Assistant can chase named income docs and schedule. This action is licensed work (not chase)."
+            : `${currentPerson.name} can complete compliance / AML checklist items. Switch to LO, Assistant, or UW for this action.`}
         </p>
       ) : null}
       {waiting ? (

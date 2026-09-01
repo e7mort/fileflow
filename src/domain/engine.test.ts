@@ -281,12 +281,12 @@ describe("handoffs", () => {
   it("sets waiting-on person, reason, and due on the current next action", () => {
     const deal = setHandoff(resiDeal(), {
       personId: "p-riley",
-      reason: "Need processor to request the T4s",
+      reason: "Need assistant to request the T4s",
       due: "2026-08-19",
     });
     expect(deal.nextAction.waitingOn).toEqual({
       personId: "p-riley",
-      reason: "Need processor to request the T4s",
+      reason: "Need assistant to request the T4s",
       due: "2026-08-19",
     });
   });

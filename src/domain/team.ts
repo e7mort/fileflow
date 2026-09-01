@@ -4,13 +4,25 @@ import { stageIndex } from "./stages";
 
 export const TEAM: Person[] = [
   { id: "p-morgan", name: "Morgan Broker", role: "lo" },
-  { id: "p-riley", name: "Riley Assistant", role: "processor" },
+  { id: "p-riley", name: "Riley Assistant", role: "assistant" },
   { id: "p-casey", name: "Casey Underwriter", role: "uw" },
   { id: "p-finley", name: "Finley Compliance", role: "compliance" },
   { id: "p-taylor", name: "Taylor Marketing", role: "marketing" },
 ];
 
 export const DEFAULT_PERSON_ID = "p-morgan";
+
+const ASSISTANT_CHASE_TEMPLATE_IDS = new Set([
+  "tpl-discovery-needs",
+  "tpl-id-docs",
+  "tpl-pay-stubs",
+  "tpl-employment-letter",
+  "tpl-t4",
+  "tpl-noa",
+  "tpl-debts",
+  "tpl-down-payment",
+  "tpl-gift-letter",
+]);
 
 export function personById(id: string): Person | undefined {
   return TEAM.find((person) => person.id === id);
@@ -20,8 +32,8 @@ export function roleLabel(role: Role): string {
   switch (role) {
     case "lo":
       return "LO";
-    case "processor":
-      return "Processor";
+    case "assistant":
+      return "Assistant";
     case "uw":
       return "UW";
     case "compliance":
@@ -43,12 +55,15 @@ export function canEditDocList(role: Role): boolean {
   return role === "lo" || role === "uw";
 }
 
-export function canCompleteTask(role: Role, task: Pick<Task, "kind">): boolean {
+export function canCompleteTask(role: Role, task: Pick<Task, "kind" | "templateId">): boolean {
   if (role === "marketing") {
     return false;
   }
   if (role === "compliance") {
     return task.kind === "compliance";
+  }
+  if (role === "assistant") {
+    return task.kind === "standard" && ASSISTANT_CHASE_TEMPLATE_IDS.has(task.templateId);
   }
   return true;
 }
@@ -66,8 +81,8 @@ export function canAdvanceToFunded(deal: Deal, to: Stage): boolean {
 }
 
 export function stageAdvanceBlock(deal: Deal, to: Stage, role?: Role): string | null {
-  if (role === "processor" && to === "application") {
-    return "Processor cannot accept an application or move a file into Application.";
+  if (role === "assistant" && to === "application") {
+    return "Assistant cannot accept an application or move a file into Application.";
   }
   if (canAdvanceToFunded(deal, to)) {
     return null;

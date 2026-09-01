@@ -18,7 +18,7 @@ export type Stage = (typeof STAGES)[number];
 export const BOOKS = ["residential", "commercial", "private"] as const;
 export type Book = (typeof BOOKS)[number];
 
-export const ROLES = ["lo", "processor", "uw", "compliance", "marketing"] as const;
+export const ROLES = ["lo", "assistant", "uw", "compliance", "marketing"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const RESIDENTIAL_PURPOSES = [

@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match. Steps 22–23 are the Canada pack: pre-approval with no property docs, and lawyer signing that is not funded.
+You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review. Step 21 is invoice / CRM match. Steps 22–23 are the Canada pack: pre-approval with no property docs, and lawyer signing that is not funded. Step 24 is Assistant (unlicensed) gates.
 
 ## 1. Start the app
 
@@ -120,7 +120,7 @@ On **Sidney Sample**, under **People on this file**, try to add Marlowe Homes ag
 
 Narrow the window to about 400px, or open the app on a phone. Click **Today** (or load the app with an empty hash on a narrow viewport). Stay as Morgan Broker.
 
-**Expected:** The page is **Team My Day**. It lists one loudest file per role (LO, Processor, UW, Compliance, Marketing). You should also see files waiting on Morgan, a **New-lead / first-touch queue** (Robin Fiction and Kit Freshfile), a **Stale / no-touch** section, and a **Past client / no contact** section. Each file row has a **Call** link (`tel:`). The demo banner is still at the top.
+**Expected:** The page is **Team My Day**. It lists one loudest file per role (LO, Assistant, UW, Compliance, Marketing). You should also see files waiting on Morgan, a **New-lead / first-touch queue** (Robin Fiction and Kit Freshfile), a **Stale / no-touch** section, and a **Past client / no contact** section. Each file row has a **Call** link (`tel:`). The demo banner is still at the top.
 
 ## 14. See a stale nudge vs a fresh file
 
@@ -159,7 +159,7 @@ Click **Reset demo**, then **Today**. Stay as Morgan Broker.
 **Expected:** **By role** shows five seats:
 
 - **LO · Morgan Broker** → Alex Example
-- **Processor · Riley Assistant** → Harper Fictional
+- **Assistant · Riley Assistant** → Harper Fictional
 - **UW · Casey Underwriter** → Jordan Demo (shop UW / file-complete, not lender UW)
 - **Compliance · Finley Compliance** → Parker Placeholder (next action **AML / ID verification**)
 - **Marketing · Taylor Marketing** → a read-only watch (Sidney Sample / Marlowe Homes)
@@ -178,7 +178,7 @@ Switch to **Finley Compliance**. Open **Parker Placeholder**. Complete **Lawyer 
 
 Still as Finley, open Parker **before** completing AML if you reset, and **Move stage** to **Funded**.
 
-**Expected:** The file does not leave Lawyer signing. A note says Compliance / AML verification must be done before this file is funded. After AML is done, LO/Processor/UW can move Parker to Funded. Lawyer signing is still not itself funded.
+**Expected:** The file does not leave Lawyer signing. A note says Compliance / AML verification must be done before this file is funded. After AML is done, LO / Assistant / UW can move Parker to Funded. Lawyer signing is still not itself funded.
 
 ## 20. Review-stage file
 
@@ -216,5 +216,13 @@ Click **Reset demo**. Open **Remy Ratehold** (Pre-approval).
 
 Open **Parker Placeholder**.
 
-**Expected:** Stage is **Lawyer signing**, not Funded. Funded in Fileflow is **No**. The file still has HOI binder / loss payee work. Team My Day still shows one next action per LO, Processor, UW, Compliance, and Marketing.
+**Expected:** Stage is **Lawyer signing**, not Funded. Funded in Fileflow is **No**. The file still has HOI binder / loss payee work. Team My Day still shows one next action per LO, Assistant, UW, Compliance, and Marketing.
+
+## 24. Assistant (unlicensed) gates
+
+Click **Reset demo**. Switch the header to **Riley Assistant**. Open **Remy Ratehold**.
+
+**Expected:** You can complete an already-unlocked named chase such as **Pre-approval · 2 pay stubs** or **Pre-approval · Collect ID**. You can leave a note. **Move stage** to **Application** does not work. A note says Assistant cannot accept an application.
+
+Open **Alex Example**. Application · PSA stays disabled for Assistant. There is no submit-to-lender button. Shop UW remains Casey’s seat, not this one.
 

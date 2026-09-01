@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - cursor/fileflow-mortgage-crm-94f4
 
 permissions:
   contents: read

@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+}
+
+::selection {
+  background: rgba(61, 255, 224, 0.35);
+  color: #070b14;
+}
+
+@keyframes holo-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-12deg);
+  }
+}
+
+.holo-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.holo-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(61, 255, 224, 0.22) 45%,
+    rgba(240, 199, 94, 0.18) 55%,
+    transparent 70%
+  );
+  animation: holo-sweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}

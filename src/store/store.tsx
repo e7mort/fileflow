@@ -28,19 +28,22 @@ import {
 import { DEMO_TODAY } from "../domain/maturity";
 import { pulseForStageMove } from "../domain/partners";
 import { addParty, type AddPartyResult } from "../domain/parties";
-import { TEAM, canMutateFiles, personById } from "../domain/team";
+import { TEAM, canCompleteTask, canMutateFiles, personById, stageAdvanceBlock } from "../domain/team";
 import { logFirstTouch, touchDeal } from "../domain/touch";
+
+import { defaultState, loadState, saveState } from "../lib/storage";
 
 function demoNow(): string {
   return DEMO_TODAY.toISOString();
 }
-import { defaultState, loadState, saveState } from "../lib/storage";
 
 type Store = {
   deals: Deal[];
   pulses: PartnerPulse[];
   currentPerson: Person;
   canWrite: boolean;
+  canCompleteDealTask: (dealId: DealId, taskId: TaskId) => boolean;
+  stageBlocked: (dealId: DealId, stage: Stage) => string | null;
   setCurrentPersonId: (id: PersonId) => void;
   completeDealTask: (dealId: DealId, taskId: TaskId) => void;
   changeStage: (dealId: DealId, stage: Stage) => void;
@@ -84,9 +87,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       pulses: state.pulses,
       currentPerson,
       canWrite,
+      canCompleteDealTask: (dealId, taskId) => {
+        const deal = state.deals.find((item) => item.id === dealId);
+        const task = deal?.tasks.find((item) => item.id === taskId);
+        if (!task) {
+          return false;
+        }
+        return canCompleteTask(currentPerson.role, task);
+      },
+      stageBlocked: (dealId, stage) => {
+        const deal = state.deals.find((item) => item.id === dealId);
+        if (!deal) {
+          return "File not found";
+        }
+        return stageAdvanceBlock(deal, stage);
+      },
       setCurrentPersonId: (id) => persist({ ...state, currentPersonId: id }),
       completeDealTask: (dealId, taskId) => {
-        if (!canWrite) {
+        const current = state.deals.find((deal) => deal.id === dealId);
+        const task = current?.tasks.find((item) => item.id === taskId);
+        if (!current || !task || !canCompleteTask(currentPerson.role, task)) {
           return;
         }
         persist({
@@ -101,7 +121,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           return;
         }
         const current = state.deals.find((deal) => deal.id === dealId);
-        if (!current) {
+        if (!current || stageAdvanceBlock(current, stage)) {
           return;
         }
         const moved = touchDeal(moveStage(current, stage), demoNow());

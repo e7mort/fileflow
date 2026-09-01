@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DEMO_TODAY, isMaturityReminderDue } from "../domain/maturity";
 import { primaryBorrower } from "../domain/parties";
 import { STAGE_LABELS } from "../domain/stages";
@@ -74,7 +75,8 @@ function BookFields({ deal }: { deal: Deal }) {
 }
 
 export function DealView({ deal }: { deal: Deal }) {
-  const { changeStage, canWrite, markFirstTouch } = useStore();
+  const { changeStage, canWrite, markFirstTouch, stageBlocked } = useStore();
+  const [gate, setGate] = useState<string | null>(null);
   const borrower = primaryBorrower(deal);
   const maturitySoon = isMaturityReminderDue(deal.maturityDate, DEMO_TODAY);
 
@@ -115,9 +117,16 @@ export function DealView({ deal }: { deal: Deal }) {
             disabled={!canWrite}
             onChange={(event) => {
               const next = STAGES.find((stage) => stage === event.target.value);
-              if (next) {
-                changeStage(deal.id, next);
+              if (!next) {
+                return;
               }
+              const blocked = stageBlocked(deal.id, next);
+              if (blocked) {
+                setGate(blocked);
+                return;
+              }
+              setGate(null);
+              changeStage(deal.id, next);
             }}
           >
             {STAGES.map((stage) => (
@@ -126,6 +135,11 @@ export function DealView({ deal }: { deal: Deal }) {
               </option>
             ))}
           </select>
+          {gate ? (
+            <p className="viewer-note" data-testid="stage-gate">
+              {gate}
+            </p>
+          ) : null}
         </div>
       </div>
       {maturitySoon && deal.maturityDate ? (

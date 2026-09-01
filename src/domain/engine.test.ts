@@ -22,6 +22,7 @@ function task(partial: Partial<Task> & Pick<Task, "id" | "title">): Task {
     due: partial.due ?? null,
     completed: partial.completed ?? false,
     completedAt: partial.completedAt ?? null,
+    kind: partial.kind ?? "standard",
     ...partial,
   };
 }
@@ -119,7 +120,7 @@ describe("isTaskUnlocked", () => {
     expect(isTaskUnlocked(income, "conditional")).toBe(true);
   });
 
-  it("locks remaining work on funded and fallen-through files", () => {
+  it("locks leftover application work on funded files, and all work on fallen-through", () => {
     const income = task({
       id: "t-inc",
       title: "Collect income docs",

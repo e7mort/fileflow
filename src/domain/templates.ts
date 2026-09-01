@@ -1,12 +1,21 @@
-import type { Book, Stage, TaskTemplate } from "../types";
+import { STAGES, type Book, type Stage, type TaskTemplate } from "../types";
 
 export const TASK_TEMPLATES: TaskTemplate[] = [
+  {
+    id: "tpl-id-docs",
+    title: "Collect ID",
+    books: ["residential", "commercial", "private"],
+    unlockStages: ["lead", "application"],
+    order: 8,
+    kind: "standard",
+  },
   {
     id: "tpl-income-docs",
     title: "Collect income docs",
     books: ["residential"],
     unlockStages: ["lead", "application"],
     order: 10,
+    kind: "standard",
   },
   {
     id: "tpl-application-package",
@@ -14,6 +23,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential"],
     unlockStages: ["application"],
     order: 20,
+    kind: "standard",
   },
   {
     id: "tpl-stress-test",
@@ -21,6 +31,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential"],
     unlockStages: ["application"],
     order: 25,
+    kind: "standard",
   },
   {
     id: "tpl-submit-lender",
@@ -28,6 +39,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential", "commercial", "private"],
     unlockStages: ["application"],
     order: 30,
+    kind: "standard",
   },
   {
     id: "tpl-commitment",
@@ -35,6 +47,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential", "commercial", "private"],
     unlockStages: ["submitted", "conditional"],
     order: 40,
+    kind: "standard",
   },
   {
     id: "tpl-appraisal",
@@ -42,6 +55,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential", "commercial"],
     unlockStages: ["submitted", "conditional"],
     order: 50,
+    kind: "standard",
   },
   {
     id: "tpl-title",
@@ -49,6 +63,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential"],
     unlockStages: ["conditional"],
     order: 60,
+    kind: "standard",
   },
   {
     id: "tpl-outstanding",
@@ -56,6 +71,15 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential", "commercial"],
     unlockStages: ["conditional"],
     order: 70,
+    kind: "standard",
+  },
+  {
+    id: "tpl-aml-check",
+    title: "AML / ID verification",
+    books: ["residential", "commercial", "private"],
+    unlockStages: ["clear-to-close"],
+    order: 71,
+    kind: "compliance",
   },
   {
     id: "tpl-insurance",
@@ -63,6 +87,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential", "private"],
     unlockStages: ["conditional", "clear-to-close"],
     order: 80,
+    kind: "standard",
   },
   {
     id: "tpl-lawyer",
@@ -70,6 +95,31 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["residential", "commercial"],
     unlockStages: ["conditional", "clear-to-close"],
     order: 90,
+    kind: "standard",
+  },
+  {
+    id: "tpl-pickup",
+    title: "Confirm solicitor pickup",
+    books: ["residential", "commercial", "private"],
+    unlockStages: ["funded", "review"],
+    order: 200,
+    kind: "standard",
+  },
+  {
+    id: "tpl-invoice-match",
+    title: "Match lender invoice",
+    books: ["residential", "commercial", "private"],
+    unlockStages: ["funded", "review"],
+    order: 210,
+    kind: "standard",
+  },
+  {
+    id: "tpl-aml-closeout",
+    title: "AML / compliance close-out",
+    books: ["residential", "commercial", "private"],
+    unlockStages: ["funded", "review"],
+    order: 220,
+    kind: "compliance",
   },
   {
     id: "tpl-rent-roll",
@@ -77,6 +127,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["commercial"],
     unlockStages: ["lead", "application"],
     order: 12,
+    kind: "standard",
   },
   {
     id: "tpl-noi",
@@ -84,6 +135,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["commercial"],
     unlockStages: ["application"],
     order: 18,
+    kind: "standard",
   },
   {
     id: "tpl-dscr",
@@ -91,6 +143,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["commercial"],
     unlockStages: ["application", "submitted"],
     order: 22,
+    kind: "standard",
   },
   {
     id: "tpl-environmental",
@@ -98,6 +151,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["commercial"],
     unlockStages: ["submitted", "conditional"],
     order: 55,
+    kind: "standard",
   },
   {
     id: "tpl-term-sheet",
@@ -105,6 +159,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["private"],
     unlockStages: ["lead", "application"],
     order: 11,
+    kind: "standard",
   },
   {
     id: "tpl-exit",
@@ -112,6 +167,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["private"],
     unlockStages: ["application"],
     order: 16,
+    kind: "standard",
   },
   {
     id: "tpl-broker-fee",
@@ -119,6 +175,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["private"],
     unlockStages: ["application"],
     order: 19,
+    kind: "standard",
   },
   {
     id: "tpl-private-lawyer",
@@ -126,6 +183,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["private"],
     unlockStages: ["application", "conditional"],
     order: 24,
+    kind: "standard",
   },
   {
     id: "tpl-second-position",
@@ -133,6 +191,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     books: ["private"],
     unlockStages: ["application", "conditional"],
     order: 26,
+    kind: "standard",
   },
 ];
 
@@ -143,18 +202,5 @@ export function templatesForBook(book: Book): TaskTemplate[] {
 }
 
 export function earliestUnlockIndex(unlockStages: Stage[]): number {
-  return Math.min(
-    ...unlockStages.map((stage) => {
-      const order = [
-        "lead",
-        "application",
-        "submitted",
-        "conditional",
-        "clear-to-close",
-        "funded",
-        "fallen-through",
-      ] as const;
-      return order.indexOf(stage);
-    }),
-  );
+  return Math.min(...unlockStages.map((stage) => STAGES.indexOf(stage)));
 }

@@ -1,5 +1,6 @@
 import { workForPerson } from "../domain/engine";
 import { DEMO_TODAY } from "../domain/maturity";
+import { teamMyDay } from "../domain/myday";
 import {
   daysSinceTouch,
   fileTouchKind,
@@ -8,7 +9,7 @@ import {
   type FileTouchKind,
 } from "../domain/nudges";
 import { primaryBorrower } from "../domain/parties";
-import { firstName } from "../domain/team";
+import { firstName, roleLabel } from "../domain/team";
 import { isNewLead } from "../domain/touch";
 import { formatCad } from "../lib/format";
 import { telHref } from "../lib/phone";
@@ -56,33 +57,43 @@ function DealRow({
 export function TodayView() {
   const { deals, currentPerson, markFirstTouch, canWrite } = useStore();
   const work = workForPerson(deals, currentPerson.id);
+  const team = teamMyDay(deals, DEMO_TODAY);
   const newLeads = deals.filter((deal) => isNewLead(deal));
   const stale = deals.filter((deal) => isStaleFile(deal, DEMO_TODAY));
   const past = deals.filter((deal) => isPastClientNudge(deal, DEMO_TODAY));
 
   return (
     <div className="work-page today-page" data-testid="today">
-      <h1>Today</h1>
+      <h1>Team My Day</h1>
       <p className="subtle">
-        Phone-first home for {currentPerson.name}. Next actions, waiting-on,
-        new leads, and nudges. Tap Call to dial the borrower. Pipeline stays on
-        desktop.
+        One loudest next action per role for a 3–5 person shop. You are{" "}
+        {currentPerson.name} · {roleLabel(currentPerson.role)}. Person switcher
+        still works. Pipeline stays on desktop.
       </p>
       <div className="today-stack">
-        <section data-testid="today-next">
-          <h2>Your next actions</h2>
-          {work.nextActions.length === 0 ? (
-            <p className="subtle">No files currently owned by this person.</p>
-          ) : (
-            work.nextActions.map((deal) => (
-              <DealRow
-                key={deal.id}
-                deal={deal}
-                note={deal.nextAction.title}
-                kind={fileTouchKind(deal, DEMO_TODAY)}
-              />
-            ))
-          )}
+        <section data-testid="today-team">
+          <h2>By role</h2>
+          {team.map((row) => (
+            <div
+              key={row.role}
+              className={`work-item today-row${row.person.id === currentPerson.id ? " today-row-you" : ""}`}
+              data-testid={`today-role-${row.role}`}
+            >
+              <p className="borrower">
+                {roleLabel(row.role)} · {row.person.name}
+                {row.readOnly ? " · read-only" : ""}
+              </p>
+              {row.deal ? (
+                <DealRow
+                  deal={row.deal}
+                  note={row.note}
+                  kind={fileTouchKind(row.deal, DEMO_TODAY)}
+                />
+              ) : (
+                <p className="subtle">{row.note}</p>
+              )}
+            </div>
+          ))}
         </section>
         <section data-testid="today-waiting">
           <h2>Waiting on {firstName(currentPerson.name)}</h2>

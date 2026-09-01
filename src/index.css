@@ -223,7 +223,7 @@ a {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(7, minmax(220px, 1fr));
+  grid-template-columns: repeat(8, minmax(220px, 1fr));
   gap: 0.7rem;
   overflow-x: auto;
   padding-bottom: 1rem;
@@ -528,8 +528,8 @@ a {
   text-decoration: none;
 }
 
-.today-row .row-actions {
-  margin-top: 0.45rem;
+.today-row-you {
+  border-color: rgba(126, 182, 255, 0.45);
 }
 
 .handoff-form {
@@ -627,7 +627,7 @@ a {
 
 @media (max-width: 1100px) {
   .board {
-    grid-template-columns: repeat(7, 240px);
+    grid-template-columns: repeat(8, 240px);
   }
 
   .file-grid,

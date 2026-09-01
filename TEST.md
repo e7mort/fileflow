@@ -1,6 +1,6 @@
 # Fileflow 5-minute test
 
-You are checking that a stranger can run the demo and see team + three Canadian books without asking anyone questions. Steps 13–17 are the five newest clicks: phone Today, stale nudge, realtor pulse, first-touch queue, shareable checklist.
+You are checking that a stranger can run the demo and see a sellable 3–5 person shop (roles, not names) plus three Canadian books. Steps 13–17 are Today / stale / partners / first-touch / share. Steps 18–20 are Team My Day, Compliance vs Marketing, and Review.
 
 ## 1. Start the app
 
@@ -14,7 +14,7 @@ Or `npm install && npm run dev`.
 
 ## 2. See the pipeline and the three books
 
-Stay on **Pipeline**. You should see seven stage columns and about a dozen fictional files (Alex Example, Jordan Demo, Avery Showcase, Harper Fictional, Blake Exampleton, and others). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
+Stay on **Pipeline**. You should see eight stage columns, including **Review** after **Funded**, and about a dozen fictional files (Alex Example, Jordan Demo, Avery Showcase, Harper Fictional, Blake Exampleton, and others). Several cards show an orange next-action strip. Several show a “Waiting on …” chip (Alex Example waits on Riley, Jordan Demo waits on Casey).
 
 Use the book filter: **All books**, **Residential**, **Commercial**, **Private**.
 
@@ -23,12 +23,12 @@ Use the book filter: **All books**, **Residential**, **Commercial**, **Private**
 - Residential filter keeps purchase / refinance / renewal / switch files (Alex, Jordan, Sidney, Parker, Robin, Kit Freshfile, Skyler).
 - Commercial filter keeps Avery Showcase, Cameron Testfile, Drew Mockwell.
 - Private filter keeps Harper Fictional, Reese Demoaddr, Blake Exampleton.
-- Blake Exampleton is in **Fallen through**. Skyler Placeholder and Drew Mockwell are in **Funded**.
+- Blake Exampleton is in **Fallen through**. Skyler Placeholder is in **Funded**. Drew Mockwell is in **Review**.
 - Amounts are in CAD.
 
 ## 3. Open one file from each book
 
-Open **Alex Example** (residential). Confirm purpose, insured/uninsured, and a stress test field (status or qualifying rate). Confirm the next action is loud, the checklist includes income docs / application package, and a note mentions @Riley.
+Open **Alex Example** (residential). Confirm purpose, insured/uninsured, and a stress test field (status or qualifying rate). Confirm the next action is loud, the checklist includes **Collect ID** / income docs / application package, and a note mentions @Riley.
 
 Open **Avery Showcase** (commercial). Confirm DSCR and NOI fields, rent-roll / NOI / DSCR checklist items, and commercial conditions (rent roll, corporate search).
 
@@ -51,9 +51,9 @@ Click **Clear handoff** if you want to undo, or leave it. Refresh the page. The 
 
 ## 5. Complete a task and watch the next action change
 
-Open **Alex Example**. Read the current next action title (seeded as **Collect income docs** unless you already completed it). Click **Complete this action**.
+Open **Alex Example**. Read the current next action title (seeded as **Collect ID** unless you already completed it). Click **Complete this action**.
 
-**Expected:** The next action changes to the next unlocked residential task, usually **Build application package**. Owner stays whoever that task already had (Riley), or unassigned. It does not silently become you. The completed item is struck through on the checklist.
+**Expected:** The next action changes to the next unlocked residential task, usually **Collect income docs**. Owner stays whoever that task already had (Morgan), or unassigned. It does not silently become you. The completed item is struck through on the checklist.
 
 ## 6. Move the file to another stage
 
@@ -65,7 +65,7 @@ On the same file, use **Move stage** and choose **Submitted**. You can also drag
 
 Click Pipeline, Today, and any file.
 
-**Expected:** The same demo banner is on every screen. Taylor Marketing (viewer) can read files and leave a note, but cannot complete tasks, set a handoff, or move a stage.
+**Expected:** The same demo banner is on every screen. Taylor Marketing is read-only: can read files and leave a note, but cannot complete tasks, set a handoff, or move a stage.
 
 If anything above fails, reset the demo from the header and run the script again from step 2.
 
@@ -120,7 +120,7 @@ On **Sidney Sample**, under **People on this file**, try to add Marlowe Homes ag
 
 Narrow the window to about 400px, or open the app on a phone. Click **Today** (or load the app with an empty hash on a narrow viewport). Stay as Morgan Broker.
 
-**Expected:** Today lists Morgan's next actions, files waiting on Morgan, a **New-lead / first-touch queue** (Robin Fiction and Kit Freshfile), a **Stale / no-touch** section, and a **Past client / no contact** section. Each row has a **Call** link (`tel:`). The demo banner is still at the top.
+**Expected:** The page is **Team My Day**. It lists one loudest file per role (LO, Processor, UW, Compliance, Marketing). You should also see files waiting on Morgan, a **New-lead / first-touch queue** (Robin Fiction and Kit Freshfile), a **Stale / no-touch** section, and a **Past client / no contact** section. Each file row has a **Call** link (`tel:`). The demo banner is still at the top.
 
 ## 14. See a stale nudge vs a fresh file
 
@@ -151,4 +151,38 @@ On **Today**, under **New-lead / first-touch queue**, find **Kit Freshfile**. Cl
 Open **Alex Example**. Click **Share checklist**. The page shows a full URL you can copy. Locally that is `http://localhost:5173/#/share/d-alex`. After Pages is on, it is https://e7mort.github.io/fileflow/#/share/d-alex.
 
 **Expected:** A borrower-facing page for Alex Example. Conditions still needed are listed. Click **Mark received** on one item. It shows Received. No upload. No login. The demo banner is still there and still says this is not advice.
+
+## 18. Team My Day by role
+
+Click **Reset demo**, then **Today**. Stay as Morgan Broker.
+
+**Expected:** **By role** shows five seats:
+
+- **LO · Morgan Broker** → Alex Example
+- **Processor · Riley Assistant** → Harper Fictional
+- **UW · Casey Underwriter** → Jordan Demo
+- **Compliance · Finley Compliance** → Parker Placeholder (next action **AML / ID verification**)
+- **Marketing · Taylor Marketing** → a read-only watch (Sidney Sample / Marlowe Homes)
+
+Switch the header to Casey Underwriter. The UW row is the one marked as you. **Waiting on Casey** still lists Jordan Demo.
+
+## 19. Compliance vs Marketing permissions
+
+Switch to **Taylor Marketing**. Open **Alex Example**.
+
+**Expected:** No complete-task, handoff, or stage move. A note says Marketing is read-only. You can still leave a note.
+
+Switch to **Finley Compliance**. Open **Parker Placeholder**. Complete **AML / ID verification**.
+
+**Expected:** The AML item completes. Other checklist items (insurance, lawyer) stay disabled for Compliance.
+
+Still as Finley, open Parker **before** completing AML if you reset, and **Move stage** to **Funded**.
+
+**Expected:** The file does not leave Clear to close. A note says Compliance / AML verification must be done first. After AML is done, LO/Processor/UW can move Parker to Funded.
+
+## 20. Review-stage file
+
+On **Pipeline**, find **Drew Mockwell** in the **Review** column (after Funded). Open the file.
+
+**Expected:** Stage badge is Review. Checklist includes **Confirm solicitor pickup**, **Match lender invoice**, and **AML / compliance close-out**. Next action is pickup or invoice-match. This is post-fund close-out, not a live lender system and not E7.
 

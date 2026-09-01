@@ -1,5 +1,4 @@
 import type { Deal } from "../types";
-import { isTerminalStage } from "./stages";
 import { isNewLead } from "./touch";
 
 export type FileTouchKind = "new" | "stale" | "past" | "fresh";
@@ -18,7 +17,7 @@ export function daysSinceTouch(deal: Deal, today: Date): number {
 }
 
 export function isStaleFile(deal: Deal, today: Date): boolean {
-  if (isTerminalStage(deal.stage)) {
+  if (deal.stage === "funded" || deal.stage === "review" || deal.stage === "fallen-through") {
     return false;
   }
   return daysSinceTouch(deal, today) >= STALE_AFTER_DAYS;

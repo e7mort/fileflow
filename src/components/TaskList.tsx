@@ -5,7 +5,7 @@ import { useStore } from "../store/store";
 import type { Deal } from "../types";
 
 export function TaskList({ deal }: { deal: Deal }) {
-  const { canWrite, completeDealTask } = useStore();
+  const { canCompleteDealTask, completeDealTask } = useStore();
 
   return (
     <section className="panel" data-testid="task-list">
@@ -40,7 +40,7 @@ export function TaskList({ deal }: { deal: Deal }) {
               <button
                 type="button"
                 className="btn secondary"
-                disabled={!canWrite || !unlocked}
+                disabled={!canCompleteDealTask(deal.id, task.id) || !unlocked}
                 onClick={() => completeDealTask(deal.id, task.id)}
               >
                 Complete

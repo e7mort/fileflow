@@ -5,6 +5,7 @@ export const STAGES = [
   "conditional",
   "clear-to-close",
   "funded",
+  "review",
   "fallen-through",
 ] as const;
 
@@ -13,7 +14,7 @@ export type Stage = (typeof STAGES)[number];
 export const BOOKS = ["residential", "commercial", "private"] as const;
 export type Book = (typeof BOOKS)[number];
 
-export const ROLES = ["broker", "processor", "underwriter", "viewer"] as const;
+export const ROLES = ["lo", "processor", "uw", "compliance", "marketing"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const RESIDENTIAL_PURPOSES = [
@@ -59,6 +60,8 @@ export type NextAction = {
   waitingOn: Handoff | null;
 };
 
+export type TaskKind = "standard" | "compliance";
+
 export type Task = {
   id: TaskId;
   templateId: TemplateId;
@@ -68,6 +71,7 @@ export type Task = {
   due: string | null;
   completed: boolean;
   completedAt: string | null;
+  kind: TaskKind;
 };
 
 export type Mention = {
@@ -164,4 +168,5 @@ export type TaskTemplate = {
   books: Book[];
   unlockStages: Stage[];
   order: number;
+  kind: TaskKind;
 };

@@ -26,12 +26,16 @@ export function instantiateTasks(input: {
     due: null,
     completed: false,
     completedAt: null,
+    kind: template.kind,
   }));
 }
 
 export function isTaskUnlocked(task: Task, stage: Stage): boolean {
-  if (isTerminalStage(stage)) {
+  if (stage === "fallen-through") {
     return false;
+  }
+  if (stage === "funded" || stage === "review") {
+    return task.unlockStages.includes("funded") || task.unlockStages.includes("review");
   }
   return stageIndex(stage) >= earliestUnlockIndex(task.unlockStages);
 }
@@ -116,6 +120,7 @@ function mergeTemplates(deal: Deal): Task[] {
       due: null,
       completed: false,
       completedAt: null,
+      kind: template.kind,
     }));
   return [...deal.tasks, ...additions];
 }

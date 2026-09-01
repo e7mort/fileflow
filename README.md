@@ -1,6 +1,6 @@
 # Fileflow
 
-Fileflow is a mortgage file CRM for a 2–8 person Canadian brokerage shop. It is a demo, not a live lender system, and it is not advice.
+Fileflow is a mortgage file CRM for a 3–5 person Canadian brokerage shop. It is a demo of a Grok Bot CRM spine similar shops can run, not a live lender system, and it is not advice.
 
 A shop runs one shared pipeline. Every file has exactly one current next action: a title, an owner (or none), a due date, and an optional handoff. Tasks come from stage-gated templates that change with the book. Residential, commercial, and private are three books in the same shop, not three products.
 
@@ -11,14 +11,15 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 ## What you should see
 
 - A persistent banner on every screen: this is a demo, not a live lender system, not advice.
-- A pipeline board with mortgage stages: Lead, Application, Submitted, Conditional, Clear to close, Funded, Fallen through.
+- A pipeline board with mortgage stages: Lead, Application, Submitted, Conditional, Clear to close, Funded, Review, Fallen through.
 - Cards that show borrower, amount (CAD), the next action, and whether the file is waiting on someone.
-- A people switcher for a four-person fictional shop. There is no login.
-  - Morgan Broker (broker)
-  - Riley Assistant (processor / assistant)
-  - Casey Underwriter (underwriter)
-  - Taylor Marketing (viewer)
-- **Today** for the selected person: owned next actions, files waiting on them, tap-to-call, a new-lead queue, stale files, and a 6-month past-client nudge. On a phone-width window this is the default landing. Pipeline stays on desktop.
+- A people switcher for a five-seat fictional shop. Roles, not names. There is no login.
+  - Morgan Broker (LO)
+  - Riley Assistant (Processor)
+  - Casey Underwriter (UW)
+  - Finley Compliance (Compliance)
+  - Taylor Marketing (Marketing, read-only)
+- **Team My Day** (`Today`): one loudest next action per role, plus waiting-on, tap-to-call, a new-lead queue, stale files, and a 6-month past-client nudge. On a phone-width window this is the default landing. Pipeline stays on desktop.
 - Three books. Filter the board, then open one file from each:
   - Residential: purchase / refinance / renewal / switch, insured or uninsured, stress test as a field (rate or status).
   - Commercial: DSCR and NOI, rent roll / leases, a different condition set.
@@ -27,7 +28,9 @@ The demo skin is dark crystal glass: navy-charcoal wash, frosted panels, thin li
 - A 4-month maturity / renewal reminder on the card and the file when the date is in that window. Sidney Sample is inside the window. Alex Example is not.
 - A **Calendar** of next-action dues and maturity dates. Click an item to open the file.
 - Adding a person who is already on the file is blocked. The UI says they are already assigned.
-- **Today** is the phone-first home: next actions, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
+- **Today** is Team My Day: one next action per role, waiting-on, tap-to-call, new-lead queue, stale nudges, and a 6-month past-client nudge.
+- Stage-gated docs are generic (ID, income, commitment, appraisal, conditions, title, insurance, lawyer, pickup, invoice match, AML). Not E7-branded.
+- Compliance can complete AML checklist items and files cannot leave Clear to close until that verification is done. Marketing cannot mutate files.
 - **Partners** lists fictional realtors. A stage move writes an in-app pulse on that realtor.
 - **Share checklist** (`#/share/d-alex`, full URL on the page) is a borrower-facing conditions list. Mark received. No vault.
 

@@ -6,7 +6,8 @@ import { useStore } from "../store/store";
 import type { Deal } from "../types";
 
 export function NextActionPanel({ deal }: { deal: Deal }) {
-  const { canWrite, completeDealTask, handoff, finishHandoff } = useStore();
+  const { canWrite, canCompleteDealTask, completeDealTask, handoff, finishHandoff, currentPerson } =
+    useStore();
   const [personId, setPersonId] = useState(TEAM[1]?.id ?? "p-riley");
   const [reason, setReason] = useState("");
   const [due, setDue] = useState("");
@@ -17,6 +18,10 @@ export function NextActionPanel({ deal }: { deal: Deal }) {
     ? personById(deal.nextAction.waitingOn.personId)
     : undefined;
   const closed = isTerminalStage(deal.stage);
+  const nextTask = deal.tasks.find((task) => task.id === deal.nextAction.taskId);
+  const canCompleteNext = Boolean(
+    nextTask && canCompleteDealTask(deal.id, nextTask.id),
+  );
 
   return (
     <section className="panel next-panel" data-testid="next-action">
@@ -44,7 +49,7 @@ export function NextActionPanel({ deal }: { deal: Deal }) {
       )}
       {!closed && canWrite ? (
         <div className="row-actions">
-          {deal.nextAction.taskId ? (
+          {deal.nextAction.taskId && canCompleteNext ? (
             <button
               type="button"
               className="btn"
@@ -94,7 +99,7 @@ export function NextActionPanel({ deal }: { deal: Deal }) {
               value={personId}
               onChange={(event) => setPersonId(event.target.value)}
             >
-              {TEAM.filter((person) => person.role !== "viewer").map((person) => (
+              {TEAM.filter((person) => person.role !== "marketing").map((person) => (
                 <option key={person.id} value={person.id}>
                   {person.name}
                 </option>
@@ -124,8 +129,14 @@ export function NextActionPanel({ deal }: { deal: Deal }) {
       ) : null}
       {!canWrite ? (
         <p className="viewer-note">
-          Taylor is a viewer. Switch to Morgan, Riley, or Casey to complete work
-          or create a handoff.
+          Marketing is read-only. Switch to LO, Processor, UW, or Compliance to
+          complete work or create a handoff.
+        </p>
+      ) : null}
+      {canWrite && nextTask && !canCompleteNext ? (
+        <p className="viewer-note">
+          {currentPerson.name} can complete compliance / AML checklist items.
+          Switch to LO, Processor, or UW for this action.
         </p>
       ) : null}
       {waiting ? (

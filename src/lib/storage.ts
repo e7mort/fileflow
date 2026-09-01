@@ -4,7 +4,7 @@ import { seedPulses } from "../domain/partners";
 import { seedDeals } from "../domain/seed";
 import { STAGES, BOOKS } from "../types";
 
-export const STORAGE_KEY = "fileflow-demo-v3";
+export const STORAGE_KEY = "fileflow-demo-v4";
 
 export type PersistedState = {
   deals: Deal[];

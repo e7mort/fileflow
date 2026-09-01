@@ -17,6 +17,7 @@ describe("seedDeals", () => {
       expect(deals.filter((deal) => deal.book === book).length).toBeGreaterThanOrEqual(2);
     }
     expect(deals.some((deal) => deal.stage === "funded")).toBe(true);
+    expect(deals.some((deal) => deal.stage === "review")).toBe(true);
     expect(deals.some((deal) => deal.stage === "fallen-through")).toBe(true);
   });
 
@@ -28,7 +29,7 @@ describe("seedDeals", () => {
     expect(robin?.nextAction.ownerId).toBeNull();
   });
 
-  it("spreads ownership across the four-person shop", () => {
+  it("spreads ownership across the shop except Marketing", () => {
     const deals = seedDeals();
     const ownerIds = new Set(
       deals.flatMap((deal) => [
@@ -38,14 +39,13 @@ describe("seedDeals", () => {
       ]),
     );
     for (const person of TEAM) {
-      if (person.role === "viewer") {
+      if (person.role === "marketing") {
         continue;
       }
       expect(ownerIds.has(person.id)).toBe(true);
     }
-    expect(
-      deals.every((deal) =>
-        deal.parties.every((party) => {
+    expect(deals.every((deal) =>
+        [...deal.parties, ...TEAM.map((person) => ({ name: person.name }))].every((party) => {
           const first = party.name.split(" ")[0] ?? "";
           return !/^(sam|samuel|quinn|james|eric|e7)$/i.test(first);
         }),

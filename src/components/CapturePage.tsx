@@ -17,6 +17,15 @@ export function CapturePage() {
 
   return (
     <div className="capture-page" data-testid="capture-page">
+      <div className="capture-public-bar">
+        <a className="wordmark" href="#/">
+          File<span>flow</span>
+        </a>
+        <nav className="capture-public-nav">
+          <a href="#/inbox">Inbox</a>
+          <a href="#/">Pipeline</a>
+        </nav>
+      </div>
       <div className="capture-hero">
         <p className="capture-kicker">Fileflow demo · not a live lender</p>
         <h1>Don&apos;t auto-renew with your bank.</h1>
@@ -37,33 +46,39 @@ export function CapturePage() {
             window.location.hash = `#/inbox/${id}`;
           }}
         >
-          <label className="field">
-            Your name
+          <div className="field">
+            <label htmlFor="capture-name">Your name</label>
             <input
+              id="capture-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Dana Textin"
               required
               data-testid="capture-name"
             />
-          </label>
-          <label className="field">
-            Mobile
+          </div>
+          <div className="field">
+            <label htmlFor="capture-phone">Mobile</label>
             <input
+              id="capture-phone"
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
               placeholder="604-555-0100"
               required
               data-testid="capture-phone"
             />
-          </label>
-          <label className="field">
-            What do you need
+          </div>
+          <div className="field">
+            <label htmlFor="capture-purpose">What do you need</label>
             <select
+              id="capture-purpose"
               value={purpose}
-              onChange={(event) =>
-                setPurpose(event.target.value as ResidentialPurpose)
-              }
+              onChange={(event) => {
+                const next = PURPOSES.find((item) => item.value === event.target.value);
+                if (next) {
+                  setPurpose(next.value);
+                }
+              }}
               data-testid="capture-purpose"
             >
               {PURPOSES.map((item) => (
@@ -72,7 +87,7 @@ export function CapturePage() {
                 </option>
               ))}
             </select>
-          </label>
+          </div>
           <button type="submit" className="btn" data-testid="capture-submit">
             Start the desk
           </button>
@@ -80,11 +95,6 @@ export function CapturePage() {
         <p className="subtle">
           No ads fire from this page. Submit drops you into the same SMS /
           WhatsApp thread the shop sees in Inbox.
-        </p>
-        <p>
-          <a href="#/inbox">Back to inbox</a>
-          {" · "}
-          <a href="#/">Pipeline</a>
         </p>
       </div>
     </div>

@@ -1,15 +1,17 @@
-# GitHub Pages deploy. `enablement: true` asks GitHub to create the Pages
-# site if it is missing. That still does not replace a human click:
-# Settings → Pages → Build and deployment → Source: GitHub Actions.
-# Until that is set, GET /repos/e7mort/fileflow/pages is 404 and
-# https://e7mort.github.io/fileflow/ is not a live demo.
+# GitHub Pages deploy for the built app.
+#
+# Actions cannot create the Pages site. `configure-pages` with
+# enablement: true fails here with "Resource not accessible by integration"
+# while GET /repos/e7mort/fileflow/pages is 404.
+# A human must click Settings → Pages → Build and deployment →
+# Source: GitHub Actions. Until then https://e7mort.github.io/fileflow/
+# is not live. This workflow only runs on main so PRs stay green.
 name: GitHub Pages
 
 on:
   push:
     branches:
       - main
-      - cursor/client-acquisition-system-ee0c
 
 permissions:
   contents: read
@@ -39,8 +41,6 @@ jobs:
           GITHUB_PAGES: "true"
       - run: cp dist/index.html dist/404.html && touch dist/.nojekyll
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

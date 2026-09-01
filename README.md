@@ -71,4 +71,4 @@ npm test
 npm run build
 ```
 
-CI runs those on pull requests and on pushes to `main` and this feature branch. A five-minute walkthrough is in [TEST.md](TEST.md).
+CI runs `npm ci && npm test && npm run build` on pull requests and on pushes to `main` and this feature branch. Pages deploy is `main` only, and only after the Settings click above. A five-minute walkthrough is in [TEST.md](TEST.md).
